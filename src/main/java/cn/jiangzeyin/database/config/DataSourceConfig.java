@@ -26,6 +26,10 @@ import java.util.*;
  * @create 2017 01 06 17:10
  */
 public final class DataSourceConfig {
+    private DataSourceConfig() {
+
+    }
+
     private static PropertiesParser systemPropertiesParser;
 
     public static void init(String propertyPath) throws Exception {

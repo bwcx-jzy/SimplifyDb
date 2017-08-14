@@ -13,11 +13,9 @@ import cn.jiangzeyin.util.ref.ReflectUtil;
 import com.alibaba.druid.util.JdbcUtils;
 import com.mysql.jdbc.exceptions.jdbc4.MySQLIntegrityConstraintViolationException;
 
-
 import javax.sql.DataSource;
 import java.sql.Connection;
 import java.util.List;
-import java.util.concurrent.ExecutorService;
 
 /**
  * 普通insert
@@ -41,10 +39,8 @@ public class Insert<T> extends WriteBase<T> {
     public InsertEvent getEvent() {
         if (event == null) {
             T data = getData();
-            if (data != null) {
-                if (InsertEvent.class.isAssignableFrom(data.getClass())) {
-                    setEvent((InsertEvent) data);
-                }
+            if (data != null && InsertEvent.class.isAssignableFrom(data.getClass())) {
+                setEvent((InsertEvent) data);
             }
         }
         return event;
@@ -116,7 +112,7 @@ public class Insert<T> extends WriteBase<T> {
             // TODO Auto-generated method stub
             long id = syncRun();
             if (id <= 0) {
-               SystemDbLog.getInstance().warn(getData() + "异步执行失败：" + id);
+                SystemDbLog.getInstance().warn(getData() + "异步执行失败：" + id);
             }
         });
     }

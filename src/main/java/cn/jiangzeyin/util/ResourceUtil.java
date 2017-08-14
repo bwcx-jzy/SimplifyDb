@@ -13,6 +13,9 @@ import java.net.URLConnection;
  */
 public class ResourceUtil {
 
+    private ResourceUtil() {
+    }
+
     public static InputStream getResource(String location) throws IOException {
         Assert.notNull(location, "location is null");
         if (location.startsWith("/")) {

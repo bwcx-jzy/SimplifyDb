@@ -18,6 +18,9 @@ import java.util.Random;
  * @create 2017 01 06 17:01
  */
 public final class DatabaseContextHolder {
+    private DatabaseContextHolder() {
+    }
+
     private static final ThreadLocal<String> threadLocal = new ThreadLocal<>();
     private static final Random random = new Random();
 

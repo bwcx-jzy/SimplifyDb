@@ -190,92 +190,6 @@ public class ReflectUtil {
 
     }
 
-    /**
-     * 自定义排序
-     *
-     * @param accountList
-     *            要排序的集合
-     * @param orderField
-     *            更具什么属性排序
-     * @param orderDirection
-     *            排序的方式
-     */
-    // public static void sortDate(List<?> list, String orderField,
-    // String orderDirection) {
-    // if (!"desc".equals(orderDirection) && !"asc".equals(orderDirection))
-    // return;
-    // final String methodName = "get" + orderField;
-    // final String type = orderDirection;
-    // Collections.sort(list, new Comparator<Object>() {
-    // public int compare(Object a, Object b) {
-    // int ret = 0;
-    // try {
-    // Method m = a.getClass().getDeclaredMethod(methodName, null);
-    // try {
-    // String aStr = (String) m.invoke(a, null);
-    // String bStr = (String) m.invoke(b, null);
-    // ret = aStr.compareTo(bStr);
-    // ret = "asc".equals(type) ? ret : -ret;
-    // } catch (IllegalArgumentException e) {
-    // e.printStackTrace();
-    // } catch (IllegalAccessException e) {
-    // e.printStackTrace();
-    // } catch (InvocationTargetException e) {
-    // e.printStackTrace();
-    // }
-    //
-    // } catch (SecurityException e) {
-    // e.printStackTrace();
-    // } catch (NoSuchMethodException e) {
-    // e.printStackTrace();
-    // }
-    // return ret;
-    // }
-    // });
-    // }
-
-    /**
-     * 自定义排序
-     *
-     * @param list
-     * @param orderField
-     * @param orderDirection
-     */
-    public static void sortString(List<?> list, String orderField, String orderDirection) {
-        if (!"desc".equals(orderDirection) && !"asc".equals(orderDirection))
-            return;
-        final String methodName = "get" + orderField;
-        final String type = orderDirection;
-        Collections.sort(list, new Comparator<Object>() {
-            public int compare(Object a, Object b) {
-                int ret = 0;
-                Method m = null;
-                Class<?> a1 = a.getClass();
-                for (; ; ) {
-                    try {
-                        m = a1.getDeclaredMethod(methodName);
-                    } catch (SecurityException e) {
-                        e.printStackTrace();
-                    } catch (NoSuchMethodException e) {
-                        a1 = a1.getSuperclass();
-                        if (a1 == null)
-                            return ret;
-                        continue;
-                    }
-                    break;
-                }
-                try {
-                    Integer aStr = (Integer) m.invoke(a);
-                    Integer bStr = (Integer) m.invoke(b);
-                    ret = aStr.compareTo(bStr);
-                    ret = "asc".equals(type) ? ret : -ret;
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-                return ret;
-            }
-        });
-    }
 
     /**
      * 获取对象的泛型
@@ -315,7 +229,7 @@ public class ReflectUtil {
     public static <V, T> HashMap<T, V> mapToList(List<V> list, Class<T> key_, String key) throws IllegalArgumentException, IllegalAccessException {
         if (list == null)
             return null;
-        HashMap<T, V> map = new HashMap<T, V>();
+        HashMap<T, V> map = new HashMap<>();
         if (list.size() < 1)
             return map;
         for (V v : list) {
