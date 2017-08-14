@@ -1,0 +1,787 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="f49d3c7b-4f0f-4dda-848d-99d647861d88" name="Default" comment="" />
+    <ignored path="$PROJECT_DIR$/out/" />
+    <ignored path="$PROJECT_DIR$/target/" />
+    <ignored path="$PROJECT_DIR$/dbutil/target/" />
+    <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
+    <option name="TRACKING_ENABLED" value="true" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="DatabaseView">
+    <option name="SHOW_INTERMEDIATE" value="true" />
+    <option name="GROUP_SCHEMA" value="true" />
+    <option name="GROUP_CONTENTS" value="false" />
+    <option name="SORT_POSITIONED" value="false" />
+    <option name="SHOW_TABLE_DETAILS" value="true" />
+    <option name="SHOW_EMPTY_GROUPS" value="false" />
+    <option name="AUTO_SCROLL_FROM_SOURCE" value="false" />
+    <expand />
+    <select />
+  </component>
+  <component name="FileEditorManager">
+    <leaf SIDE_TABS_SIZE_LIMIT_KEY="375">
+      <file leaf-file-name="pom.xml" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/pom.xml">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="176">
+              <caret line="8" column="26" lean-forward="true" selection-start-line="8" selection-start-column="26" selection-end-line="8" selection-end-column="26" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="DbLogInterface.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/cn/jiangzeyin/system/DbLogInterface.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="161">
+              <caret line="7" column="0" lean-forward="false" selection-start-line="7" selection-start-column="0" selection-end-line="7" selection-end-column="0" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="workspace.xml" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/.idea/workspace.xml">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="0">
+              <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+              <folding>
+                <marker date="1502716779978" expanded="true" signature="46256:46481" ph="..." />
+                <marker date="1502716779978" expanded="true" signature="46256:46494" ph="..." />
+                <marker date="1502716779978" expanded="true" signature="46256:46509" ph="..." />
+                <marker date="1502716779978" expanded="true" signature="46257:46463" ph="..." />
+                <marker date="1502716779978" expanded="true" signature="46544:49103" ph="..." />
+                <marker date="1502716779978" expanded="true" signature="46557:49088" ph="..." />
+                <marker date="1502716779978" expanded="true" signature="46611:46906" ph="..." />
+                <marker date="1502716779978" expanded="true" signature="46630:46891" ph="..." />
+                <marker date="1502716779978" expanded="true" signature="46693:46871" ph="..." />
+                <marker date="1502716779978" expanded="true" signature="46733:46837" ph="..." />
+                <marker date="1502716779978" expanded="true" signature="46754:46815" ph="..." />
+                <marker date="1502716779978" expanded="true" signature="46956:47283" ph="..." />
+                <marker date="1502716779978" expanded="true" signature="46975:47268" ph="..." />
+                <marker date="1502716779978" expanded="true" signature="47070:47248" ph="..." />
+                <marker date="1502716779978" expanded="true" signature="47110:47214" ph="..." />
+                <marker date="1502716779978" expanded="true" signature="47131:47192" ph="..." />
+                <marker date="1502716779978" expanded="true" signature="47334:47599" ph="..." />
+                <marker date="1502716779978" expanded="true" signature="47353:47584" ph="..." />
+                <marker date="1502716779978" expanded="true" signature="47386:47564" ph="..." />
+                <marker date="1502716779978" expanded="true" signature="47426:47530" ph="..." />
+                <marker date="1502716779978" expanded="true" signature="47447:47508" ph="..." />
+                <marker date="1502716779978" expanded="true" signature="47661:47933" ph="..." />
+                <marker date="1502716779978" expanded="true" signature="47735:47913" ph="..." />
+                <marker date="1502716779978" expanded="true" signature="47775:47879" ph="..." />
+                <marker date="1502716779978" expanded="true" signature="47796:47857" ph="..." />
+                <marker date="1502716779978" expanded="true" signature="47999:48347" ph="..." />
+                <marker date="1502716779978" expanded="true" signature="48018:48332" ph="..." />
+                <marker date="1502716779978" expanded="true" signature="48095:48312" ph="..." />
+                <marker date="1502716779978" expanded="true" signature="48135:48278" ph="..." />
+                <marker date="1502716779978" expanded="true" signature="48156:48256" ph="..." />
+                <marker date="1502716779978" expanded="true" signature="48382:48688" ph="..." />
+                <marker date="1502716779978" expanded="true" signature="48401:48673" ph="..." />
+                <marker date="1502716779978" expanded="true" signature="48475:48653" ph="..." />
+                <marker date="1502716779978" expanded="true" signature="48515:48619" ph="..." />
+                <marker date="1502716779978" expanded="true" signature="48536:48597" ph="..." />
+                <marker date="1502716779978" expanded="true" signature="48740:49074" ph="..." />
+                <marker date="1502716779978" expanded="true" signature="48759:49059" ph="..." />
+                <marker date="1502716779978" expanded="true" signature="48861:49039" ph="..." />
+                <marker date="1502716779978" expanded="true" signature="48901:49005" ph="..." />
+                <marker date="1502716779978" expanded="true" signature="48922:48983" ph="..." />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="uiDesigner.xml" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/.idea/uiDesigner.xml">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="0">
+              <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="compiler.xml" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/.idea/compiler.xml">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="322">
+              <caret line="14" column="26" lean-forward="false" selection-start-line="14" selection-start-column="26" selection-end-line="14" selection-end-column="26" />
+              <folding>
+                <marker date="1502716780042" expanded="true" signature="635:678" ph="..." />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+    </leaf>
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Class" />
+      </list>
+    </option>
+  </component>
+  <component name="FindInProjectRecents">
+    <replaceStrings>
+      <replace />
+    </replaceStrings>
+  </component>
+  <component name="GradleLocalSettings">
+    <option name="externalProjectsViewState">
+      <projects_view />
+    </option>
+  </component>
+  <component name="IdeDocumentHistory">
+    <option name="CHANGED_PATHS">
+      <list>
+        <option value="$PROJECT_DIR$/dbutil/src/main/java/cn/jiangzeyin/system/SystemSessionInfo.java" />
+        <option value="$PROJECT_DIR$/dbutil/src/main/java/cn/jiangzeyin/system/SystemLog.java" />
+        <option value="$PROJECT_DIR$/dbutil/src/main/java/cn/jiangzeyin/util/reflect/ss.java" />
+        <option value="$PROJECT_DIR$/dbutil/src/main/java/cn/jiangzeyin/system/s.java" />
+        <option value="$PROJECT_DIR$/dbutil/src/main/java/cn/jiangzeyin/system/SystemKey.java" />
+        <option value="$PROJECT_DIR$/dbutil/src/main/java/cn/jiangzeyin/util/Assert.java" />
+        <option value="$PROJECT_DIR$/dbutil/src/main/java/cn/jiangzeyin/util/ResourceUtil.java" />
+        <option value="$PROJECT_DIR$/dbutil/src/main/resources/db.properties" />
+        <option value="$PROJECT_DIR$/dbutil/src/main/java/cn/jiangzeyin/database/DatabaseContextHolder.java" />
+        <option value="$PROJECT_DIR$/dbutil/src/main/java/cn/jiangzeyin/database/DataSourceConfig.java" />
+        <option value="$PROJECT_DIR$/dbutil/src/main/java/cn/jiangzeyin/system/SystemDbLog.java" />
+        <option value="$PROJECT_DIR$/dbutil/src/main/java/cn/jiangzeyin/util/reflect/ReflectCache.java" />
+        <option value="$PROJECT_DIR$/dbutil/src/main/java/cn/jiangzeyin/util/reflect/ReflectUtil.java" />
+        <option value="$PROJECT_DIR$/dbutil/src/main/java/cn/jiangzeyin/util/reflects/ReflectUtil.java" />
+        <option value="$PROJECT_DIR$/dbutil/src/main/java/cn/jiangzeyin/database/base/Base.java" />
+        <option value="$PROJECT_DIR$/dbutil/src/main/java/cn/jiangzeyin/util/ReflectUtil.java" />
+        <option value="$PROJECT_DIR$/dbutil/src/main/java/cn/jiangzeyin/util/ref/ReflectUtil.java" />
+        <option value="$PROJECT_DIR$/dbutil/src/main/java/cn/jiangzeyin/database/base/ReadBase.java" />
+        <option value="$PROJECT_DIR$/dbutil/src/main/java/cn/jiangzeyin/database/base/WriteBase.java" />
+        <option value="$PROJECT_DIR$/dbutil/src/main/java/cn/jiangzeyin/database/util/JdbcUtil.java" />
+        <option value="$PROJECT_DIR$/dbutil/src/main/java/cn/jiangzeyin/database/util/SqlAndParameters.java" />
+        <option value="$PROJECT_DIR$/dbutil/src/main/java/cn/jiangzeyin/database/event/BaseEnum.java" />
+        <option value="$PROJECT_DIR$/dbutil/src/main/java/cn/jiangzeyin/database/event/InsertEvent.java" />
+        <option value="$PROJECT_DIR$/dbutil/src/main/java/cn/jiangzeyin/database/event/RemoveEvent.java" />
+        <option value="$PROJECT_DIR$/dbutil/src/main/java/cn/jiangzeyin/database/event/UpdateEvent.java" />
+        <option value="$PROJECT_DIR$/dbutil/src/main/java/cn/jiangzeyin/database/run/read/SelectFunction.java" />
+        <option value="$PROJECT_DIR$/dbutil/src/main/java/cn/jiangzeyin/database/Page.java" />
+        <option value="$PROJECT_DIR$/dbutil/src/main/java/cn/jiangzeyin/database/run/read/SelectPage.java" />
+        <option value="$PROJECT_DIR$/dbutil/src/main/java/cn/jiangzeyin/system/SystemExecutorService.java" />
+        <option value="$PROJECT_DIR$/dbutil/src/main/java/cn/jiangzeyin/database/run/write/Insert.java" />
+        <option value="$PROJECT_DIR$/dbutil/src/main/java/cn/jiangzeyin/database/run/write/Remove.java" />
+        <option value="$PROJECT_DIR$/dbutil/src/main/java/cn/jiangzeyin/database/run/write/Update.java" />
+        <option value="$PROJECT_DIR$/dbutil/src/main/java/cn/jiangzeyin/system/SystemThreadFactory.java" />
+        <option value="$PROJECT_DIR$/dbutil/src/main/java/cn/jiangzeyin/database/config/DatabaseContextHolder.java" />
+        <option value="$PROJECT_DIR$/dbutil/src/main/java/cn/jiangzeyin/util/StringUtil.java" />
+        <option value="$PROJECT_DIR$/dbutil/src/main/java/cn/jiangzeyin/database/config/ModifyUser.java" />
+        <option value="$PROJECT_DIR$/dbutil/src/main/java/cn/jiangzeyin/database/util/SqlUtil.java" />
+        <option value="$PROJECT_DIR$/dbutil/src/main/java/cn/jiangzeyin/database/run/read/Select.java" />
+        <option value="$PROJECT_DIR$/dbutil/src/main/java/cn/jiangzeyin/database/run/read/IsExists.java" />
+        <option value="$PROJECT_DIR$/dbutil/src/main/java/cn/jiangzeyin/util/PropertiesParser.java" />
+        <option value="$PROJECT_DIR$/dbutil/src/main/java/cn/jiangzeyin/system/DbLogInterface.java" />
+        <option value="$PROJECT_DIR$/dbutil/src/main/java/cn/jiangzeyin/database/config/ConfigProperties.java" />
+        <option value="$PROJECT_DIR$/dbutil/src/main/java/cn/jiangzeyin/database/config/DataSourceConfig.java" />
+        <option value="$PROJECT_DIR$/dbutil/src/main/java/cn/jiangzeyin/database/DatabaseTag.java" />
+        <option value="$PROJECT_DIR$/dbutil/src/main/java/cn/jiangzeyin/util/EntityInfo.java" />
+        <option value="$PROJECT_DIR$/dbutil/src/main/java/cn/jiangzeyin/annotation/DatabaseName.java" />
+        <option value="$PROJECT_DIR$/dbutil/src/main/java/cn/jiangzeyin/database/IDatabaseTag.java" />
+        <option value="$PROJECT_DIR$/dbutil/src/main/java/cn/jiangzeyin/database/util/Util.java" />
+        <option value="$PROJECT_DIR$/pom.xml" />
+        <option value="$PROJECT_DIR$/dbutil/pom.xml" />
+        <option value="$PROJECT_DIR$/.idea/compiler.xml" />
+      </list>
+    </option>
+  </component>
+  <component name="JsBuildToolGruntFileManager" detection-done="true" sorting="DEFINITION_ORDER" />
+  <component name="JsBuildToolPackageJson" detection-done="true" sorting="DEFINITION_ORDER" />
+  <component name="JsGulpfileManager">
+    <detection-done>true</detection-done>
+    <sorting>DEFINITION_ORDER</sorting>
+  </component>
+  <component name="MavenImportPreferences">
+    <option name="generalSettings">
+      <MavenGeneralSettings>
+        <option name="userSettingsFile" value="C:\SoftWare\apache-maven-3.5.0\conf\settings.xml" />
+      </MavenGeneralSettings>
+    </option>
+    <option name="importingSettings">
+      <MavenImportingSettings>
+        <option name="importAutomatically" value="true" />
+      </MavenImportingSettings>
+    </option>
+  </component>
+  <component name="MavenProjectNavigator">
+    <treeState>
+      <expand />
+      <select />
+    </treeState>
+  </component>
+  <component name="ProjectFrameBounds" extendedState="6">
+    <option name="x" value="-9" />
+    <option name="y" value="-9" />
+    <option name="width" value="1938" />
+    <option name="height" value="1098" />
+  </component>
+  <component name="ProjectView">
+    <navigator currentView="ProjectPane" proportions="" version="1">
+      <flattenPackages />
+      <showMembers />
+      <showModules />
+      <showLibraryContents />
+      <hideEmptyPackages />
+      <abbreviatePackageNames />
+      <autoscrollToSource />
+      <autoscrollFromSource />
+      <sortByType />
+      <manualOrder />
+      <foldersAlwaysOnTop value="true" />
+    </navigator>
+    <panes>
+      <pane id="ProjectPane">
+        <subPane>
+          <expand>
+            <path>
+              <item name="dbutil" type="b2602c69:ProjectViewProjectNode" />
+              <item name="dbutil" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="dbutil" type="b2602c69:ProjectViewProjectNode" />
+              <item name="dbutil" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="dbutil" type="b2602c69:ProjectViewProjectNode" />
+              <item name="dbutil" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="main" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="dbutil" type="b2602c69:ProjectViewProjectNode" />
+              <item name="dbutil" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="main" type="462c0819:PsiDirectoryNode" />
+              <item name="java" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="dbutil" type="b2602c69:ProjectViewProjectNode" />
+              <item name="dbutil" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="main" type="462c0819:PsiDirectoryNode" />
+              <item name="java" type="462c0819:PsiDirectoryNode" />
+              <item name="cn" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="dbutil" type="b2602c69:ProjectViewProjectNode" />
+              <item name="dbutil" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="main" type="462c0819:PsiDirectoryNode" />
+              <item name="java" type="462c0819:PsiDirectoryNode" />
+              <item name="cn" type="462c0819:PsiDirectoryNode" />
+              <item name="jiangzeyin" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="dbutil" type="b2602c69:ProjectViewProjectNode" />
+              <item name="dbutil" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="main" type="462c0819:PsiDirectoryNode" />
+              <item name="java" type="462c0819:PsiDirectoryNode" />
+              <item name="cn" type="462c0819:PsiDirectoryNode" />
+              <item name="jiangzeyin" type="462c0819:PsiDirectoryNode" />
+              <item name="system" type="462c0819:PsiDirectoryNode" />
+            </path>
+          </expand>
+          <select />
+        </subPane>
+      </pane>
+      <pane id="Scratches" />
+      <pane id="Scope" />
+      <pane id="AndroidView" />
+      <pane id="PackagesPane" />
+    </panes>
+  </component>
+  <component name="PropertiesComponent">
+    <property name="settings.editor.selected.configurable" value="MavenSettings" />
+    <property name="project.structure.last.edited" value="Problems" />
+    <property name="project.structure.proportion" value="0.15" />
+    <property name="project.structure.side.proportion" value="0.2" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="aspect.path.notification.shown" value="true" />
+    <property name="com.intellij.database.dataSource.DataSourceTemplate" value="MySQL" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+  </component>
+  <component name="RecentsManager">
+    <key name="MoveClassesOrPackagesDialog.RECENTS_KEY">
+      <recent name="" />
+    </key>
+    <key name="CopyClassDialog.RECENTS_KEY">
+      <recent name="cn.jiangzeyin.system" />
+      <recent name="cn.jiangzeyin.database" />
+      <recent name="cn.jiangzeyin.database.event" />
+      <recent name="cn.jiangzeyin.annotation" />
+      <recent name="cn.jiangzeyin.util" />
+    </key>
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="D:\ide\bwcx_jzy\dbutil\src\main\java\cn\jiangzeyin\database" />
+      <recent name="D:\ide\bwcx_jzy\dbutil\src\main\java\cn\jiangzeyin\database\util" />
+      <recent name="D:\ide\bwcx_jzy\dbutil\src\main\java\cn\jiangzeyin\util\reflect" />
+      <recent name="D:\ide\bwcx_jzy\dbutil\src\main\java\cn\jiangzeyin\database\base" />
+      <recent name="D:\ide\bwcx_jzy\dbutil\src\main\java\cn\jiangzeyin\reflect" />
+    </key>
+  </component>
+  <component name="RunDashboard">
+    <option name="ruleStates">
+      <list>
+        <RuleState>
+          <option name="name" value="ConfigurationTypeDashboardGroupingRule" />
+        </RuleState>
+        <RuleState>
+          <option name="name" value="StatusDashboardGroupingRule" />
+        </RuleState>
+      </list>
+    </option>
+  </component>
+  <component name="RunManager">
+    <configuration default="true" type="Applet" factoryName="Applet">
+      <option name="WIDTH" value="400" />
+      <option name="HEIGHT" value="300" />
+      <option name="POLICY_FILE" value="$APPLICATION_HOME_DIR$/bin/appletviewer.policy" />
+      <module />
+    </configuration>
+    <configuration default="true" type="Application" factoryName="Application">
+      <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea" />
+      <option name="MAIN_CLASS_NAME" />
+      <option name="VM_PARAMETERS" />
+      <option name="PROGRAM_PARAMETERS" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
+      <option name="ALTERNATIVE_JRE_PATH" />
+      <option name="ENABLE_SWING_INSPECTOR" value="false" />
+      <option name="ENV_VARIABLES" />
+      <option name="PASS_PARENT_ENVS" value="true" />
+      <module name="" />
+      <envs />
+    </configuration>
+    <configuration default="true" type="JUnit" factoryName="JUnit">
+      <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea" />
+      <module name="" />
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
+      <option name="ALTERNATIVE_JRE_PATH" />
+      <option name="PACKAGE_NAME" />
+      <option name="MAIN_CLASS_NAME" />
+      <option name="METHOD_NAME" />
+      <option name="TEST_OBJECT" value="class" />
+      <option name="VM_PARAMETERS" value="-ea" />
+      <option name="PARAMETERS" />
+      <option name="WORKING_DIRECTORY" value="$MODULE_DIR$" />
+      <option name="ENV_VARIABLES" />
+      <option name="PASS_PARENT_ENVS" value="true" />
+      <option name="TEST_SEARCH_SCOPE">
+        <value defaultName="singleModule" />
+      </option>
+      <envs />
+      <patterns />
+    </configuration>
+    <configuration default="true" type="JetRunConfigurationType" factoryName="Kotlin">
+      <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea" />
+      <option name="MAIN_CLASS_NAME" />
+      <option name="VM_PARAMETERS" />
+      <option name="PROGRAM_PARAMETERS" />
+      <option name="WORKING_DIRECTORY" />
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
+      <option name="ALTERNATIVE_JRE_PATH" />
+      <option name="PASS_PARENT_ENVS" value="true" />
+      <module name="bwcx_jzy" />
+      <envs />
+    </configuration>
+    <configuration default="true" type="#org.jetbrains.idea.devkit.run.PluginConfigurationType" factoryName="Plugin">
+      <module name="" />
+      <option name="VM_PARAMETERS" value="-Xmx512m -Xms256m -XX:MaxPermSize=250m -ea" />
+      <option name="PROGRAM_PARAMETERS" />
+      <predefined_log_file id="idea.log" enabled="true" />
+    </configuration>
+    <configuration default="true" type="Remote" factoryName="Remote">
+      <option name="USE_SOCKET_TRANSPORT" value="true" />
+      <option name="SERVER_MODE" value="false" />
+      <option name="SHMEM_ADDRESS" value="javadebug" />
+      <option name="HOST" value="localhost" />
+      <option name="PORT" value="5005" />
+    </configuration>
+    <configuration default="true" type="TestNG" factoryName="TestNG">
+      <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea" />
+      <module name="" />
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
+      <option name="ALTERNATIVE_JRE_PATH" />
+      <option name="SUITE_NAME" />
+      <option name="PACKAGE_NAME" />
+      <option name="MAIN_CLASS_NAME" />
+      <option name="METHOD_NAME" />
+      <option name="GROUP_NAME" />
+      <option name="TEST_OBJECT" value="CLASS" />
+      <option name="VM_PARAMETERS" value="-ea" />
+      <option name="PARAMETERS" />
+      <option name="WORKING_DIRECTORY" value="$MODULE_DIR$" />
+      <option name="OUTPUT_DIRECTORY" />
+      <option name="ANNOTATION_TYPE" />
+      <option name="ENV_VARIABLES" />
+      <option name="PASS_PARENT_ENVS" value="true" />
+      <option name="TEST_SEARCH_SCOPE">
+        <value defaultName="singleModule" />
+      </option>
+      <option name="USE_DEFAULT_REPORTERS" value="false" />
+      <option name="PROPERTIES_FILE" />
+      <envs />
+      <properties />
+      <listeners />
+    </configuration>
+  </component>
+  <component name="ShelveChangesManager" show_recycled="false">
+    <option name="remove_strategy" value="false" />
+  </component>
+  <component name="SvnConfiguration">
+    <configuration />
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="f49d3c7b-4f0f-4dda-848d-99d647861d88" name="Default" comment="" />
+      <created>1502365146120</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1502365146120</updated>
+      <workItem from="1502365149385" duration="685000" />
+      <workItem from="1502365851557" duration="1677000" />
+      <workItem from="1502414241702" duration="844000" />
+      <workItem from="1502599783117" duration="1095000" />
+      <workItem from="1502673219947" duration="28365000" />
+      <workItem from="1502716714024" duration="74000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TimeTrackingManager">
+    <option name="totallyTimeSpent" value="32740000" />
+  </component>
+  <component name="ToolWindowManager">
+    <frame x="-9" y="-9" width="1938" height="1098" extended-state="6" />
+    <editor active="true" />
+    <layout>
+      <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
+      <window_info id="Palette&#9;" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Image Layers" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Capture Analysis" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.32976446" sideWeight="0.50429183" order="7" side_tool="true" content_ui="tabs" />
+      <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.3299356" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32976446" sideWeight="0.49570817" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Capture Tool" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.26877683" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Statistic" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3299356" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="UI Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Theme Preview" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
+      <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
+      <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32976446" sideWeight="0.4892704" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32976446" sideWeight="0.49570817" order="1" side_tool="false" content_ui="tabs" />
+    </layout>
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="1" />
+  </component>
+  <component name="VcsContentAnnotationSettings">
+    <option name="myLimit" value="2678400000" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager />
+    <watches-manager />
+  </component>
+  <component name="editorHistoryManager">
+    <entry file="file://$PROJECT_DIR$/dbutil/src/main/java/cn/jiangzeyin/system/SystemDbLog.java" />
+    <entry file="file://$PROJECT_DIR$/dbutil/src/main/java/cn/jiangzeyin/system/SystemSessionInfo.java" />
+    <entry file="jar://$MAVEN_REPOSITORY$/com/alibaba/druid/1.0.27/druid-1.0.27.jar!/com/alibaba/druid/util/StringUtils.class">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="138">
+          <caret line="10" column="13" lean-forward="false" selection-start-line="10" selection-start-column="13" selection-end-line="10" selection-end-column="13" />
+          <folding>
+            <element signature="e#2586#2587#0" expanded="true" />
+            <element signature="e#2645#2646#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://C:/Program Files/Java/jdk1.8.0_131/src.zip!/java/lang/Integer.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="198">
+          <caret line="613" column="69" lean-forward="false" selection-start-line="613" selection-start-column="48" selection-end-line="613" selection-end-column="69" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/dbutil/src/main/java/cn/jiangzeyin/util/ref/ReflectCache.java" />
+    <entry file="file://$PROJECT_DIR$/dbutil/src/main/java/cn/jiangzeyin/database/base/WriteBase.java" />
+    <entry file="file://$PROJECT_DIR$/dbutil/src/main/java/cn/jiangzeyin/database/util/JdbcUtil.java" />
+    <entry file="file://$PROJECT_DIR$/dbutil/src/main/java/cn/jiangzeyin/database/util/SqlAndParameters.java" />
+    <entry file="file://$PROJECT_DIR$/dbutil/src/main/java/cn/jiangzeyin/database/event/BaseEnum.java" />
+    <entry file="file://$PROJECT_DIR$/dbutil/src/main/java/cn/jiangzeyin/database/event/UpdateEvent.java" />
+    <entry file="file://$PROJECT_DIR$/dbutil/src/main/java/cn/jiangzeyin/database/run/read/SelectFunction.java" />
+    <entry file="file://$PROJECT_DIR$/dbutil/src/main/java/cn/jiangzeyin/database/Page.java" />
+    <entry file="file://$PROJECT_DIR$/dbutil/src/main/java/cn/jiangzeyin/database/event/InsertEvent.java" />
+    <entry file="file://$PROJECT_DIR$/dbutil/src/main/java/cn/jiangzeyin/database/event/RemoveEvent.java" />
+    <entry file="jar://C:/Program Files/Java/jdk1.8.0_131/src.zip!/java/util/concurrent/ThreadPoolExecutor.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="189">
+          <caret line="1331" column="40" lean-forward="true" selection-start-line="1331" selection-start-column="24" selection-end-line="1331" selection-end-column="40" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/dbutil/src/main/java/cn/jiangzeyin/system/SystemExecutorService.java" />
+    <entry file="file://$PROJECT_DIR$/dbutil/src/main/java/cn/jiangzeyin/database/run/write/Update.java" />
+    <entry file="file://$PROJECT_DIR$/dbutil/src/main/java/cn/jiangzeyin/database/run/write/Remove.java" />
+    <entry file="file://$PROJECT_DIR$/dbutil/src/main/java/cn/jiangzeyin/database/run/write/Insert.java" />
+    <entry file="jar://C:/Program Files/Java/jdk1.8.0_131/src.zip!/javax/naming/spi/ObjectFactory.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-1986">
+          <caret line="69" column="17" lean-forward="false" selection-start-line="69" selection-start-column="17" selection-end-line="69" selection-end-column="17" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://$MAVEN_REPOSITORY$/com/alibaba/druid/1.0.27/druid-1.0.27.jar!/com/alibaba/druid/pool/DruidDataSourceFactory.class">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="207">
+          <caret line="24" column="50" lean-forward="false" selection-start-line="24" selection-start-column="50" selection-end-line="24" selection-end-column="50" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://C:/Program Files/Java/jdk1.8.0_131/src.zip!/java/util/Hashtable.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="198">
+          <caret line="242" column="32" lean-forward="false" selection-start-line="242" selection-start-column="32" selection-end-line="242" selection-end-column="32" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://C:/Program Files/Java/jdk1.8.0_131/src.zip!/java/lang/Class.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="198">
+          <caret line="509" column="26" lean-forward="false" selection-start-line="509" selection-start-column="26" selection-end-line="509" selection-end-column="26" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/dbutil/src/main/java/cn/jiangzeyin/database/config/DatabaseContextHolder.java" />
+    <entry file="file://$PROJECT_DIR$/dbutil/src/main/java/cn/jiangzeyin/database/config/ModifyUser.java" />
+    <entry file="file://$PROJECT_DIR$/dbutil/src/main/java/cn/jiangzeyin/database/util/SqlUtil.java" />
+    <entry file="file://$PROJECT_DIR$/dbutil/src/main/java/cn/jiangzeyin/system/SystemThreadFactory.java" />
+    <entry file="file://$PROJECT_DIR$/dbutil/src/main/java/cn/jiangzeyin/database/run/read/IsExists.java" />
+    <entry file="file://$PROJECT_DIR$/dbutil/src/main/java/cn/jiangzeyin/util/PropertiesParser.java" />
+    <entry file="file://$PROJECT_DIR$/dbutil/src/main/java/cn/jiangzeyin/util/StringUtil.java" />
+    <entry file="file://$PROJECT_DIR$/dbutil/src/main/java/cn/jiangzeyin/database/base/ReadBase.java" />
+    <entry file="file://$PROJECT_DIR$/dbutil/src/main/java/cn/jiangzeyin/database/run/read/SelectPage.java" />
+    <entry file="file://$PROJECT_DIR$/dbutil/src/main/java/cn/jiangzeyin/database/base/Base.java" />
+    <entry file="file://$PROJECT_DIR$/dbutil/src/main/java/cn/jiangzeyin/system/DbLogInterface.java" />
+    <entry file="file://$PROJECT_DIR$/dbutil/src/main/java/cn/jiangzeyin/util/ResourceUtil.java" />
+    <entry file="file://$PROJECT_DIR$/dbutil/src/main/java/cn/jiangzeyin/database/config/ConfigProperties.java" />
+    <entry file="file://$PROJECT_DIR$/dbutil/src/main/java/cn/jiangzeyin/database/config/DataSourceConfig.java" />
+    <entry file="file://$PROJECT_DIR$/dbutil/src/main/java/cn/jiangzeyin/annotation/DatabaseName.java" />
+    <entry file="file://$PROJECT_DIR$/dbutil/src/main/java/cn/jiangzeyin/database/IDatabaseTag.java" />
+    <entry file="file://$PROJECT_DIR$/dbutil/src/main/java/cn/jiangzeyin/util/EntityInfo.java" />
+    <entry file="file://$PROJECT_DIR$/dbutil/src/main/java/cn/jiangzeyin/database/run/read/Select.java" />
+    <entry file="file://$PROJECT_DIR$/dbutil/src/main/java/cn/jiangzeyin/util/ref/ReflectUtil.java" />
+    <entry file="file://$PROJECT_DIR$/dbutil/src/main/java/cn/jiangzeyin/database/util/Util.java" />
+    <entry file="file://$PROJECT_DIR$/dbutil/pom.xml" />
+    <entry file="file://$PROJECT_DIR$/.idea/compiler.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="322">
+          <caret line="14" column="26" lean-forward="false" selection-start-line="14" selection-start-column="26" selection-end-line="14" selection-end-column="26" />
+          <folding>
+            <marker date="1502716780042" expanded="true" signature="635:678" ph="..." />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/.idea/workspace.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding>
+            <marker date="1502716779978" expanded="true" signature="46256:46481" ph="..." />
+            <marker date="1502716779978" expanded="true" signature="46256:46494" ph="..." />
+            <marker date="1502716779978" expanded="true" signature="46256:46509" ph="..." />
+            <marker date="1502716779978" expanded="true" signature="46257:46463" ph="..." />
+            <marker date="1502716779978" expanded="true" signature="46544:49103" ph="..." />
+            <marker date="1502716779978" expanded="true" signature="46557:49088" ph="..." />
+            <marker date="1502716779978" expanded="true" signature="46611:46906" ph="..." />
+            <marker date="1502716779978" expanded="true" signature="46630:46891" ph="..." />
+            <marker date="1502716779978" expanded="true" signature="46693:46871" ph="..." />
+            <marker date="1502716779978" expanded="true" signature="46733:46837" ph="..." />
+            <marker date="1502716779978" expanded="true" signature="46754:46815" ph="..." />
+            <marker date="1502716779978" expanded="true" signature="46956:47283" ph="..." />
+            <marker date="1502716779978" expanded="true" signature="46975:47268" ph="..." />
+            <marker date="1502716779978" expanded="true" signature="47070:47248" ph="..." />
+            <marker date="1502716779978" expanded="true" signature="47110:47214" ph="..." />
+            <marker date="1502716779978" expanded="true" signature="47131:47192" ph="..." />
+            <marker date="1502716779978" expanded="true" signature="47334:47599" ph="..." />
+            <marker date="1502716779978" expanded="true" signature="47353:47584" ph="..." />
+            <marker date="1502716779978" expanded="true" signature="47386:47564" ph="..." />
+            <marker date="1502716779978" expanded="true" signature="47426:47530" ph="..." />
+            <marker date="1502716779978" expanded="true" signature="47447:47508" ph="..." />
+            <marker date="1502716779978" expanded="true" signature="47661:47933" ph="..." />
+            <marker date="1502716779978" expanded="true" signature="47735:47913" ph="..." />
+            <marker date="1502716779978" expanded="true" signature="47775:47879" ph="..." />
+            <marker date="1502716779978" expanded="true" signature="47796:47857" ph="..." />
+            <marker date="1502716779978" expanded="true" signature="47999:48347" ph="..." />
+            <marker date="1502716779978" expanded="true" signature="48018:48332" ph="..." />
+            <marker date="1502716779978" expanded="true" signature="48095:48312" ph="..." />
+            <marker date="1502716779978" expanded="true" signature="48135:48278" ph="..." />
+            <marker date="1502716779978" expanded="true" signature="48156:48256" ph="..." />
+            <marker date="1502716779978" expanded="true" signature="48382:48688" ph="..." />
+            <marker date="1502716779978" expanded="true" signature="48401:48673" ph="..." />
+            <marker date="1502716779978" expanded="true" signature="48475:48653" ph="..." />
+            <marker date="1502716779978" expanded="true" signature="48515:48619" ph="..." />
+            <marker date="1502716779978" expanded="true" signature="48536:48597" ph="..." />
+            <marker date="1502716779978" expanded="true" signature="48740:49074" ph="..." />
+            <marker date="1502716779978" expanded="true" signature="48759:49059" ph="..." />
+            <marker date="1502716779978" expanded="true" signature="48861:49039" ph="..." />
+            <marker date="1502716779978" expanded="true" signature="48901:49005" ph="..." />
+            <marker date="1502716779978" expanded="true" signature="48922:48983" ph="..." />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/.idea/uiDesigner.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/cn/jiangzeyin/annotation/DatabaseName.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/cn/jiangzeyin/database/IDatabaseTag.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/cn/jiangzeyin/system/DbLogInterface.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="161">
+          <caret line="7" column="0" lean-forward="false" selection-start-line="7" selection-start-column="0" selection-end-line="7" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/pom.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="176">
+          <caret line="8" column="26" lean-forward="true" selection-start-line="8" selection-start-column="26" selection-end-line="8" selection-end-column="26" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+  </component>
+  <component name="masterDetails">
+    <states>
+      <state key="ArtifactsStructureConfigurable.UI">
+        <settings>
+          <artifact-editor />
+          <splitter-proportions>
+            <option name="proportions">
+              <list>
+                <option value="0.2" />
+              </list>
+            </option>
+          </splitter-proportions>
+        </settings>
+      </state>
+      <state key="FacetStructureConfigurable.UI">
+        <settings>
+          <last-edited>No facets are configured</last-edited>
+          <splitter-proportions>
+            <option name="proportions">
+              <list>
+                <option value="0.2" />
+              </list>
+            </option>
+          </splitter-proportions>
+        </settings>
+      </state>
+      <state key="GlobalLibrariesConfigurable.UI">
+        <settings>
+          <splitter-proportions>
+            <option name="proportions">
+              <list>
+                <option value="0.2" />
+              </list>
+            </option>
+          </splitter-proportions>
+        </settings>
+      </state>
+      <state key="JdkListConfigurable.UI">
+        <settings>
+          <last-edited>1.8</last-edited>
+          <splitter-proportions>
+            <option name="proportions">
+              <list>
+                <option value="0.2" />
+              </list>
+            </option>
+          </splitter-proportions>
+        </settings>
+      </state>
+      <state key="ModuleStructureConfigurable.UI">
+        <settings>
+          <last-edited>dbutil</last-edited>
+          <splitter-proportions>
+            <option name="proportions">
+              <list>
+                <option value="0.2" />
+                <option value="0.6" />
+              </list>
+            </option>
+          </splitter-proportions>
+        </settings>
+      </state>
+      <state key="ProjectJDKs.UI">
+        <settings>
+          <last-edited>1.8</last-edited>
+          <splitter-proportions>
+            <option name="proportions">
+              <list>
+                <option value="0.2" />
+              </list>
+            </option>
+          </splitter-proportions>
+        </settings>
+      </state>
+      <state key="ProjectLibrariesConfigurable.UI">
+        <settings>
+          <last-edited>Maven: com.alibaba:druid:1.0.27</last-edited>
+          <splitter-proportions>
+            <option name="proportions">
+              <list>
+                <option value="0.2" />
+              </list>
+            </option>
+          </splitter-proportions>
+        </settings>
+      </state>
+    </states>
+  </component>
+</project>

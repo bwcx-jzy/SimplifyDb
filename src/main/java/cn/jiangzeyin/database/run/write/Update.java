@@ -1,0 +1,221 @@
+package cn.jiangzeyin.database.run.write;
+
+import cn.jiangzeyin.database.base.WriteBase;
+import cn.jiangzeyin.database.config.DatabaseContextHolder;
+import cn.jiangzeyin.database.event.UpdateEvent;
+import cn.jiangzeyin.database.util.SqlAndParameters;
+import cn.jiangzeyin.database.util.SqlUtil;
+import cn.jiangzeyin.system.SystemDbLog;
+import cn.jiangzeyin.system.SystemExecutorService;
+import cn.jiangzeyin.util.EntityInfo;
+import com.alibaba.druid.util.JdbcUtils;
+import com.alibaba.druid.util.StringUtils;
+import com.mysql.jdbc.exceptions.jdbc4.MySQLIntegrityConstraintViolationException;
+
+import javax.sql.DataSource;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+
+/**
+ * update 数据库操作
+ *
+ * @author jiangzeyin
+ * @date 2016-10-10
+ */
+public class Update<T> extends WriteBase<T> {
+
+    private String where;
+    private List<Object> whereParameters;
+    private Object keyValue;
+    private String keyColumn;
+    private HashMap<String, Object> update;
+    private UpdateEvent event;
+
+    public UpdateEvent getEvent() {
+        return event;
+    }
+
+    public void setEvent(UpdateEvent event) {
+        this.event = event;
+    }
+
+    /**
+     *
+     */
+    public Update(T data) {
+        super(data);
+    }
+
+    public Update(T data, UpdateEvent event) {
+        super(data);
+        this.event = event;
+    }
+
+    public Update(T data, boolean isThrows) {
+        super(data);
+        setThrows(isThrows);
+    }
+
+    public Update() {
+        super(null);
+    }
+
+    public Update(boolean isThrows) {
+        super(null);
+        setThrows(isThrows);
+    }
+
+    public HashMap<String, Object> getUpdate() {
+        return update;
+    }
+
+    public void setUpdate(HashMap<String, Object> update) {
+        this.update = update;
+    }
+
+    /**
+     * 添加要更新的字段
+     *
+     * @param column
+     * @param value
+     * @author jiangzeyin
+     * @date 2016-10-13
+     */
+    public void putUpdate(String column, Object value) {
+        // 判断对应字段是否可以被修改
+        if (SqlUtil.isNotWriteColumn(column))
+            return;
+        if (update == null)
+            update = new HashMap<>();
+        update.put(column, value);
+    }
+
+    public Object getKeyValue() {
+        return keyValue;
+    }
+
+    /**
+     * 设置查询主键值
+     *
+     * @param keyValue
+     * @author jiangzeyin
+     * @date 2016-10-13
+     */
+    public void setKeyValue(Object keyValue) {
+        this.keyValue = keyValue;
+    }
+
+    public String getKeyColumn() {
+        if (StringUtils.isEmpty(keyColumn))
+            return "id";
+        return keyColumn;
+    }
+
+    /**
+     * 设置主键列名
+     * <p>
+     * 默认为 id
+     *
+     * @param keyColumn
+     * @author jiangzeyin
+     * @date 2016-10-13
+     */
+    public void setKeyColumn(String keyColumn) {
+        this.keyColumn = keyColumn;
+    }
+
+    /**
+     * 设置不能修改的字段
+     *
+     * @return
+     * @author jiangzeyin
+     * @date 2016-11-19
+     */
+    @Override
+    public List<String> getRemove() {
+        // 更新时这些字段不能被更改
+        setRemove("createTime", "isDelete", "id");
+        return super.getRemove();
+    }
+
+    public String getWhere() {
+        return where;
+    }
+
+    public void setWhere(String where) {
+        this.where = where;
+    }
+
+    public void AppendWhere(String where) {
+        if (StringUtils.isEmpty(this.where))
+            this.where = where;
+        else
+            this.where += " and " + where;
+    }
+
+    public List<Object> getWhereParameters() {
+        return whereParameters;
+    }
+
+    public void setWhereParameters(List<Object> whereParameters) {
+        this.whereParameters = whereParameters;
+    }
+
+    public void setWhereParameters(Object... whereParameters) {
+        if (this.whereParameters == null)
+            this.whereParameters = new LinkedList<Object>();
+        Collections.addAll(this.whereParameters, whereParameters);
+    }
+
+    @Override
+    public void run() {
+        setAsync(true);
+        setThrowable(new Throwable());
+        SystemExecutorService.execute(() -> {
+            // TODO Auto-generated method stub
+            syncRun();
+        });
+    }
+
+    /**
+     * @return
+     * @author jiangzeyin
+     * @date 2016-10-10
+     */
+    @Override
+    public long syncRun() {
+        // TODO Auto-generated method stub
+        try {
+            T data = getData();
+            String tag = data == null ? EntityInfo.getDatabaseName(getTclass()) : EntityInfo.getDatabaseName(data);
+            SqlAndParameters sqlAndParameters = SqlUtil.getUpdateSql(this);
+            DataSource dataSource = DatabaseContextHolder.getWriteDataSource(tag);
+            SystemDbLog.getInstance().info(sqlAndParameters.getSql());
+            setRunSql(sqlAndParameters.getSql());
+            int count = JdbcUtils.executeUpdate(dataSource, sqlAndParameters.getSql(), sqlAndParameters.getParameters());
+            if (event != null)
+                event.completeU(getKeyValue());
+            return count;
+        } catch (MySQLIntegrityConstraintViolationException e) {
+            // 数据操作外键约束错误
+            SystemDbLog.getInstance().error(e.getLocalizedMessage() + "主键约束", e);
+            if (event != null)
+                event.errorU(e);
+            return -1L;
+        } catch (Exception e) {
+            // TODO: handle exception
+            isThrows(e);
+            if (event != null)
+                event.errorU(e);
+        } finally {
+            recycling();
+            this.update = null;
+            this.whereParameters = null;
+            this.event = null;
+            runEnd();
+        }
+        return 0L;
+    }
+}
