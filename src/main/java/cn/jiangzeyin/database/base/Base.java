@@ -152,7 +152,7 @@ public abstract class Base<T> {
     public void putRefClass(String name, Class<?> refClass) {
         if (refMap == null)
             refMap = new HashMap<>();
-        refMap.put(name, refClass);
+        refMap.put(name.toLowerCase(), refClass);
     }
 
     public void putRefClass(String name, Class<?> refClass, String where) {

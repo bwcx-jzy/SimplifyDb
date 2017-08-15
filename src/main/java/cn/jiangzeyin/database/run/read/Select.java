@@ -212,11 +212,9 @@ public class Select<T> extends ReadBase<T> {
                         return null;
                     //Object object = null;
                     String column = getColumns();
-                    if ("*".equals(column)) {
+                    if (SystemColumn.getDefaultSelectColumns().equals(column)) {
                         // 默认取第一行一列数据
-                        for (Object s : map.values()) {
-                            return (T) s;
-                        }
+                        return (T) map.values().toArray()[0];
                     }
                     // 取指定列
                     String[] columns = StringUtil.stringToArray(column);

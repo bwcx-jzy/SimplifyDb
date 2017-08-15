@@ -26,12 +26,21 @@ public class ReflectUtil {
      */
     public static Object getFieldValue(Object obj, String fieldName) throws Exception {
         Assert.notNull(obj);
-        Object result = null;
-        Field field = ReflectCache.getDeclaredField(obj.getClass(), fieldName);
-        if (field != null) {
-            result = field.get(obj);
+
+        Field field = null;
+        NoSuchFieldException noSuchFieldException = null;
+        for (Class<?> calzz = obj.getClass(); calzz != Object.class; calzz = calzz.getSuperclass()) {
+            try {
+                field = ReflectCache.getDeclaredField(calzz, fieldName);
+            } catch (NoSuchFieldException ignored) {
+                noSuchFieldException = ignored;
+            }
         }
-        return result;
+        if (field == null) {
+            assert noSuchFieldException != null;
+            throw noSuchFieldException;
+        }
+        return field.get(obj);
     }
 
     /**
