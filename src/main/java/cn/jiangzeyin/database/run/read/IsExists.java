@@ -118,7 +118,7 @@ public class IsExists<T> extends Base<T> {
                 String tag = getTag();
                 if (StringUtils.isEmpty(tag))
                     tag = EntityInfo.getDatabaseName(runClass);
-                String sql = SqlUtil.getIsexistsSql(runClass, getKeyColumn(), getWhere(), getColumn(), getLimit());
+                String sql = SqlUtil.getIsExistsSql(runClass, getKeyColumn(), getWhere(), getColumn(), getLimit());
                 //SystemLog.SystemLog(LogType.sql, sql);
                 setRunSql(sql);
                 SystemDbLog.getInstance().info(sql);
@@ -169,7 +169,7 @@ public class IsExists<T> extends Base<T> {
                 String tag = getTag();
                 if (StringUtils.isEmpty(tag))
                     tag = EntityInfo.getDatabaseName(runClass);
-                String sql = SqlUtil.getIsexistsSql(runClass, getKeyColumn(), getWhere(), getColumn(), getLimit());
+                String sql = SqlUtil.getIsExistsSql(runClass, getKeyColumn(), getWhere(), getColumn(), getLimit());
                 setRunSql(sql);
                 SystemDbLog.getInstance().info(sql);
                 DataSource dataSource = DatabaseContextHolder.getReadDataSource(tag);

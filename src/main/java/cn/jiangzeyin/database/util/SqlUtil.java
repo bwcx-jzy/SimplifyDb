@@ -64,31 +64,32 @@ public class SqlUtil {
             for (Field field : fields) {
                 if (!isWrite(field))
                     continue;
+                String name = field.getName();
                 // 判断排除字段
-                if (remove != null && remove.contains(field.getName().toLowerCase())) {
+                if (remove != null && remove.contains(name.toLowerCase())) {
                     continue;
                 }
-                cloums.add(field.getName());
+                cloums.add(name);
                 // 判断是否为系统字段
-                String value1 = getSystemValue(field.getName());
+                String value1 = SystemColumn.getDefaultValue(name);// getSystemValue(field.getName());
                 if (value1 == null) {
-                    Object va = ReflectUtil.getFieldValue(data, field.getName());
+                    Object va = ReflectUtil.getFieldValue(data, name);
                     // 密码字段
-                    if (SystemColumn.getPwdColumn().equalsIgnoreCase(field.getName())) {
-                        systemMap.put(field.getName(), "PASSWORD(?)");
+                    if (SystemColumn.getPwdColumn().equalsIgnoreCase(name)) {
+                        systemMap.put(name, "PASSWORD(?)");
                         values.add(va);
                     } else {
                         // 读取外键
-                        if (refMap != null && refMap.containsKey(field.getName())) {
+                        if (refMap != null && refMap.containsKey(name.toLowerCase())) {
                             Object refData = ReflectUtil.getFieldValue(data, field.getName());
                             if (refData == null)
-                                throw new RuntimeException(field.getName() + " 为null");
+                                throw new RuntimeException(name + " 为null");
                             va = ReflectUtil.getFieldValue(refData, write.getRefKey());
                         }
                         values.add(va);
                     }
                 } else {
-                    systemMap.put(field.getName(), value1);
+                    systemMap.put(name, value1);
                 }
             }
         }
@@ -299,7 +300,7 @@ public class SqlUtil {
      * @return sql
      * @author jiangzeyin
      */
-    public static String getIsexistsSql(Class<?> clas, String keyColumn, String where, String column, int limit) {
+    public static String getIsExistsSql(Class<?> clas, String keyColumn, String where, String column, int limit) {
         StringBuilder sql = new StringBuilder("select ");//
         if (StringUtils.isEmpty(column)) {
             sql.append(" count(1) as countSum from ");//
@@ -453,56 +454,8 @@ public class SqlUtil {
      */
     private static String getCountSql(String sql, Page<?> page) {
         StringBuffer sqlBuffer = new StringBuffer(sql);
-//        if (!StringUtil.isEmpty(page.getWhereWord())) {
-//            if (sqlBuffer.indexOf("where") == -1) {
-//                sqlBuffer.append(" where ");
-//            } else {
-//                sqlBuffer.append(" and ");
-//            }
-//            sqlBuffer.append(page.getWhereWord());
-//        }
         doWhere(sqlBuffer, page);
         return "select count(1)  as count from (" + sqlBuffer + ") as total";
-    }
-
-    /**
-     * 判断是否为系统字段
-     *
-     * @param name 名称
-     * @return 结果
-     * @author jiangzeyin
-     */
-    private static String getSystemValue(String name) {
-        if ("modifyTime".equalsIgnoreCase(name))
-            return "UNIX_TIMESTAMP(NOW())";
-        if ("isDelete".equalsIgnoreCase(name))
-            return "0";
-        if ("createTime".equalsIgnoreCase(name))
-            return "UNIX_TIMESTAMP(NOW())";
-        return null;
-    }
-
-    /**
-     * 是否是不能修改字段
-     *
-     * @param name 名称
-     * @return boolean
-     * @author jiangzeyin
-     */
-    public static boolean isNotWriteColumn(String name) {
-        if ("modifyTime".equalsIgnoreCase(name))
-            return true;
-        if ("isDelete".equalsIgnoreCase(name))
-            return true;
-        if ("createTime".equalsIgnoreCase(name))
-            return true;
-        if ("createUser".equalsIgnoreCase(name))
-            return true;
-        if ("lastModifyUser".equalsIgnoreCase(name))
-            return true;
-        if ("lastModifyTime".equalsIgnoreCase(name))
-            return true;
-        return false;
     }
 
     /**
@@ -719,14 +672,13 @@ public class SqlUtil {
             sql.append(name);
             sql.append("=");
             { // 判断是否为系统字段
-                String va = getSystemValue(name);
+                String va = SystemColumn.getDefaultValue(name);//  getSystemValue(name);
                 if (va == null) {
                     // 密码字段处理
                     if (SystemColumn.getPwdColumn().equalsIgnoreCase(name)) {
                         sql.append("PASSWORD(?)");
                     } else {
                         // sql 函数处理
-                        //Object object = colums.get(name);
                         String value = StringUtil.convertNULL(obj_value);
                         if (value.startsWith("#{") && value.endsWith("}")) {
                             value = value.substring(value.indexOf("#{") + 2, value.indexOf("}"));

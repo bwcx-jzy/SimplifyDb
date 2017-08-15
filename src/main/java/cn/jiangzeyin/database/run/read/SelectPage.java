@@ -75,7 +75,6 @@ public class SelectPage<T> extends ReadBase<T> {
             else
                 pageSql = SqlUtil.getSelectPageSql(page);
             DataSource dataSource = DatabaseContextHolder.getReadDataSource(tag);
-            //setConnection(connection);
             List<Map<String, Object>> list;
             { // 查询数据总数
                 list = JdbcUtils.executeQuery(dataSource, pageSql[0], getParameters());
@@ -84,14 +83,10 @@ public class SelectPage<T> extends ReadBase<T> {
                 Map<String, Object> count_map = list.get(0);
                 if (count_map == null)
                     return null;
-                for (Object obj : count_map.values()) {
-                    long count = (Long) obj;
-                    page.setTotalRecord(count);
-                    break;
-                }
+                long count = (Long) count_map.values().toArray()[0];
+                page.setTotalRecord(count);
             }
             { // 查询数据
-                // System.out.println(pageSql[1]);
                 setRunSql(pageSql[1]);
                 SystemDbLog.getInstance().info(pageSql[1]);
                 list = JdbcUtils.executeQuery(dataSource, pageSql[1], getParameters());
@@ -125,7 +120,6 @@ public class SelectPage<T> extends ReadBase<T> {
             isThrows(e);
         } finally {
             recycling();
-            //JdbcUtils.close(getConnection());
             runEnd();
         }
         return null;

@@ -46,4 +46,8 @@ public class ConfigProperties {
     public static final String PROP_SYSTEM_COLUMN_MODIFY_COLUMN = PROP_SYSTEM_COLUMN_MODIFY + ".column";
 
     public static final String PROP_SYSTEM_COLUMN_MODIFY_TIME = PROP_SYSTEM_COLUMN_MODIFY + ".time";
+
+    public static final String PROP_SYSTEM_COLUMN_NOT_UPDATE = PROP_SYSTEM_COLUMN + ".notUpdate";
+
+    public static final String PROP_SYSTEM_COLUMN_COLUMN_DEFAULT_VALUE = PROP_SYSTEM_COLUMN + ".columnDefaultValue";
 }

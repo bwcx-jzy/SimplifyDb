@@ -2,6 +2,7 @@ package cn.jiangzeyin.database.run.write;
 
 import cn.jiangzeyin.database.base.WriteBase;
 import cn.jiangzeyin.database.config.DatabaseContextHolder;
+import cn.jiangzeyin.database.config.SystemColumn;
 import cn.jiangzeyin.database.event.UpdateEvent;
 import cn.jiangzeyin.database.util.SqlAndParameters;
 import cn.jiangzeyin.database.util.SqlUtil;
@@ -83,7 +84,7 @@ public class Update<T> extends WriteBase<T> {
      */
     public void putUpdate(String column, Object value) {
         // 判断对应字段是否可以被修改
-        if (SqlUtil.isNotWriteColumn(column))
+        if (SystemColumn.notCanUpdate(column))
             return;
         if (update == null)
             update = new HashMap<>();
