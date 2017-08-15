@@ -26,7 +26,7 @@ public abstract class Base<T> {
     private Class<?> tclass; // 数据库对应class
     private int optUserId; // 操作人
     private long runTime;
-    private String runSql;
+    protected String runSql;
 
     private String tagName;
 
@@ -49,10 +49,6 @@ public abstract class Base<T> {
     public Base() {
         // TODO Auto-generated constructor stub
         setOptUserId(SystemSessionInfo.getUserId());
-        runTime = System.currentTimeMillis();
-    }
-
-    protected void restart() {
         runTime = System.currentTimeMillis();
     }
 

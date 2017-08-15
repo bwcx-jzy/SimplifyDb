@@ -24,12 +24,11 @@ public class ReflectUtil {
      * @throws IllegalAccessException   一些
      * @throws IllegalArgumentException 异常
      */
-    public static Object getFieldValue(Object obj, String fieldName) throws IllegalArgumentException, IllegalAccessException {
+    public static Object getFieldValue(Object obj, String fieldName) throws Exception {
         Assert.notNull(obj);
         Object result = null;
-        Field field = ReflectUtil.getField(obj.getClass(), fieldName);
+        Field field = ReflectCache.getDeclaredField(obj.getClass(), fieldName);
         if (field != null) {
-            field.setAccessible(true);
             result = field.get(obj);
         }
         return result;

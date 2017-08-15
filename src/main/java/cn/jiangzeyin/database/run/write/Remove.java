@@ -2,6 +2,7 @@ package cn.jiangzeyin.database.run.write;
 
 import cn.jiangzeyin.database.base.Base;
 import cn.jiangzeyin.database.config.DatabaseContextHolder;
+import cn.jiangzeyin.database.config.SystemColumn;
 import cn.jiangzeyin.database.util.SqlUtil;
 import cn.jiangzeyin.system.SystemDbLog;
 import cn.jiangzeyin.system.SystemExecutorService;
@@ -53,13 +54,17 @@ public class Remove<T> extends Base<T> {
      */
     public Remove(Type type) {
         // TODO Auto-generated constructor stub
-        this.type = type;
+        this(type, false);
     }
 
     public Remove(Type type, boolean isThrows) {
         // TODO Auto-generated constructor stub
         this.type = type;
         setThrows(isThrows);
+        if (SystemColumn.Active.NO_ACTIVE == SystemColumn.Active.getActiveValue()) {
+            if (type != Type.delete)
+                throw new IllegalArgumentException("plase set systemColumn.active");
+        }
     }
 
     public List<Object> getParameters() {
@@ -96,10 +101,12 @@ public class Remove<T> extends Base<T> {
      * @author jiangzeyin
      */
     public void run() {
-
         SystemExecutorService.execute(() -> {
             // TODO Auto-generated method stub
-            syncRun();
+            int count = syncRun();
+            if (count <= 0) {
+                SystemDbLog.getInstance().warn(runSql + " yx " + count);
+            }
         });
     }
 
@@ -111,7 +118,6 @@ public class Remove<T> extends Base<T> {
         try {
             String tag = EntityInfo.getDatabaseName(getTclass());
             String sql = SqlUtil.getRemoveSql(getTclass(), type, getIds(), getWhere());
-            //SystemLog.SystemLog(LogType.sql, sql);
             SystemDbLog.getInstance().info(sql);
             setRunSql(sql);
             DataSource dataSource = DatabaseContextHolder.getWriteDataSource(tag);

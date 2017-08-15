@@ -11,7 +11,8 @@
     <groupId>cn.jiangzeyin</groupId>
     <artifactId>dbutil</artifactId>
     <version>1.0</version>
-
+    <url>http://blog.csdn.net/jiangzeyin_</url>
+    <description>java dbutil</description>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <java.version>1.8</java.version>

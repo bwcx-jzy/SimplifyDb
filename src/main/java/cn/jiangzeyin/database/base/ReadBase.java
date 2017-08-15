@@ -1,5 +1,6 @@
 package cn.jiangzeyin.database.base;
 
+import cn.jiangzeyin.database.config.SystemColumn;
 import com.alibaba.druid.util.StringUtils;
 
 import java.util.ArrayList;
@@ -50,7 +51,7 @@ public abstract class ReadBase<T> extends Base<T> {
     private String index; // 查询索引
     private List<Object> parameters; // 参数
     private int ResultType; // 返回值类型
-    private int isDelete = -1;
+    private int isDelete = SystemColumn.Active.NO_ACTIVE;
 
     public int getIsDelete() {
         return isDelete;
@@ -80,7 +81,7 @@ public abstract class ReadBase<T> extends Base<T> {
      * @param parameters 参数
      * @author jiangzeyin
      */
-    public void parameters(Object... parameters) {
+    public void setParameters(Object... parameters) {
         if (this.parameters == null)
             this.parameters = new LinkedList<>();
         if (parameters != null)

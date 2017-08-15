@@ -4,6 +4,7 @@ package cn.jiangzeyin.database.util;
 import cn.jiangzeyin.database.Page;
 import cn.jiangzeyin.database.base.WriteBase;
 import cn.jiangzeyin.database.config.ModifyUser;
+import cn.jiangzeyin.database.config.SystemColumn;
 import cn.jiangzeyin.database.run.read.Select;
 import cn.jiangzeyin.database.run.read.SelectPage;
 import cn.jiangzeyin.database.run.write.Insert;
@@ -17,6 +18,7 @@ import cn.jiangzeyin.util.ref.ReflectUtil;
 import com.alibaba.druid.util.StringUtils;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 import java.util.*;
 
 /**
@@ -33,12 +35,8 @@ public class SqlUtil {
      * @return boolean
      * @author jiangzeyin
      */
-    public static boolean isWrite(Field field) {
-        if (field.getModifiers() == 25 || field.getModifiers() == 26)
-            return false;
-        if (field.getName().startsWith("_"))
-            return false;
-        return true;
+    private static boolean isWrite(Field field) {
+        return field.getModifiers() != (Modifier.PUBLIC | Modifier.STATIC | Modifier.FINAL) && field.getModifiers() != (Modifier.PRIVATE | Modifier.STATIC | Modifier.FINAL) && !field.getName().startsWith("_");
     }
 
     /**
@@ -49,7 +47,7 @@ public class SqlUtil {
      * @throws IllegalAccessException   yic
      * @author jiangzeyin
      */
-    private static SqlAndParameters getWriteSql(WriteBase<?> write, Object data) throws IllegalArgumentException, IllegalAccessException {
+    private static SqlAndParameters getWriteSql(WriteBase<?> write, Object data) throws Exception {
         if (data == null)
             data = write.getData();
         Assert.notNull(data, String.format("%s", write.getTclass(false)));
@@ -76,13 +74,12 @@ public class SqlUtil {
                 if (value1 == null) {
                     Object va = ReflectUtil.getFieldValue(data, field.getName());
                     // 密码字段
-                    if ("pwd".equalsIgnoreCase(field.getName())) {
+                    if (SystemColumn.getPwdColumn().equalsIgnoreCase(field.getName())) {
                         systemMap.put(field.getName(), "PASSWORD(?)");
                         values.add(va);
                     } else {
                         // 读取外键
                         if (refMap != null && refMap.containsKey(field.getName())) {
-                            //System.out.println(field.getName());
                             Object refData = ReflectUtil.getFieldValue(data, field.getName());
                             if (refData == null)
                                 throw new RuntimeException(field.getName() + " 为null");
@@ -111,7 +108,7 @@ public class SqlUtil {
      * @throws IllegalAccessException   y
      * @author jiangzeyin
      */
-    private static SqlAndParameters getWriteSql(WriteBase<?> write) throws IllegalArgumentException, IllegalAccessException {
+    private static SqlAndParameters getWriteSql(WriteBase<?> write) throws Exception {
         return getWriteSql(write, null);
     }
 
@@ -124,12 +121,13 @@ public class SqlUtil {
      * @throws IllegalAccessException   y
      * @author jiangzeyin
      */
-    public static SqlAndParameters getInsertSql(WriteBase<?> insert) throws IllegalArgumentException, IllegalAccessException {
+    public static SqlAndParameters getInsertSql(WriteBase<?> insert) throws Exception {
         SqlAndParameters sqlAndParameters = getWriteSql(insert);
-        Object isDeleteField = ReflectUtil.getFieldValue(insert.getData(), "isDelete");
-        //System.out.println(isDeleteField);
-        int isDelete = isDeleteField == null ? 0 : Integer.parseInt(isDeleteField.toString());
-        //System.out.println(isDelete);
+        int isDelete = SystemColumn.Active.NO_ACTIVE;
+        if (!StringUtils.isEmpty(SystemColumn.Active.getColumn())) {
+            Object isDeleteF = ReflectUtil.getFieldValue(insert.getData(), SystemColumn.Active.getColumn());
+            isDelete = isDeleteF == null ? SystemColumn.Active.getActiveValue() : Integer.parseInt(isDeleteF.toString());
+        }
         sqlAndParameters.setSql(makeInsertToTableSql(insert.getData().getClass(), insert.getOptUserId(), sqlAndParameters.getCloums(), sqlAndParameters.getSystemMap(), isDelete));
         return sqlAndParameters;
     }
@@ -141,7 +139,7 @@ public class SqlUtil {
      * @throws IllegalAccessException   y
      * @author jiangzeyin
      */
-    public static SqlAndParameters[] getInsertSql(Insert<?> insert) throws IllegalArgumentException, IllegalAccessException {
+    public static SqlAndParameters[] getInsertSql(Insert<?> insert) throws Exception {
         List<?> list = insert.getList();
         SqlAndParameters[] andParameters = new SqlAndParameters[list.size()];
         for (int i = 0; i < andParameters.length; i++) {
@@ -149,8 +147,11 @@ public class SqlUtil {
             if (object == null)
                 continue;
             SqlAndParameters sqlAndParameters = getWriteSql(insert, object);
-            Object isDeleteF = ReflectUtil.getFieldValue(object, "isDelete");
-            int isDelete = isDeleteF == null ? 0 : Integer.parseInt(isDeleteF.toString());
+            int isDelete = SystemColumn.Active.NO_ACTIVE;
+            if (!StringUtils.isEmpty(SystemColumn.Active.getColumn())) {
+                Object isDeleteF = ReflectUtil.getFieldValue(object, SystemColumn.Active.getColumn());
+                isDelete = isDeleteF == null ? SystemColumn.Active.getActiveValue() : Integer.parseInt(isDeleteF.toString());
+            }
             sqlAndParameters.setSql(makeInsertToTableSql(object.getClass(), insert.getOptUserId(), sqlAndParameters.getCloums(), sqlAndParameters.getSystemMap(), isDelete));
             andParameters[i] = sqlAndParameters;
         }
@@ -166,8 +167,8 @@ public class SqlUtil {
      * @throws IllegalAccessException   y
      * @author jiangzeyin
      */
-    public static SqlAndParameters getUpdateSql(Update<?> update) throws IllegalArgumentException, IllegalAccessException {
-        SqlAndParameters sqlAndParameters = null;
+    public static SqlAndParameters getUpdateSql(Update<?> update) throws Exception {
+        SqlAndParameters sqlAndParameters;
         StringBuffer sbSql;
         // 更新部分列
         if (update.getUpdate() != null) {
@@ -227,7 +228,7 @@ public class SqlUtil {
 
         sqlAndParameters.setSql(sbSql);
         // 追加where 的参数
-        List<Object> parameters = null;
+        List<Object> parameters;
         if (update.getUpdate() == null)
             parameters = sqlAndParameters.getParameters();
         else {
@@ -256,20 +257,18 @@ public class SqlUtil {
                 .append(" from ")//
                 .append(getTableName(select.getTclass(), true, select.getIndex(), false))//
                 .append(" ");//
-        String[] countsql = new String[2];
-        countsql[0] = getCountSql(sql.toString(), select.getPage());
-        getMysqlPageSql(select.getPage(), sql);
-        countsql[1] = sql.toString();
-        return countsql;
+        String[] countSql = new String[2];
+        countSql[0] = getCountSql(sql.toString(), select.getPage());
+        countSql[1] = getMysqlPageSql(select.getPage(), sql);//sql.toString();
+        return countSql;
     }
 
     public static String[] getSelectPageSql(Page<?> page) {
         StringBuffer sql = new StringBuffer(page.getSql());
-        String[] countsql = new String[2];
-        countsql[0] = getCountSql(sql.toString(), page);
-        getMysqlPageSql(page, sql);
-        countsql[1] = sql.toString();
-        return countsql;
+        String[] countSql = new String[2];
+        countSql[0] = getCountSql(sql.toString(), page);
+        countSql[1] = getMysqlPageSql(page, sql);
+        return countSql;
     }
 
     /**
@@ -280,7 +279,7 @@ public class SqlUtil {
      * @return sql
      * @author jiangzeyin
      */
-    public static String getRefSql(Class<?> ref, String keyColumn, String where) {
+    static String getRefSql(Class<?> ref, String keyColumn, String where) {
         StringBuilder sql = new StringBuilder("select ")//
                 .append(" * from ")//
                 .append(getTableName(ref))//
@@ -337,18 +336,22 @@ public class SqlUtil {
             sql.append("delete from ")//
                     .append(getTableName(cls, false));
         } else {
-            int status = type == Remove.Type.remove ? 1 : 0;
+            int status = type == Remove.Type.remove ? SystemColumn.Active.getInActiveValue() : SystemColumn.Active.getActiveValue();
             sql.append("update ")//
                     .append(getTableName(cls, false))//
-                    .append(String.format(" set isDelete=%d,modifyTime=UNIX_TIMESTAMP(NOW())", status));
+                    .append(String.format(" set " + SystemColumn.Active.getColumn() + "=%d", status));
+            if (SystemColumn.Modify.isStatus()) {
+                //,modifyTime=UNIX_TIMESTAMP(NOW())
+                sql.append(",").append(SystemColumn.Modify.getColumn()).append("=").append(SystemColumn.Modify.getTime());
+            }
         }
-        boolean iswhere = false;
+        boolean isWhere = false;
         if (!StringUtils.isEmpty(ids)) {
             sql.append(" where id in(").append(ids).append(")");
-            iswhere = true;
+            isWhere = true;
         }
         if (!StringUtils.isEmpty(where)) {
-            sql.append(iswhere ? " and " : " where ").append(where);
+            sql.append(isWhere ? " and " : " where ").append(where);
         }
         return sql.toString();
     }
@@ -385,9 +388,10 @@ public class SqlUtil {
                 isWhere = true;
         }
         // 查询数据状态
-        if (select.getIsDelete() != -1) {
-            sql.append(isWhere ? " and " : " where ")//
-                    .append("isDelete=").append(select.getIsDelete());
+        if (select.getIsDelete() != SystemColumn.Active.NO_ACTIVE) {
+            //
+            sql.append(isWhere ? " and " : " where ").
+                    append(SystemColumn.Active.getColumn()).append("=").append(select.getIsDelete());
         }
         // 排序
         if (!StringUtils.isEmpty(select.getOrderBy())) {
@@ -416,19 +420,9 @@ public class SqlUtil {
      * @return sql
      * @author jiangzeyin
      */
-    public static String getMysqlPageSql(Page<?> page, StringBuffer sqlBuffer) {
+    private static String getMysqlPageSql(Page<?> page, StringBuffer sqlBuffer) {
         // 计算第一条记录的位置，Mysql中记录的位置是从0开始的。
         long offset = (page.getPageNo() - 1) * page.getPageSize();
-
-        // System.out.println(page.getWhereWord());
-//        if (!StringUtil.isEmpty(page.getWhereWord())) {
-//            if (sqlBuffer.indexOf("where") == -1) {
-//                sqlBuffer.append(" where ");
-//            } else {
-//                sqlBuffer.append(" and ");
-//            }
-//            sqlBuffer.append(page.getWhereWord());
-//        }
         doWhere(sqlBuffer, page);
         // 判断是否需要排序
         if (page.getOrderBy() != null && !"".equals(page.getOrderBy())) {
@@ -457,7 +451,7 @@ public class SqlUtil {
      * @return sql
      * @author jiangzeyin
      */
-    public static String getCountSql(String sql, Page<?> page) {
+    private static String getCountSql(String sql, Page<?> page) {
         StringBuffer sqlBuffer = new StringBuffer(sql);
 //        if (!StringUtil.isEmpty(page.getWhereWord())) {
 //            if (sqlBuffer.indexOf("where") == -1) {
@@ -559,7 +553,7 @@ public class SqlUtil {
      * @return 表名
      * @author jiangzeyin
      */
-    public static String getTableName(Class<?> class1, boolean isIndex, String index, boolean isDatabaName) {
+    private static String getTableName(Class<?> class1, boolean isIndex, String index, boolean isDatabaName) {
         String name = class1.getSimpleName();
         if (name.endsWith("_")) {
             name = name.substring(0, name.lastIndexOf("_"));
@@ -636,7 +630,7 @@ public class SqlUtil {
             if (va == null)
                 value.append("?");
             else {
-                if ("isDelete".equals(name)) {
+                if (isDeleteValue != SystemColumn.Active.NO_ACTIVE && SystemColumn.Active.getColumn().equals(name)) {
                     value.append(isDeleteValue);
                     isDelete = true;
                 } else {
@@ -651,24 +645,14 @@ public class SqlUtil {
             sql.append(",").append(ModifyUser.Create.getColumnUser());
             value.append(",").append(createUser);
         }
-//        for (Class<?> calzz = class1; calzz != Object.class; calzz = calzz.getSuperclass()) {
-//            if (calzz == AdminOptBaseEntity.class) {
-//
-//                break;
-//            }
-//        }
-        //isDelete = sql.indexOf("isDelete") != -1;
         // 处理插入默认状态值
-        if (!isDelete) {
-            sql.append(",isDelete");
+        if (isDeleteValue != SystemColumn.Active.NO_ACTIVE && !isDelete) {
+            sql.append(",").append(SystemColumn.Active.getColumn());
             value.append(",").append(isDeleteValue);
         }
         sql.append(") values (");
         sql.append(value);
-        //if (!isDelete)
-        //  sql.append(",").append(isDeleteValue);
         sql.append(")");
-
         return sql.toString();
     }
 
@@ -681,7 +665,7 @@ public class SqlUtil {
      * @return 结果
      * @author jiangzeyin
      */
-    public static String makeUpdateToTableSql(String tableName, Collection<String> names, HashMap<String, String> systemMap) {
+    private static String makeUpdateToTableSql(String tableName, Collection<String> names, HashMap<String, String> systemMap) {
         StringBuilder sql = new StringBuilder() //
                 .append("update ") //
                 .append(tableName) //
@@ -701,8 +685,11 @@ public class SqlUtil {
                 sql.append(va);
             nameCount++;
         }
-        if (sql.indexOf("modifyTime=UNIX_TIMESTAMP(NOW())") == -1)
-            sql.append(",modifyTime=UNIX_TIMESTAMP(NOW())");
+        if (SystemColumn.Modify.isStatus()) {
+            String time = SystemColumn.Modify.getColumn() + "=" + SystemColumn.Modify.getTime();
+            if (sql.indexOf(time) == -1)
+                sql.append(",").append(time);
+        }
         return sql.toString();
     }
 
@@ -714,7 +701,7 @@ public class SqlUtil {
      * @return 结果
      * @author jiangzeyin
      */
-    public static String makeUpdateToTableSql(String tableName, HashMap<String, Object> columns) {
+    private static String makeUpdateToTableSql(String tableName, HashMap<String, Object> columns) {
         StringBuilder sql = new StringBuilder() //
                 .append("update ") //
                 .append(tableName) //
@@ -735,7 +722,7 @@ public class SqlUtil {
                 String va = getSystemValue(name);
                 if (va == null) {
                     // 密码字段处理
-                    if ("pwd".equalsIgnoreCase(name)) {
+                    if (SystemColumn.getPwdColumn().equalsIgnoreCase(name)) {
                         sql.append("PASSWORD(?)");
                     } else {
                         // sql 函数处理
@@ -754,7 +741,9 @@ public class SqlUtil {
             }
             nameCount++;
         }
-        sql.append(",modifyTime=UNIX_TIMESTAMP(NOW())");
+        if (SystemColumn.Modify.isStatus()) {
+            sql.append(",").append(SystemColumn.Modify.getColumn()).append("=").append(SystemColumn.Modify.getTime());
+        }
         return sql.toString();
     }
 }

@@ -47,6 +47,8 @@ public final class DataSourceConfig {
         ModifyUser.initModify(systemPropertiesParser.getPropertyGroup(ConfigProperties.PROP_LAST_MODIFY));
         //
         ModifyUser.initCreate(systemPropertiesParser.getPropertyGroup(ConfigProperties.PROP_CREATE));
+        //
+        SystemColumn.init(systemPropertiesParser.getPropertyGroup(ConfigProperties.PROP_SYSTEM_COLUMN));
     }
 
     private static void dataSource(String[] sourceTags, String[] configPaths) throws Exception {

@@ -28,4 +28,22 @@ public class ConfigProperties {
     public static final String PROP_CREATE_CLASS = PROP_CREATE + ".class";
     // 实体对应创建者id 字段
     public static final String PROP_CREATE_COLUMN_USER = PROP_CREATE + ".column.user";
+    // 系统字段
+    public static final String PROP_SYSTEM_COLUMN = "systemColumn";
+    // 系统数据库密码字段（使用mysql password 函数）
+    public static final String PROP_SYSTEM_COLUMN_PWD = PROP_SYSTEM_COLUMN + ".pwd";
+    // 活跃字段
+    public static final String PROP_SYSTEM_COLUMN_ACTIVE = PROP_SYSTEM_COLUMN + ".active";
+    //
+    public static final String PROP_SYSTEM_COLUMN_UN_ACTIVE = PROP_SYSTEM_COLUMN + ".inActive.value";
+    // 活跃字段值
+    public static final String PROP_SYSTEM_COLUMN_ACTIVE_VALUE = PROP_SYSTEM_COLUMN_ACTIVE + ".value";
+
+    public static final String PROP_SYSTEM_COLUMN_MODIFY = PROP_SYSTEM_COLUMN + ".modify";
+
+    public static final String PROP_SYSTEM_COLUMN_MODIFY_STATUS = PROP_SYSTEM_COLUMN_MODIFY + ".status";
+
+    public static final String PROP_SYSTEM_COLUMN_MODIFY_COLUMN = PROP_SYSTEM_COLUMN_MODIFY + ".column";
+
+    public static final String PROP_SYSTEM_COLUMN_MODIFY_TIME = PROP_SYSTEM_COLUMN_MODIFY + ".time";
 }
