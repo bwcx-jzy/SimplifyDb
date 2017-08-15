@@ -96,19 +96,8 @@ public abstract class ReadBase<T> extends Base<T> {
      */
     public String getColumns() {
         if (StringUtils.isEmpty(columns))
-            return "*";
+            return SystemColumn.getDefaultSelectColumns();
         return columns;
-    }
-
-    /**
-     * @return 所有移除字段
-     * @author jiangzeyin
-     */
-    @Override
-    public List<String> getRemove() {
-        // TODO Auto-generated method stub
-        setRemove("pwd");
-        return super.getRemove();
     }
 
     /**

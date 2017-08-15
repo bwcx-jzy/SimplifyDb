@@ -10,17 +10,55 @@ import java.util.*;
  */
 public class SystemColumn {
     private static String pwdColumn = "";
-    private static final List<String> NOT_UPDATE = new ArrayList<>();
+    private static final List<String> NOT_PUT_UPDATE = new ArrayList<>();
     private static final HashMap<String, String> COLUMN_DEFAULT_VALUE = new HashMap<>();
+    private static final List<String> WRITE_DEFAULT_REMOVE = new ArrayList<>();
+    private static final List<String> READ_DEFAULT_REMOVE = new ArrayList<>();
+    private static String defaultSelectColumns = "*";
+    private static String defaultRefKeyName = "id";
+    private static String defaultKeyName = "id";
 
+    public static String getDefaultRefKeyName() {
+        return defaultRefKeyName;
+    }
+
+    public static String getDefaultKeyName() {
+        return defaultRefKeyName;
+    }
+
+    public static String getDefaultSelectColumns() {
+        return defaultSelectColumns;
+    }
+
+    public static boolean isWriteRemove(String name) {
+        return name != null && WRITE_DEFAULT_REMOVE.contains(name.toLowerCase());
+    }
+
+    public static boolean isReadRemove(String name) {
+        return name != null && READ_DEFAULT_REMOVE.contains(name.toLowerCase());
+    }
+
+
+    /**
+     * 获取字段的默认值
+     *
+     * @param name 字段名称
+     * @return 默认值
+     */
     public static String getDefaultValue(String name) {
         if (StringUtils.isEmpty(name))
             return null;
         return COLUMN_DEFAULT_VALUE.get(name.toLowerCase());
     }
 
+    /**
+     * 判断是否可以修改
+     *
+     * @param name 字段名称
+     * @return true 可以修改
+     */
     public static boolean notCanUpdate(String name) {
-        return StringUtils.isEmpty(name) || NOT_UPDATE.contains(name.toLowerCase());
+        return StringUtils.isEmpty(name) || NOT_PUT_UPDATE.contains(name.toLowerCase());
     }
 
     public static class Active {
@@ -92,11 +130,11 @@ public class SystemColumn {
             Modify.time = time_;
         }
         // 不允许修改的字段
-        String notUpdate = properties.getProperty(ConfigProperties.PROP_SYSTEM_COLUMN_NOT_UPDATE);
-        if (!StringUtils.isEmpty(notUpdate)) {
-            String[] array = StringUtil.stringToArray(notUpdate.toLowerCase());
+        String notPutUpdate = properties.getProperty(ConfigProperties.PROP_SYSTEM_COLUMN_NOT_PUT_UPDATE);
+        if (!StringUtils.isEmpty(notPutUpdate)) {
+            String[] array = StringUtil.stringToArray(notPutUpdate.toLowerCase());
             if (array != null) {
-                NOT_UPDATE.addAll(Arrays.asList(array));
+                NOT_PUT_UPDATE.addAll(Arrays.asList(array));
             }
         }
         // 默认值
@@ -109,6 +147,38 @@ public class SystemColumn {
                     COLUMN_DEFAULT_VALUE.put(value[0].toUpperCase(), value[1]);
                 }
             }
+        }
+        //
+        String writeDef = properties.getProperty(ConfigProperties.PROP_SYSTEM_COLUMN_WRITE_DEFAULT_REMOVE);
+        if (!StringUtils.isEmpty(writeDef)) {
+            String[] array = StringUtil.stringToArray(writeDef.toLowerCase());
+            if (array != null) {
+                WRITE_DEFAULT_REMOVE.addAll(Arrays.asList(array));
+            }
+        }
+        //
+        String readDef = properties.getProperty(ConfigProperties.PROP_SYSTEM_COLUMN_READ_DEFAULT_REMOVE);
+        if (!StringUtils.isEmpty(readDef)) {
+            String[] array = StringUtil.stringToArray(readDef.toLowerCase());
+            if (array != null) {
+                READ_DEFAULT_REMOVE.addAll(Arrays.asList(array));
+            }
+        }
+        //
+        String columnsDef = properties.getProperty(ConfigProperties.PROP_SYSTEM_COLUMN_SELECT_DEFAULT_COLUMNS);
+        if (!StringUtils.isEmpty(columnsDef)) {
+            defaultSelectColumns = columnsDef;
+        }
+        // 默认外键列名称
+        String refKeyDef = properties.getProperty(ConfigProperties.PROP_SYSTEM_COLUMN_DEFAULT_REF_KEY_NAME);
+        if (!StringUtils.isEmpty(refKeyDef)) {
+            defaultRefKeyName = refKeyDef;
+        }
+
+        // 默认主键列名称
+        String keyDef = properties.getProperty(ConfigProperties.PROP_SYSTEM_COLUMN_DEFAULT_KEY_NAME);
+        if (!StringUtils.isEmpty(keyDef)) {
+            defaultKeyName = keyDef;
         }
     }
 }

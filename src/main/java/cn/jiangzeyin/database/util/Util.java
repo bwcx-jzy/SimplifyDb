@@ -2,6 +2,7 @@ package cn.jiangzeyin.database.util;
 
 import cn.jiangzeyin.database.base.ReadBase;
 import cn.jiangzeyin.database.config.DatabaseContextHolder;
+import cn.jiangzeyin.database.config.SystemColumn;
 import cn.jiangzeyin.system.SystemDbLog;
 import cn.jiangzeyin.util.Assert;
 import cn.jiangzeyin.util.ref.ReflectUtil;
@@ -49,7 +50,7 @@ public class Util {
      * @return 实体
      * @throws Exception 异常
      */
-    public static <T> T convertMap(ReadBase<T> read, Map<String, Object> map, Class<?> refClass) throws Exception {
+    private static <T> T convertMap(ReadBase<T> read, Map<String, Object> map, Class<?> refClass) throws Exception {
         if (refClass == null)
             refClass = read.getTclass();
         T obj = (T) refClass.newInstance();// 创建 JavaBean 对象
@@ -68,6 +69,8 @@ public class Util {
             name = name.substring(3).toLowerCase();
             // 移除字段比较
             if (remove != null && remove.contains(name.toLowerCase()))
+                continue;
+            if (SystemColumn.isReadRemove(name))
                 continue;
             Object value = map.get(name);
             if (value == null) {

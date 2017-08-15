@@ -85,7 +85,7 @@ public class Update<T> extends WriteBase<T> {
     public void putUpdate(String column, Object value) {
         // 判断对应字段是否可以被修改
         if (SystemColumn.notCanUpdate(column))
-            return;
+            throw new IllegalArgumentException(column + " not update");
         if (update == null)
             update = new HashMap<>();
         update.put(column, value);
@@ -107,7 +107,7 @@ public class Update<T> extends WriteBase<T> {
 
     public String getKeyColumn() {
         if (StringUtils.isEmpty(keyColumn))
-            return "id";
+            return SystemColumn.getDefaultKeyName();
         return keyColumn;
     }
 
@@ -121,19 +121,6 @@ public class Update<T> extends WriteBase<T> {
      */
     public void setKeyColumn(String keyColumn) {
         this.keyColumn = keyColumn;
-    }
-
-    /**
-     * 设置不能修改的字段
-     *
-     * @return 移除
-     * @author jiangzeyin
-     */
-    @Override
-    public List<String> getRemove() {
-        // 更新时这些字段不能被更改
-        setRemove("createTime", "isDelete", "id");
-        return super.getRemove();
     }
 
     public String getWhere() {
@@ -161,7 +148,7 @@ public class Update<T> extends WriteBase<T> {
 
     public void setWhereParameters(Object... whereParameters) {
         if (this.whereParameters == null)
-            this.whereParameters = new LinkedList<Object>();
+            this.whereParameters = new LinkedList<>();
         Collections.addAll(this.whereParameters, whereParameters);
     }
 

@@ -2,6 +2,7 @@ package cn.jiangzeyin.database.base;
 
 
 import cn.jiangzeyin.database.config.DatabaseContextHolder;
+import cn.jiangzeyin.database.config.SystemColumn;
 import cn.jiangzeyin.system.SystemDbLog;
 import cn.jiangzeyin.system.SystemSessionInfo;
 import cn.jiangzeyin.util.ref.ReflectUtil;
@@ -120,13 +121,9 @@ public abstract class Base<T> {
         }
     }
 
-    protected void setRemoveList(List<String> remove) {
-        this.remove = remove;
-    }
-
     public String getRefKey() {
         if (StringUtils.isEmpty(refKey))
-            return "id";
+            return SystemColumn.getDefaultRefKeyName();
         return refKey;
     }
 

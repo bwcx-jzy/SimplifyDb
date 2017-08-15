@@ -47,7 +47,19 @@ public class ConfigProperties {
 
     public static final String PROP_SYSTEM_COLUMN_MODIFY_TIME = PROP_SYSTEM_COLUMN_MODIFY + ".time";
 
-    public static final String PROP_SYSTEM_COLUMN_NOT_UPDATE = PROP_SYSTEM_COLUMN + ".notUpdate";
+    public static final String PROP_SYSTEM_COLUMN_NOT_PUT_UPDATE = PROP_SYSTEM_COLUMN + ".notPutUpdate";
 
     public static final String PROP_SYSTEM_COLUMN_COLUMN_DEFAULT_VALUE = PROP_SYSTEM_COLUMN + ".columnDefaultValue";
+
+    public static final String PROP_SYSTEM_COLUMN_WRITE_DEFAULT_REMOVE = PROP_SYSTEM_COLUMN + ".writeDefaultRemove";
+
+    public static final String PROP_SYSTEM_COLUMN_READ_DEFAULT_REMOVE = PROP_SYSTEM_COLUMN + ".readDefaultRemove";
+
+    public static final String PROP_SYSTEM_COLUMN_SELECT_DEFAULT_COLUMNS = PROP_SYSTEM_COLUMN + ".selectDefaultColumns";
+
+    public static final String PROP_SYSTEM_COLUMN_DEFAULT_REF_KEY_NAME = PROP_SYSTEM_COLUMN + ".defaultRefKeyName";
+
+    public static final String PROP_SYSTEM_COLUMN_DEFAULT_KEY_NAME = PROP_SYSTEM_COLUMN + ".defaultKeyName";
+
+
 }

@@ -2,6 +2,7 @@ package cn.jiangzeyin.database.run.read;
 
 import cn.jiangzeyin.database.base.ReadBase;
 import cn.jiangzeyin.database.config.DatabaseContextHolder;
+import cn.jiangzeyin.database.config.SystemColumn;
 import cn.jiangzeyin.database.util.SqlUtil;
 import cn.jiangzeyin.database.util.Util;
 import cn.jiangzeyin.system.SystemDbLog;
@@ -44,7 +45,7 @@ public class Select<T> extends ReadBase<T> {
      */
     public String getKeyColumn() {
         if (StringUtils.isEmpty(keyColumn))
-            return "id";
+            return SystemColumn.getDefaultKeyName();
         return keyColumn;
     }
 

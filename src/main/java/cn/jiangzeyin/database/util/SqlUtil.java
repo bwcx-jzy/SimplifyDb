@@ -69,6 +69,9 @@ public class SqlUtil {
                 if (remove != null && remove.contains(name.toLowerCase())) {
                     continue;
                 }
+                // 系统默认不可以操作
+                if (SystemColumn.isWriteRemove(name))
+                    continue;
                 cloums.add(name);
                 // 判断是否为系统字段
                 String value1 = SystemColumn.getDefaultValue(name);// getSystemValue(field.getName());
@@ -215,7 +218,7 @@ public class SqlUtil {
         // 没有任何更新条件
         if (!isWhere) {
             if (update.getData() != null) {
-                Object objId = ReflectUtil.getFieldValue(update.getData(), "id");
+                Object objId = ReflectUtil.getFieldValue(update.getData(), SystemColumn.getDefaultKeyName());
                 Assert.notNull(objId, "没有找到任何更新条件");
                 sbSql.append(" where id=");
                 sbSql.append(Long.parseLong(objId.toString()));

@@ -3,9 +3,6 @@ package cn.jiangzeyin.database.base;
 
 import cn.jiangzeyin.system.SystemDbLog;
 
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * 写入数据
  *
@@ -58,20 +55,6 @@ public abstract class WriteBase<T> extends Base<T> {
 
     public T getData() {
         return data;
-    }
-
-    @Override
-    public List<String> getRemove() {
-        // TODO Auto-generated method stub
-        List<String> removes = super.getRemove();
-        if (removes == null) {
-            removes = new ArrayList<>();
-        }
-        // 这些字段不能认为修改 仅能由系统处理
-        removes.add("createUser".toLowerCase());
-        removes.add("lastModifyUser".toLowerCase());
-        removes.add("lastModifyTime".toLowerCase());
-        return removes;
     }
 
     public void setData(T data) {

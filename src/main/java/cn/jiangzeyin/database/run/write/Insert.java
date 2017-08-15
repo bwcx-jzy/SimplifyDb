@@ -2,6 +2,7 @@ package cn.jiangzeyin.database.run.write;
 
 import cn.jiangzeyin.database.base.WriteBase;
 import cn.jiangzeyin.database.config.DatabaseContextHolder;
+import cn.jiangzeyin.database.config.SystemColumn;
 import cn.jiangzeyin.database.event.InsertEvent;
 import cn.jiangzeyin.database.util.JdbcUtil;
 import cn.jiangzeyin.database.util.SqlAndParameters;
@@ -144,7 +145,7 @@ public class Insert<T> extends WriteBase<T> {
                 Long id = JdbcUtil.executeInsert(dataSource, sqlAndParameters.getSql(), sqlAndParameters.getParameters());
                 T data = getData();
                 if (data != null) {
-                    ReflectUtil.setFieldValue(data, "id", id);
+                    ReflectUtil.setFieldValue(data, SystemColumn.getDefaultKeyName(), id);
                 }
                 if (event != null)
                     event.completeI(id);
@@ -166,7 +167,7 @@ public class Insert<T> extends WriteBase<T> {
                             return -1;
                         T data = this.list.get(i);
                         if (data != null) {
-                            ReflectUtil.setFieldValue(data, "id", id);
+                            ReflectUtil.setFieldValue(data, SystemColumn.getDefaultKeyName(), id);
                         }
                     }
                     return 1;
