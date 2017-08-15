@@ -9,7 +9,6 @@ import java.util.concurrent.atomic.AtomicInteger;
  * 线程池工厂
  *
  * @author jiangzeyin
- * @date 2016-11-21
  */
 public class SystemThreadFactory implements ThreadFactory {
 

@@ -12,7 +12,6 @@ import com.alibaba.druid.util.StringUtils;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 
-
 import javax.sql.DataSource;
 import java.util.List;
 import java.util.Map;
@@ -21,7 +20,6 @@ import java.util.Map;
  * 查询数据库操作
  *
  * @author jiangzeyin
- * @date 2016-10-12
  */
 public class Select<T> extends ReadBase<T> {
 
@@ -41,9 +39,8 @@ public class Select<T> extends ReadBase<T> {
     /**
      * 获取主键列
      *
-     * @return
+     * @return key
      * @author jiangzeyin
-     * @date 2016-10-20
      */
     public String getKeyColumn() {
         if (StringUtils.isEmpty(keyColumn))
@@ -56,9 +53,8 @@ public class Select<T> extends ReadBase<T> {
      * <p>
      * 默认为 id
      *
-     * @param keyColumn
+     * @param keyColumn 名称
      * @author jiangzeyin
-     * @date 2016-10-13
      */
     public void setKeyColumn(String keyColumn) {
         this.keyColumn = keyColumn;
@@ -67,9 +63,8 @@ public class Select<T> extends ReadBase<T> {
     /**
      * 获取主键值
      *
-     * @return
+     * @return 键值
      * @author jiangzeyin
-     * @date 2016-10-20
      */
     public Object getKeyValue() {
         return keyValue;
@@ -78,9 +73,8 @@ public class Select<T> extends ReadBase<T> {
     /**
      * 设置查询主键值
      *
-     * @param keyValue
+     * @param keyValue 键值
      * @author jiangzeyin
-     * @date 2016-10-13
      */
     public void setKeyValue(Object keyValue) {
         this.keyValue = keyValue;
@@ -93,9 +87,8 @@ public class Select<T> extends ReadBase<T> {
     /**
      * 设置查询开始位置
      *
-     * @param limitStart
+     * @param limitStart 开始行
      * @author jiangzeyin
-     * @date 2016-10-13
      */
     public void setLimitStart(int limitStart) {
         this.limitStart = limitStart;
@@ -108,9 +101,8 @@ public class Select<T> extends ReadBase<T> {
     /**
      * 设置查询数量
      *
-     * @param limitCount
+     * @param limitCount 共几行
      * @author jiangzeyin
-     * @date 2016-10-13
      */
     public void setLimitCount(int limitCount) {
         this.limitCount = limitCount;
@@ -135,9 +127,8 @@ public class Select<T> extends ReadBase<T> {
     /**
      * 查询条件
      *
-     * @param where
+     * @param where 条件
      * @author jiangzeyin
-     * @date 2016-10-13
      */
     public void setWhere(String where) {
         this.where = where;
@@ -178,9 +169,8 @@ public class Select<T> extends ReadBase<T> {
     /**
      * 查询
      *
-     * @return
+     * @return 结果
      * @author jiangzeyin
-     * @date 2016-10-13
      */
     public <T> T run() {
         try {
@@ -197,7 +187,7 @@ public class Select<T> extends ReadBase<T> {
                 runSql = SqlUtil.getSelectSql(this);
             }
             setRunSql(runSql);
-           SystemDbLog.getInstance().info(runSql);
+            SystemDbLog.getInstance().info(runSql);
             List<Map<String, Object>> result = JdbcUtils.executeQuery(dataSource, runSql, getParameters());
             switch (getResultType()) {
                 case Result.JsonArray:
@@ -251,9 +241,8 @@ public class Select<T> extends ReadBase<T> {
     /**
      * 查询一条数据 返回实体 会自动追加 limit 1
      *
-     * @return
+     * @return 结果
      * @author jiangzeyin
-     * @date 2016-10-13
      */
     @SuppressWarnings("hiding")
     public <T> T runOne() {

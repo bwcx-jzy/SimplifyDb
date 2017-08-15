@@ -9,7 +9,6 @@ import cn.jiangzeyin.util.StringUtil;
 import com.alibaba.druid.util.JdbcUtils;
 import com.alibaba.druid.util.StringUtils;
 
-
 import javax.sql.DataSource;
 import java.util.Collections;
 import java.util.LinkedList;
@@ -20,7 +19,6 @@ import java.util.Map;
  * 判断是否存在
  *
  * @author jiangzeyin
- * @date 2016-10-17
  */
 public class IsExists<T> extends Base<T> {
     private String keyColumn;
@@ -47,7 +45,7 @@ public class IsExists<T> extends Base<T> {
     }
 
     public List<Object> getParameters() {
-        List<Object> paList = new LinkedList<Object>();
+        List<Object> paList = new LinkedList<>();
         paList.add(getKeyValue());
         if (parameters != null)
             paList.addAll(parameters);
@@ -60,7 +58,7 @@ public class IsExists<T> extends Base<T> {
 
     public void setParameters(Object... parameters_) {
         if (parameters == null)
-            parameters = new LinkedList<Object>();
+            parameters = new LinkedList<>();
         Collections.addAll(parameters, parameters_);
     }
 
@@ -108,9 +106,8 @@ public class IsExists<T> extends Base<T> {
     /**
      * 判断是否存在
      *
-     * @return
+     * @return 是否存在
      * @author jiangzeyin
-     * @date 2016-10-21
      */
     public boolean run() {
         Class runClass = getTclass();
@@ -160,9 +157,8 @@ public class IsExists<T> extends Base<T> {
     /**
      * 查询是否存在
      *
-     * @return
+     * @return 结果
      * @author jiangzeyin
-     * @date 2016-10-18
      */
     public Object runColumn() {
         Class runClass = getTclass();

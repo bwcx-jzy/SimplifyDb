@@ -18,7 +18,6 @@ import java.util.Map;
  * 工具类
  *
  * @author jiangzeyin
- * @date 2016-10-12
  */
 public class Util {
 
@@ -26,12 +25,11 @@ public class Util {
     /**
      * 将list map 转javabean
      *
-     * @param reBase
-     * @param list
-     * @return
-     * @throws Exception
+     * @param reBase base
+     * @param list   list
+     * @return 结果
+     * @throws Exception 异常
      * @author jiangzeyin
-     * @date 2016-10-12
      */
     public static <T> List<T> convertList(ReadBase<T> reBase, List<Map<String, Object>> list) throws Exception {
         Assert.notNull(list, "list map");
@@ -44,12 +42,12 @@ public class Util {
     }
 
     /**
-     * @param read
-     * @param map
-     * @param refClass
-     * @param <T>
-     * @return
-     * @throws Exception
+     * @param read     对象
+     * @param map      map
+     * @param refClass 类
+     * @param <T>      参数
+     * @return 实体
+     * @throws Exception 异常
      */
     public static <T> T convertMap(ReadBase<T> read, Map<String, Object> map, Class<?> refClass) throws Exception {
         if (refClass == null)

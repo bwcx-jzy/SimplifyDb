@@ -6,13 +6,13 @@ import com.alibaba.druid.util.StringUtils;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.*;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 利用反射进行操作的一个工具类
  *
  * @author jiangzeyin
- * @date 2016-8-31
  */
 public class ReflectUtil {
     /**
@@ -21,8 +21,8 @@ public class ReflectUtil {
      * @param obj       目标对象
      * @param fieldName 目标属性
      * @return 目标属性的值
-     * @throws IllegalAccessException
-     * @throws IllegalArgumentException
+     * @throws IllegalAccessException   一些
+     * @throws IllegalArgumentException 异常
      */
     public static Object getFieldValue(Object obj, String fieldName) throws IllegalArgumentException, IllegalAccessException {
         Assert.notNull(obj);
@@ -36,9 +36,9 @@ public class ReflectUtil {
     }
 
     /**
-     * @param class1
-     * @param class2
-     * @return
+     * @param class1 类
+     * @param class2 类
+     * @return 是否有关系
      */
     public static boolean isSuperclass(Class class1, Class class2) {
         for (Class<?> calzz = class1; calzz != Object.class; calzz = calzz.getSuperclass()) {
@@ -85,14 +85,13 @@ public class ReflectUtil {
     /**
      * 调用 get方法
      *
-     * @param obj
-     * @param fieldName
-     * @return
-     * @throws InvocationTargetException
-     * @throws IllegalArgumentException
-     * @throws IllegalAccessException
+     * @param obj       实体
+     * @param fieldName 字段名
+     * @return 结果
+     * @throws InvocationTargetException 异常
+     * @throws IllegalArgumentException  异常
+     * @throws IllegalAccessException    异常
      * @author jiangzeyin
-     * @date 2016-8-9
      */
     public static Object getMethodValue(Object obj, String fieldName) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
         // 自动 驼峰命名
@@ -136,12 +135,11 @@ public class ReflectUtil {
     /**
      * 获取方法 包含 父类
      *
-     * @param cls
-     * @param methodName
-     * @param parameterTypes
-     * @return
+     * @param cls            cls
+     * @param methodName     方法名
+     * @param parameterTypes 参数类型
+     * @return 方法
      * @author jiangzeyin
-     * @date 2016-9-19
      */
     public static Method getMethod(Class<?> cls, String methodName, Class<?>... parameterTypes) {
         Method method = null;
@@ -194,10 +192,9 @@ public class ReflectUtil {
     /**
      * 获取对象的泛型
      *
-     * @param obj
-     * @return
+     * @param obj 实体
+     * @return 结果
      * @author jiangzeyin
-     * @date 2016-8-15
      */
     public static Class<?> getTClass(Object obj) {
         Assert.notNull(obj, "obj 不能为空");
@@ -213,30 +210,6 @@ public class ReflectUtil {
         return null;
     }
 
-    /**
-     * list 转map
-     *
-     * @param key_
-     * @param list
-     * @param key
-     * @return
-     * @throws IllegalAccessException
-     * @throws IllegalArgumentException
-     * @author jiangzeyin
-     * @date 2016-8-29
-     */
-    @SuppressWarnings("unchecked")
-    public static <V, T> HashMap<T, V> mapToList(List<V> list, Class<T> key_, String key) throws IllegalArgumentException, IllegalAccessException {
-        if (list == null)
-            return null;
-        HashMap<T, V> map = new HashMap<>();
-        if (list.size() < 1)
-            return map;
-        for (V v : list) {
-            map.put((T) getFieldValue(v, key), v);
-        }
-        return map;
-    }
 
     public static List<Method> getAllGetMethods(Class cls) {
         return getAllMethods(cls, "get");

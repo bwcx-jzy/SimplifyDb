@@ -21,7 +21,6 @@ import java.util.List;
  * 普通insert
  *
  * @author jiangzeyin
- * @date 2016-10-10
  */
 public class Insert<T> extends WriteBase<T> {
 
@@ -49,9 +48,8 @@ public class Insert<T> extends WriteBase<T> {
     /**
      * 添加数据事件对象
      *
-     * @param event
+     * @param event 事件
      * @author jiangzeyin
-     * @date 2016-11-19
      */
     public void setEvent(InsertEvent event) {
         this.event = event;
@@ -73,8 +71,8 @@ public class Insert<T> extends WriteBase<T> {
     /**
      * 添加数据 并设置添加事件对象
      *
-     * @param data
-     * @param event
+     * @param data  对象
+     * @param event 事件
      */
     public Insert(T data, InsertEvent event) {
         super(data);
@@ -84,7 +82,7 @@ public class Insert<T> extends WriteBase<T> {
     /**
      * 添加数据
      *
-     * @param data
+     * @param data     对象
      * @param isThrows 发生异常是否抛出
      */
     public Insert(T data, boolean isThrows) {
@@ -102,7 +100,6 @@ public class Insert<T> extends WriteBase<T> {
      * 异步执行添加数据操作
      *
      * @author jiangzeyin
-     * @date 2016-11-19
      */
     @Override
     public void run() {
@@ -120,9 +117,8 @@ public class Insert<T> extends WriteBase<T> {
     /**
      * 执行添加数据操作
      *
-     * @return
+     * @return 结果id
      * @author jiangzeyin
-     * @date 2016-10-10
      */
     @Override
     public long syncRun() {

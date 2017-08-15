@@ -8,7 +8,6 @@ import java.util.concurrent.ThreadPoolExecutor.CallerRunsPolicy;
  * 系统线程池管理
  *
  * @author jiangzeyin
- * @date 2016-10-24
  */
 public class SystemExecutorService {
     private final static ThreadPoolExecutor THREAD_POOL_EXECUTOR = newCachedThreadPool();
@@ -16,9 +15,8 @@ public class SystemExecutorService {
     /**
      * 创建一个无限制线程池
      *
-     * @return
+     * @return 线程次
      * @author jiangzeyin
-     * @date 2016-10-24
      */
     private static ThreadPoolExecutor newCachedThreadPool() {
         ThreadPoolExecutor executorService = (ThreadPoolExecutor) Executors.newCachedThreadPool();
@@ -34,7 +32,6 @@ public class SystemExecutorService {
      * 关闭所有线程池
      *
      * @author jiangzeyin
-     * @date 2016-10-24
      */
     public static void shutdown() {
         SystemDbLog.getInstance().info("关闭数据库使用的线程池");

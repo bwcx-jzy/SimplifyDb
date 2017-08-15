@@ -22,7 +22,6 @@ import java.util.List;
  * update 数据库操作
  *
  * @author jiangzeyin
- * @date 2016-10-10
  */
 public class Update<T> extends WriteBase<T> {
 
@@ -78,10 +77,9 @@ public class Update<T> extends WriteBase<T> {
     /**
      * 添加要更新的字段
      *
-     * @param column
-     * @param value
+     * @param column 列名
+     * @param value  值
      * @author jiangzeyin
-     * @date 2016-10-13
      */
     public void putUpdate(String column, Object value) {
         // 判断对应字段是否可以被修改
@@ -99,9 +97,8 @@ public class Update<T> extends WriteBase<T> {
     /**
      * 设置查询主键值
      *
-     * @param keyValue
+     * @param keyValue 键
      * @author jiangzeyin
-     * @date 2016-10-13
      */
     public void setKeyValue(Object keyValue) {
         this.keyValue = keyValue;
@@ -118,9 +115,8 @@ public class Update<T> extends WriteBase<T> {
      * <p>
      * 默认为 id
      *
-     * @param keyColumn
+     * @param keyColumn 列
      * @author jiangzeyin
-     * @date 2016-10-13
      */
     public void setKeyColumn(String keyColumn) {
         this.keyColumn = keyColumn;
@@ -129,9 +125,8 @@ public class Update<T> extends WriteBase<T> {
     /**
      * 设置不能修改的字段
      *
-     * @return
+     * @return 移除
      * @author jiangzeyin
-     * @date 2016-11-19
      */
     @Override
     public List<String> getRemove() {
@@ -180,9 +175,8 @@ public class Update<T> extends WriteBase<T> {
     }
 
     /**
-     * @return
+     * @return 影响行数
      * @author jiangzeyin
-     * @date 2016-10-10
      */
     @Override
     public long syncRun() {

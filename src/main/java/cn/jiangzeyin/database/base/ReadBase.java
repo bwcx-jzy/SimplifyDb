@@ -11,7 +11,6 @@ import java.util.List;
  * 读取数据
  *
  * @author jiangzeyin
- * @date 2016-10-12
  */
 public abstract class ReadBase<T> extends Base<T> {
 
@@ -19,7 +18,6 @@ public abstract class ReadBase<T> extends Base<T> {
      * 返回值类型
      *
      * @author jiangzeyin
-     * @date 2016-10-12
      */
     public static class Result {
         public static final int JsonArray = 1;
@@ -77,34 +75,23 @@ public abstract class ReadBase<T> extends Base<T> {
         return parameters;
     }
 
-    /**
-     * 设置查询参数
-     *
-     * @param parameters
-     * @author jiangzeyin
-     * @date 2016-10-13
-     */
-    public void setParameters(List<Object> parameters) {
-        this.parameters = parameters;
-    }
 
     /**
-     * @param parameters_
+     * @param parameters 参数
      * @author jiangzeyin
-     * @date 2016-10-20
      */
-    public void setParameters(Object... parameters_) {
-        if (parameters == null)
-            parameters = new LinkedList<>();
-        Collections.addAll(parameters, parameters_);
+    public void parameters(Object... parameters) {
+        if (this.parameters == null)
+            this.parameters = new LinkedList<>();
+        if (parameters != null)
+            Collections.addAll(this.parameters, parameters);
     }
 
     /**
      * 查询列 默认*
      *
-     * @return
+     * @return 返回对应列，名
      * @author jiangzeyin
-     * @date 2016-10-20
      */
     public String getColumns() {
         if (StringUtils.isEmpty(columns))
@@ -113,9 +100,8 @@ public abstract class ReadBase<T> extends Base<T> {
     }
 
     /**
-     * @return
+     * @return 所有移除字段
      * @author jiangzeyin
-     * @date 2016-10-13
      */
     @Override
     public List<String> getRemove() {
@@ -129,9 +115,7 @@ public abstract class ReadBase<T> extends Base<T> {
      * <p>
      * 默认所有 （*）
      *
-     * @return
      * @author jiangzeyin
-     * @date 2016-10-13
      */
     public void setColumns(String columns) {
         this.columns = columns;
@@ -144,9 +128,8 @@ public abstract class ReadBase<T> extends Base<T> {
     /**
      * 查询使用索引
      *
-     * @param index
+     * @param index 索引
      * @author jiangzeyin
-     * @date 2016-10-13
      */
     public void setIndex(String index) {
         this.index = index;
@@ -157,7 +140,6 @@ public abstract class ReadBase<T> extends Base<T> {
 
     /**
      * @author jiangzeyin
-     * @date 2016-11-21
      */
     @Override
     protected void recycling() {

@@ -6,7 +6,6 @@ import cn.jiangzeyin.database.util.SqlUtil;
 import cn.jiangzeyin.system.SystemDbLog;
 import com.alibaba.druid.util.JdbcUtils;
 
-
 import javax.sql.DataSource;
 import java.util.Collection;
 import java.util.List;
@@ -16,7 +15,6 @@ import java.util.Map;
  * 查询函数
  *
  * @author jiangzeyin
- * @date 2016-10-12
  */
 public class SelectFunction<T> extends ReadBase<T> {
 

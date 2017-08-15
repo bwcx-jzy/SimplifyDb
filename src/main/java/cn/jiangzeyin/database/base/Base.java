@@ -15,7 +15,6 @@ import java.util.List;
  * 数据库操作公共
  *
  * @author jiangzeyin
- * @date 2016-10-12
  */
 public abstract class Base<T> {
     private boolean isThrows; // 异常是否抛出
@@ -107,9 +106,8 @@ public abstract class Base<T> {
     /**
      * 设置排除获取字段
      *
-     * @param remove
+     * @param remove 要移除的字段
      * @author jiangzeyin
-     * @date 2016-10-13
      */
     public void setRemove(String... remove) {
         if (remove == null)
@@ -126,17 +124,6 @@ public abstract class Base<T> {
         }
     }
 
-    /**
-     * 设置排除获取字段
-     *
-     * @param remove
-     * @author jiangzeyin
-     * @date 2016-10-13
-     */
-    public void setRemove(List<String> remove) {
-        this.remove = remove;
-    }
-
     protected void setRemoveList(List<String> remove) {
         this.remove = remove;
     }
@@ -150,9 +137,8 @@ public abstract class Base<T> {
     /**
      * 设置外键的列
      *
-     * @param refKey
+     * @param refKey 外键的列
      * @author jiangzeyin
-     * @date 2016-10-13
      */
     public void setRefKey(String refKey) {
         this.refKey = refKey;
@@ -166,10 +152,9 @@ public abstract class Base<T> {
     /**
      * 添加外键 关系
      *
-     * @param name
-     * @param refClass
+     * @param name     外键名称
+     * @param refClass 外键类
      * @author jiangzeyin
-     * @date 2016-10-13
      */
     public void putRefClass(String name, Class<?> refClass) {
         if (refMap == null)
@@ -197,9 +182,8 @@ public abstract class Base<T> {
     /**
      * 处理异常
      *
-     * @param t
+     * @param t 异常信息
      * @author jiangzeyin
-     * @date 2016-10-12
      */
     public void isThrows(Throwable t) {
         if (isThrows)
@@ -213,7 +197,6 @@ public abstract class Base<T> {
      * 回收对象信息
      *
      * @author jiangzeyin
-     * @date 2016-11-21
      */
     protected void recycling() {
         refMap = null;

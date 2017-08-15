@@ -5,7 +5,6 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 
-
 import java.util.List;
 import java.util.Map;
 
@@ -14,7 +13,6 @@ import java.util.Map;
  *
  * @param <T>
  * @author jiangzeyin
- * @date 2016-8-9
  */
 public class Page<T> {
 
@@ -156,9 +154,7 @@ public class Page<T> {
 
     @Override
     public String toString() {
-        StringBuilder builder = new StringBuilder();
-        builder.append("Page [pageNo=").append(pageNo).append(", pageSize=").append(pageSize).append(", results=").append(results).append(", totalPage=").append(totalPage).append(", totalRecord=").append(totalRecord).append("]");
-        return builder.toString();
+        return "Page [pageNo=" + pageNo + ", pageSize=" + pageSize + ", results=" + results + ", totalPage=" + totalPage + ", totalRecord=" + totalRecord + "]";
     }
 
     public JSONObject toJSONObject(JSONArray jsonArray) {

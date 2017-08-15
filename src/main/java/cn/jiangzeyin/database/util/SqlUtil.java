@@ -23,17 +23,15 @@ import java.util.*;
  * sql 工具
  *
  * @author jiangzeyin
- * @date 2016-10-10
  */
 public class SqlUtil {
 
     /**
      * 判断是否写
      *
-     * @param field
-     * @return
+     * @param field 字段
+     * @return boolean
      * @author jiangzeyin
-     * @date 2016-8-24
      */
     public static boolean isWrite(Field field) {
         if (field.getModifiers() == 25 || field.getModifiers() == 26)
@@ -44,13 +42,12 @@ public class SqlUtil {
     }
 
     /**
-     * @param write
-     * @param data
-     * @return
-     * @throws IllegalArgumentException
-     * @throws IllegalAccessException
+     * @param write write
+     * @param data  数据
+     * @return 结果对象
+     * @throws IllegalArgumentException yi
+     * @throws IllegalAccessException   yic
      * @author jiangzeyin
-     * @date 2016-11-19
      */
     private static SqlAndParameters getWriteSql(WriteBase<?> write, Object data) throws IllegalArgumentException, IllegalAccessException {
         if (data == null)
@@ -108,12 +105,11 @@ public class SqlUtil {
     /**
      * 获取操作 信息
      *
-     * @param write
-     * @return
-     * @throws IllegalArgumentException
-     * @throws IllegalAccessException
+     * @param write write
+     * @return 结果对象
+     * @throws IllegalArgumentException y
+     * @throws IllegalAccessException   y
      * @author jiangzeyin
-     * @date 2016-10-12
      */
     private static SqlAndParameters getWriteSql(WriteBase<?> write) throws IllegalArgumentException, IllegalAccessException {
         return getWriteSql(write, null);
@@ -122,12 +118,11 @@ public class SqlUtil {
     /**
      * 获取添加对象信息
      *
-     * @param insert
-     * @return
-     * @throws IllegalArgumentException
-     * @throws IllegalAccessException
+     * @param insert 对象
+     * @return 结果
+     * @throws IllegalArgumentException y
+     * @throws IllegalAccessException   y
      * @author jiangzeyin
-     * @date 2016-10-12
      */
     public static SqlAndParameters getInsertSql(WriteBase<?> insert) throws IllegalArgumentException, IllegalAccessException {
         SqlAndParameters sqlAndParameters = getWriteSql(insert);
@@ -140,12 +135,11 @@ public class SqlUtil {
     }
 
     /**
-     * @param insert
-     * @return
-     * @throws IllegalArgumentException
-     * @throws IllegalAccessException
+     * @param insert 对象
+     * @return 结果数组
+     * @throws IllegalArgumentException y
+     * @throws IllegalAccessException   y
      * @author jiangzeyin
-     * @date 2016-11-19
      */
     public static SqlAndParameters[] getInsertSql(Insert<?> insert) throws IllegalArgumentException, IllegalAccessException {
         List<?> list = insert.getList();
@@ -166,12 +160,11 @@ public class SqlUtil {
     /**
      * 获取修改对象信息
      *
-     * @param update
-     * @return
-     * @throws IllegalArgumentException
-     * @throws IllegalAccessException
+     * @param update 更新
+     * @return 结果
+     * @throws IllegalArgumentException y
+     * @throws IllegalAccessException   y
      * @author jiangzeyin
-     * @date 2016-10-12
      */
     public static SqlAndParameters getUpdateSql(Update<?> update) throws IllegalArgumentException, IllegalAccessException {
         SqlAndParameters sqlAndParameters = null;
@@ -253,10 +246,9 @@ public class SqlUtil {
     /**
      * 获取分页操作信息
      *
-     * @param select
-     * @return
+     * @param select 查询对象
+     * @return 数组
      * @author jiangzeyin
-     * @date 2016-10-12
      */
     public static String[] getSelectPageSql(SelectPage<?> select) {
         StringBuffer sql = new StringBuffer("select ");
@@ -283,11 +275,10 @@ public class SqlUtil {
     /**
      * 获取读取外键的sql 语句
      *
-     * @param ref
-     * @param keyColumn
-     * @return
+     * @param ref       类
+     * @param keyColumn 列
+     * @return sql
      * @author jiangzeyin
-     * @date 2016-10-13
      */
     public static String getRefSql(Class<?> ref, String keyColumn, String where) {
         StringBuilder sql = new StringBuilder("select ")//
@@ -303,12 +294,11 @@ public class SqlUtil {
     }
 
     /**
-     * @param clas
-     * @param keyColumn
-     * @param where
-     * @return
+     * @param clas      类
+     * @param keyColumn 列
+     * @param where     条件
+     * @return sql
      * @author jiangzeyin
-     * @date 2016-10-17
      */
     public static String getIsexistsSql(Class<?> clas, String keyColumn, String where, String column, int limit) {
         StringBuilder sql = new StringBuilder("select ");//
@@ -335,12 +325,11 @@ public class SqlUtil {
     /**
      * 获取移除sql 语句
      *
-     * @param cls
-     * @param ids
-     * @param where
-     * @return
+     * @param cls   类
+     * @param ids   ids
+     * @param where 条件
+     * @return sql
      * @author jiangzeyin
-     * @date 2016-10-17
      */
     public static String getRemoveSql(Class<?> cls, Remove.Type type, String ids, String where) {
         StringBuilder sql = new StringBuilder();
@@ -367,12 +356,11 @@ public class SqlUtil {
     /**
      * 获取查询信息
      *
-     * @param select
-     * @return
-     * @throws IllegalArgumentException
-     * @throws IllegalAccessException
+     * @param select 对象
+     * @return sql
+     * @throws IllegalArgumentException y
+     * @throws IllegalAccessException   y
      * @author jiangzeyin
-     * @date 2016-10-12
      */
     public static String getSelectSql(Select<?> select) throws IllegalArgumentException, IllegalAccessException {
         StringBuilder sql = new StringBuilder("select ");
@@ -423,11 +411,10 @@ public class SqlUtil {
     /**
      * mysql 分页
      *
-     * @param page
-     * @param sqlBuffer
-     * @return
+     * @param page      page
+     * @param sqlBuffer sql
+     * @return sql
      * @author jiangzeyin
-     * @date 2016-10-12
      */
     public static String getMysqlPageSql(Page<?> page, StringBuffer sqlBuffer) {
         // 计算第一条记录的位置，Mysql中记录的位置是从0开始的。
@@ -465,11 +452,10 @@ public class SqlUtil {
     /**
      * 获取分页总数sql
      *
-     * @param sql
-     * @param page
-     * @return
+     * @param sql  sql
+     * @param page page
+     * @return sql
      * @author jiangzeyin
-     * @date 2016-10-12
      */
     public static String getCountSql(String sql, Page<?> page) {
         StringBuffer sqlBuffer = new StringBuffer(sql);
@@ -488,10 +474,9 @@ public class SqlUtil {
     /**
      * 判断是否为系统字段
      *
-     * @param name
-     * @return
+     * @param name 名称
+     * @return 结果
      * @author jiangzeyin
-     * @date 2016-10-12
      */
     private static String getSystemValue(String name) {
         if ("modifyTime".equalsIgnoreCase(name))
@@ -506,10 +491,9 @@ public class SqlUtil {
     /**
      * 是否是不能修改字段
      *
-     * @param name
-     * @return
+     * @param name 名称
+     * @return boolean
      * @author jiangzeyin
-     * @date 2016-11-19
      */
     public static boolean isNotWriteColumn(String name) {
         if ("modifyTime".equalsIgnoreCase(name))
@@ -530,10 +514,9 @@ public class SqlUtil {
     /**
      * 获取表明 默认添加索引
      *
-     * @param class1
-     * @return
+     * @param class1 类
+     * @return 表名
      * @author jiangzeyin
-     * @date 2016-10-12
      */
     public static String getTableName(Class<?> class1) {
         return getTableName(class1, true, null, false);
@@ -542,23 +525,21 @@ public class SqlUtil {
     /**
      * 获取表明和索引
      *
-     * @param class1
-     * @param index
-     * @return
+     * @param class1 类
+     * @param index  索引
+     * @return 表名
      * @author jiangzeyin
-     * @date 2016-10-12
      */
     public static String getTableName(Class<?> class1, String index) {
         return getTableName(class1, true, index, false);
     }
 
     /**
-     * @param class1
-     * @param index
-     * @param isDatabaseName
-     * @return
+     * @param class1         类
+     * @param index          索引
+     * @param isDatabaseName name
+     * @return 表名
      * @author jiangzeyin
-     * @date 2016-11-2
      */
     public static String getTableName(Class<?> class1, String index, boolean isDatabaseName) {
         return getTableName(class1, true, index, isDatabaseName);
@@ -571,13 +552,12 @@ public class SqlUtil {
     /**
      * 获取表明 和 自动加主键索引
      *
-     * @param class1
-     * @param isIndex
-     * @param index
-     * @param isDatabaName
-     * @return
+     * @param class1       类
+     * @param isIndex      索引
+     * @param index        索引
+     * @param isDatabaName name
+     * @return 表名
      * @author jiangzeyin
-     * @date 2016-8-9
      */
     public static String getTableName(Class<?> class1, boolean isIndex, String index, boolean isDatabaName) {
         String name = class1.getSimpleName();
@@ -607,11 +587,10 @@ public class SqlUtil {
     /**
      * 获取运行sql function
      *
-     * @param functionName
-     * @param parameters
-     * @return
+     * @param functionName 名称
+     * @param parameters   参数
+     * @return 结果
      * @author jiangzeyin
-     * @date 2016-10-12
      */
     public static String function(String functionName, List<Object> parameters) {
         StringBuilder sb = new StringBuilder();
@@ -627,13 +606,12 @@ public class SqlUtil {
     }
 
     /**
-     * @param class1
-     * @param createUser
-     * @param names
-     * @param systemMap
-     * @return
+     * @param class1     类
+     * @param createUser 创建者
+     * @param names      名称
+     * @param systemMap  map
+     * @return j结果
      * @author jiangzeyin
-     * @date 2016-11-19
      */
     private static String makeInsertToTableSql(Class<?> class1, int createUser, Collection<String> names, HashMap<String, String> systemMap, int isDeleteValue) {
         String tableName = getTableName(class1, false);
@@ -697,12 +675,11 @@ public class SqlUtil {
     /**
      * 获取更新sql 语句
      *
-     * @param tableName
-     * @param names
-     * @param systemMap
-     * @return
+     * @param tableName 表名
+     * @param names     列名
+     * @param systemMap 值
+     * @return 结果
      * @author jiangzeyin
-     * @date 2016-10-17
      */
     public static String makeUpdateToTableSql(String tableName, Collection<String> names, HashMap<String, String> systemMap) {
         StringBuilder sql = new StringBuilder() //
@@ -732,11 +709,10 @@ public class SqlUtil {
     /**
      * 获取修改指定字段的sql
      *
-     * @param tableName
-     * @param columns
-     * @return
+     * @param tableName 表名
+     * @param columns   列名
+     * @return 结果
      * @author jiangzeyin
-     * @date 2016-11-19
      */
     public static String makeUpdateToTableSql(String tableName, HashMap<String, Object> columns) {
         StringBuilder sql = new StringBuilder() //

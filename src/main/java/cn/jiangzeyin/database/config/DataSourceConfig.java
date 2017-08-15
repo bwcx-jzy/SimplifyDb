@@ -1,7 +1,5 @@
 package cn.jiangzeyin.database.config;
-/**
- * Created by jiangzeyin on 2017/1/6.
- */
+
 
 import cn.jiangzeyin.system.SystemDbLog;
 import cn.jiangzeyin.system.SystemKey;
@@ -18,12 +16,9 @@ import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.util.*;
 
-
 /**
  * 数据源配置信息
- *
- * @author jiangzeyin
- * @create 2017 01 06 17:10
+ * Created by jiangzeyin on 2017/1/6.
  */
 public final class DataSourceConfig {
     private DataSourceConfig() {

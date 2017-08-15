@@ -1,21 +1,19 @@
 package cn.jiangzeyin.database.event;
 
 
-
 /**
  * 添加数据事件
  *
  * @author jiangzeyin
- * @date 2016-11-7
  */
 public interface InsertEvent {
     /**
      *
      */
     enum BeforeCode implements BaseEnum {
-        CONTINUE(0, "继续",0), END(1, "结束",-100);
+        CONTINUE(0, "继续", 0), END(1, "结束", -100);
 
-        BeforeCode(int code, String desc,int resultCode) {
+        BeforeCode(int code, String desc, int resultCode) {
             this.code = code;
             this.desc = desc;
             this.resultCode = resultCode;
@@ -41,27 +39,24 @@ public interface InsertEvent {
     /**
      * 开始事件之前
      *
-     * @return
+     * @return 验证结果
      * @author jiangzeyin
-     * @date 2017-5-02
      */
     int beforeI(Object object);
 
     /**
      * 操作成功
      *
-     * @param dataId
+     * @param dataId 结果id
      * @author jiangzeyin
-     * @date 2016-11-5
      */
     void completeI(long dataId);
 
     /**
      * 出现异常
      *
-     * @param throwable
+     * @param throwable 异常
      * @author jiangzeyin
-     * @date 2016-11-5
      */
     void errorI(Throwable throwable);
 }

@@ -22,7 +22,6 @@ import java.util.Map;
  * 分页查询
  *
  * @author jiangzeyin
- * @date 2016-10-12
  */
 public class SelectPage<T> extends ReadBase<T> {
 
@@ -39,8 +38,8 @@ public class SelectPage<T> extends ReadBase<T> {
     }
 
     /**
-     * @param page
-     * @param resultType
+     * @param page       page
+     * @param resultType 返回类型
      */
     public SelectPage(Page<T> page, int resultType) {
         this.page = page;
@@ -56,9 +55,8 @@ public class SelectPage<T> extends ReadBase<T> {
     }
 
     /**
-     * @return
+     * @return 结果
      * @author jiangzeyin
-     * @date 2016-10-12
      */
     @SuppressWarnings({"hiding", "unchecked"})
     @Override
@@ -95,7 +93,7 @@ public class SelectPage<T> extends ReadBase<T> {
             { // 查询数据
                 // System.out.println(pageSql[1]);
                 setRunSql(pageSql[1]);
-               SystemDbLog.getInstance().info(pageSql[1]);
+                SystemDbLog.getInstance().info(pageSql[1]);
                 list = JdbcUtils.executeQuery(dataSource, pageSql[1], getParameters());
                 page.setMapList(list);
 //                if (list == null || list.size() < 1)  此处为更改注释

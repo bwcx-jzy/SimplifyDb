@@ -8,7 +8,6 @@ import java.util.concurrent.ConcurrentHashMap;
  * 反射缓存工具类
  *
  * @author jiangzeyin
- * @date 2016-8-8
  */
 public final class ReflectCache {
     final static ConcurrentHashMap<String, Field> fieldMap = new ConcurrentHashMap<>();
@@ -20,11 +19,10 @@ public final class ReflectCache {
     /**
      * 加载class
      *
-     * @param className
-     * @return
-     * @throws ClassNotFoundException
+     * @param className 类
+     * @return 结果
+     * @throws ClassNotFoundException 异常
      * @author jiangzeyin
-     * @date 2016-8-8
      */
     public static Class<?> forName(String className) throws ClassNotFoundException {
         Class<?> cls = classMap.get(className);
@@ -38,10 +36,9 @@ public final class ReflectCache {
     /**
      * 获取class 所有字段
      *
-     * @param cls
-     * @return
+     * @param cls 类
+     * @return 结果
      * @author jiangzeyin
-     * @date 2016-8-8
      */
     public static Field[] getDeclaredFields(Class<?> cls) {
         Field[] fields = fieldsMap.get(cls.getName());
@@ -55,13 +52,12 @@ public final class ReflectCache {
     /**
      * 获取class 字段
      *
-     * @param cls
-     * @param name
-     * @return
-     * @throws NoSuchFieldException
-     * @throws SecurityException
+     * @param cls  cls
+     * @param name name
+     * @return 字段
+     * @throws NoSuchFieldException 异常
+     * @throws SecurityException    异常
      * @author jiangzeyin
-     * @date 2016-8-8
      */
     public static Field getDeclaredField(Class<?> cls, String name) throws NoSuchFieldException, SecurityException {
         Field field = fieldMap.get(cls.getName() + "." + name);
@@ -76,14 +72,13 @@ public final class ReflectCache {
     /**
      * 获取class 方法
      *
-     * @param cls
-     * @param name
-     * @param parameterTypes
-     * @return
-     * @throws NoSuchMethodException
-     * @throws SecurityException
+     * @param cls            cls
+     * @param name           name
+     * @param parameterTypes type
+     * @return jieg
+     * @throws NoSuchMethodException 异常
+     * @throws SecurityException     异常
      * @author jiangzeyin
-     * @date 2016-8-8
      */
     public static Method getDeclaredMethod(Class<?> cls, String name, Class<?>... parameterTypes) throws NoSuchMethodException, SecurityException {
         String mapname = cls.getName() + "." + name + "." + ParameterTypestoString(parameterTypes);
@@ -99,12 +94,11 @@ public final class ReflectCache {
     /**
      * 获取方法
      *
-     * @param cls
-     * @return
-     * @throws NoSuchMethodException
-     * @throws SecurityException
+     * @param cls cls
+     * @return jieg
+     * @throws NoSuchMethodException yc
+     * @throws SecurityException     yc
      * @author jiangzeyin
-     * @date 2016-8-12
      */
     public static Method[] getDeclaredMethods(Class<?> cls) throws NoSuchMethodException, SecurityException {
         Method[] method = methodsMap.get(cls.getName());
@@ -118,10 +112,9 @@ public final class ReflectCache {
     /**
      * 将参数转字符串名称
      *
-     * @param parameterTypes
-     * @return
+     * @param parameterTypes 类型
+     * @return 结果
      * @author jiangzeyin
-     * @date 2016-8-8
      */
     private static String ParameterTypestoString(Class<?>... parameterTypes) {
         if (parameterTypes == null)

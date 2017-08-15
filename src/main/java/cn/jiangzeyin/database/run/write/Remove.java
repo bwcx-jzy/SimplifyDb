@@ -11,13 +11,11 @@ import com.alibaba.druid.util.JdbcUtils;
 import javax.sql.DataSource;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ExecutorService;
 
 /**
  * 移除数据 即更改isDelete 状态
  *
  * @author jiangzeyin
- * @date 2016-10-17
  */
 public class Remove<T> extends Base<T> {
 
@@ -96,7 +94,6 @@ public class Remove<T> extends Base<T> {
 
     /**
      * @author jiangzeyin
-     * @date 2016-10-21
      */
     public void run() {
 
@@ -107,9 +104,8 @@ public class Remove<T> extends Base<T> {
     }
 
     /**
-     * @return
+     * @return 影响行数
      * @author jiangzeyin
-     * @date 2016-10-21
      */
     public int syncRun() {
         try {

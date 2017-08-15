@@ -10,7 +10,6 @@ import java.util.List;
  * 写入数据
  *
  * @author jiangzeyin
- * @date 2016-10-12
  */
 public abstract class WriteBase<T> extends Base<T> {
 
@@ -38,21 +37,19 @@ public abstract class WriteBase<T> extends Base<T> {
      * 异步执行
      *
      * @author jiangzeyin
-     * @date 2016-10-12
      */
     public abstract void run();
 
     /**
      * 同步执行
      *
-     * @return
+     * @return 结果id
      * @author jiangzeyin
-     * @date 2016-10-12
      */
     public abstract long syncRun();
 
     /**
-     * @param data
+     * @param data 对应实体
      */
     public WriteBase(T data) {
         // TODO Auto-generated constructor stub
@@ -86,9 +83,8 @@ public abstract class WriteBase<T> extends Base<T> {
     }
 
     /**
-     * @param t
+     * @param t 异常
      * @author jiangzeyin
-     * @date 2016-11-21
      */
     @Override
     public void isThrows(Throwable t) {
@@ -107,7 +103,6 @@ public abstract class WriteBase<T> extends Base<T> {
 
     /**
      * @author jiangzeyin
-     * @date 2016-11-21
      */
     @Override
     protected void recycling() {

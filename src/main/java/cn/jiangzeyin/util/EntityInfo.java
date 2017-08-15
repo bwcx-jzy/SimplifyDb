@@ -1,12 +1,8 @@
 package cn.jiangzeyin.util;
 
 /**
- * Created by jiangzeyin on 2017/2/3.
- */
-
-/**
  * @author jiangzeyin
- * @create 2017 02 03 14:34
+ * Created by jiangzeyin on 2017/2/3.
  */
 public class EntityInfo {
 
@@ -17,8 +13,8 @@ public class EntityInfo {
     }
 
     /**
-     * @param cls
-     * @return
+     * @param cls 类
+     * @return 库名
      */
     public static String getDatabaseName(Class cls) {
         Assert.notNull(cls);
@@ -27,8 +23,8 @@ public class EntityInfo {
     }
 
     /**
-     * @param object
-     * @return
+     * @param object 实体
+     * @return 库名
      */
     public static String getDatabaseName(Object object) {
         Assert.notNull(object);

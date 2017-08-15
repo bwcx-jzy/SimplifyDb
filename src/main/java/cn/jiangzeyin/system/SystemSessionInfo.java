@@ -4,7 +4,6 @@ package cn.jiangzeyin.system;
  * 系统session 信息
  *
  * @author jiangzeyin
- * @date 2016-11-19
  */
 public class SystemSessionInfo {
     private static SessionUser sessionUser;
@@ -14,9 +13,8 @@ public class SystemSessionInfo {
     }
 
     /**
-     * @param sessionUser
+     * @param sessionUser 接口
      * @author jiangzeyin
-     * @date 2016-11-28
      */
     public static void setSessionUser(SessionUser sessionUser) {
         SystemSessionInfo.sessionUser = sessionUser;
@@ -25,9 +23,8 @@ public class SystemSessionInfo {
     /**
      * 获取当前操作session 用户名
      *
-     * @return
+     * @return 用户名
      * @author jiangzeyin
-     * @date 2016-11-19
      */
     public static String getUserName() {
         if (sessionUser == null)
@@ -38,9 +35,8 @@ public class SystemSessionInfo {
     /**
      * 获取当前操作session 用户id
      *
-     * @return
+     * @return id
      * @author jiangzeyin
-     * @date 2016-11-19
      */
     public static int getUserId() {
         if (sessionUser == null)
@@ -58,7 +54,6 @@ public class SystemSessionInfo {
      * 获取session 信息接口
      *
      * @author jiangzeyin
-     * @date 2016-11-19
      */
     public interface SessionUser {
 

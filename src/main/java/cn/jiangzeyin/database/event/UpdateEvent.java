@@ -5,25 +5,22 @@ package cn.jiangzeyin.database.event;
  * 更新数据事件
  *
  * @author jiangzeyin
- * @date 2016-11-7
  */
 public interface UpdateEvent {
 
     /**
      * 操作成功
      *
-     * @param dataId
+     * @param dataId id
      * @author jiangzeyin
-     * @date 2016-11-5
      */
     void completeU(Object dataId);
 
     /**
      * 出现异常
      *
-     * @param throwable
+     * @param throwable 异常
      * @author jiangzeyin
-     * @date 2016-11-5
      */
     void errorU(Throwable throwable);
 }

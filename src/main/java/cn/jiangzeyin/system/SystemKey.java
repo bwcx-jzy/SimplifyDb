@@ -11,7 +11,6 @@ import java.security.Security;
  * 系统解密
  *
  * @author jiangzeyin
- * @date 2016-10-9
  */
 public final class SystemKey {
 
@@ -85,7 +84,7 @@ public final class SystemKey {
      *
      * @param arrB 需加密的字节数组
      * @return 加密后的字节数组
-     * @throws Exception
+     * @throws Exception 异常
      */
     private byte[] encrypt(byte[] arrB) throws Exception {
         return encryptCipher.doFinal(arrB);
@@ -96,7 +95,7 @@ public final class SystemKey {
      *
      * @param strIn 需加密的字符串
      * @return 加密后的字符串
-     * @throws Exception
+     * @throws Exception 异常
      */
     public String encrypt(String strIn) throws Exception {
         return byteArr2HexStr(encrypt(strIn.getBytes()));
@@ -107,7 +106,7 @@ public final class SystemKey {
      *
      * @param arrB 需解密的字节数组
      * @return 解密后的字节数组
-     * @throws Exception
+     * @throws Exception 异常
      */
     private byte[] decrypt(byte[] arrB) throws Exception {
         return decryptCipher.doFinal(arrB);
@@ -118,7 +117,7 @@ public final class SystemKey {
      *
      * @param strIn 需解密的字符串
      * @return 解密后的字符串
-     * @throws Exception
+     * @throws Exception 异常
      */
     public String decrypt(String strIn) throws Exception {
         return new String(decrypt(hexStr2ByteArr(strIn)));
@@ -129,7 +128,7 @@ public final class SystemKey {
      *
      * @param arrBTmp 构成该字符串的字节数组
      * @return 生成的密钥
-     * @throws Exception
+     * @throws Exception 异常
      */
     private Key getKey(byte[] arrBTmp) throws Exception {
         // 创建一个空的8位字节数组（默认值为0）

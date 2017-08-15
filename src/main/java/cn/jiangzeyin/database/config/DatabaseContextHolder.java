@@ -1,8 +1,4 @@
 package cn.jiangzeyin.database.config;
-/**
- * Created by jiangzeyin on 2017/1/6.
- */
-
 
 import cn.jiangzeyin.system.SystemDbLog;
 import cn.jiangzeyin.util.Assert;
@@ -14,8 +10,7 @@ import java.util.Map;
 import java.util.Random;
 
 /**
- * @author jiangzeyin
- * @create 2017 01 06 17:01
+ * Created by jiangzeyin on 2017/1/6.
  */
 public final class DatabaseContextHolder {
     private DatabaseContextHolder() {
