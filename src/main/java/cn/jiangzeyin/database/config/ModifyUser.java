@@ -85,7 +85,7 @@ public class ModifyUser {
             if (StringUtils.isEmpty(column_user)) {
                 SystemDbLog.getInstance().warn(ConfigProperties.PROP_LAST_MODIFY_COLUMN_USER + " is null");
             } else {
-                Modify.columnUser = column_user;
+                Create.columnUser = column_user;
             }
         }
     }
