@@ -150,7 +150,7 @@ public class SystemColumn {
             if (array != null) {
                 for (String item : array) {
                     String[] value = item.split(":");
-                    COLUMN_DEFAULT_VALUE.put(value[0].toUpperCase(), value[1]);
+                    COLUMN_DEFAULT_VALUE.put(value[0].toLowerCase(), value[1]);
                 }
             }
         }
