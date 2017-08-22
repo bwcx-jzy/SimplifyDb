@@ -40,3 +40,39 @@ cn.jiangzeyin.database.run.write.Insert 添加数据
 cn.jiangzeyin.database.run.write.Remove 删除数据
 
 cn.jiangzeyin.database.run.write.Update 修改数据
+
+示例配置：
+
+```
+sourceTag=core,user,roles,tongji,news
+configPath=file:/ztoutiao/read.properties
+systemKey=com.yoke
+systemKeyColumn=url,username,password
+#
+lastModify.time=UNIX_TIMESTAMP(NOW())
+lastModify.class=com.yoke.entity.EditOptBaseEntity,com.yoke.entity.AdminOptBaseEntity
+lastModify.column.user=lastModifyUser
+lastModify.column.time=lastModifyTime
+#
+create.class=com.yoke.entity.AdminOptBaseEntity
+create.column.user=createUser
+#
+systemColumn.pwd=pwd
+systemColumn.active=isDelete
+systemColumn.active.value=0
+systemColumn.inActive.value=1
+#
+systemColumn.modify.status=true
+systemColumn.modify.column=modifyTime
+systemColumn.modify.time=UNIX_TIMESTAMP(NOW())
+#
+systemColumn.notPutUpdate=modifyTime,isDelete,createTime,createUser,lastModifyUser,lastModifyTime,id
+systemColumn.columnDefaultValue=modifyTime:UNIX_TIMESTAMP(NOW()),createTime:UNIX_TIMESTAMP(NOW())
+systemColumn.writeDefaultRemove=createUser,lastModifyUser,lastModifyTime,id,isDelete
+systemColumn.readDefaultRemove=pwd
+systemColumn.selectDefaultColumns=*
+#
+systemColumn.defaultRefKeyName=id
+systemColumn.defaultKeyName=id
+```
+
