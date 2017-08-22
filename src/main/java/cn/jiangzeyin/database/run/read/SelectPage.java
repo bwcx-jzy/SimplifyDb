@@ -7,7 +7,7 @@ import cn.jiangzeyin.database.util.SqlUtil;
 import cn.jiangzeyin.database.util.Util;
 import cn.jiangzeyin.system.SystemDbLog;
 import cn.jiangzeyin.util.Assert;
-import cn.jiangzeyin.util.EntityInfo;
+import cn.jiangzeyin.database.EntityInfo;
 import com.alibaba.druid.util.JdbcUtils;
 import com.alibaba.druid.util.StringUtils;
 import com.alibaba.fastjson.JSON;

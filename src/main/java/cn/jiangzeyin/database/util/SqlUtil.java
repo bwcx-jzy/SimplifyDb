@@ -1,6 +1,7 @@
 package cn.jiangzeyin.database.util;
 
 
+import cn.jiangzeyin.database.EntityInfo;
 import cn.jiangzeyin.database.Page;
 import cn.jiangzeyin.database.base.WriteBase;
 import cn.jiangzeyin.database.config.ModifyUser;
@@ -11,7 +12,6 @@ import cn.jiangzeyin.database.run.write.Insert;
 import cn.jiangzeyin.database.run.write.Remove;
 import cn.jiangzeyin.database.run.write.Update;
 import cn.jiangzeyin.util.Assert;
-import cn.jiangzeyin.util.EntityInfo;
 import cn.jiangzeyin.util.StringUtil;
 import cn.jiangzeyin.util.ref.ReflectCache;
 import cn.jiangzeyin.util.ref.ReflectUtil;
@@ -468,70 +468,26 @@ public class SqlUtil {
      * @return 表名
      * @author jiangzeyin
      */
-    public static String getTableName(Class<?> class1) {
+    private static String getTableName(Class<?> class1) {
         return getTableName(class1, true, null, false);
     }
 
-    /**
-     * 获取表明和索引
-     *
-     * @param class1 类
-     * @param index  索引
-     * @return 表名
-     * @author jiangzeyin
-     */
-    public static String getTableName(Class<?> class1, String index) {
-        return getTableName(class1, true, index, false);
-    }
-
-    /**
-     * @param class1         类
-     * @param index          索引
-     * @param isDatabaseName name
-     * @return 表名
-     * @author jiangzeyin
-     */
-    public static String getTableName(Class<?> class1, String index, boolean isDatabaseName) {
-        return getTableName(class1, true, index, isDatabaseName);
-    }
-
-    public static String getTableName(Class<?> class1, boolean isIndex) {
+    private static String getTableName(Class<?> class1, boolean isIndex) {
         return getTableName(class1, isIndex, null, false);
     }
 
     /**
      * 获取表明 和 自动加主键索引
      *
-     * @param class1       类
-     * @param isIndex      索引
-     * @param index        索引
-     * @param isDatabaName name
+     * @param class1         类
+     * @param isIndex        索引
+     * @param index          索引
+     * @param isDatabaseName 数据库名
      * @return 表名
      * @author jiangzeyin
      */
-    private static String getTableName(Class<?> class1, boolean isIndex, String index, boolean isDatabaName) {
-        String name = class1.getSimpleName();
-        if (name.endsWith("_")) {
-            name = name.substring(0, name.lastIndexOf("_"));
-        }
-        // 是否使用索引
-        if (isIndex) {
-            if (!StringUtils.isEmpty(index)) {
-                if (isDatabaName)
-                    name = String.format("z_%s.%s force index(%s)", EntityInfo.getDatabaseName(class1), name, index);
-                else
-                    name = String.format("%s force index(%s)", name, index);
-            } else {
-                if (isDatabaName)
-                    name = String.format("z_%s.%s force index(PRIMARY)", EntityInfo.getDatabaseName(class1), name);
-                else
-                    name = String.format("%s force index(PRIMARY)", name);
-            }
-        } else {
-            if (isDatabaName)
-                name = String.format("z_%s.%s", EntityInfo.getDatabaseName(class1), name);
-        }
-        return name;
+    private static String getTableName(Class<?> class1, boolean isIndex, String index, boolean isDatabaseName) {
+        return EntityInfo.getTableName(class1, isIndex, index, isDatabaseName);
     }
 
     /**

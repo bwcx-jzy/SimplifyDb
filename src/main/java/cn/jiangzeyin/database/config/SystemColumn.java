@@ -18,12 +18,18 @@ public class SystemColumn {
     private static String defaultRefKeyName = "id";
     private static String defaultKeyName = "id";
 
+    /**
+     * @return default ref key name
+     */
     public static String getDefaultRefKeyName() {
         return defaultRefKeyName;
     }
 
+    /**
+     * @return default key name
+     */
     public static String getDefaultKeyName() {
-        return defaultRefKeyName;
+        return defaultKeyName;
     }
 
     public static String getDefaultSelectColumns() {

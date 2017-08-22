@@ -4,7 +4,7 @@ import cn.jiangzeyin.database.base.Base;
 import cn.jiangzeyin.database.config.DatabaseContextHolder;
 import cn.jiangzeyin.database.util.SqlUtil;
 import cn.jiangzeyin.system.SystemDbLog;
-import cn.jiangzeyin.util.EntityInfo;
+import cn.jiangzeyin.database.EntityInfo;
 import cn.jiangzeyin.util.StringUtil;
 import com.alibaba.druid.util.JdbcUtils;
 import com.alibaba.druid.util.StringUtils;

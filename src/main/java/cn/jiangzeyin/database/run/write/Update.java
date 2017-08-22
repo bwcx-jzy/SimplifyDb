@@ -8,7 +8,7 @@ import cn.jiangzeyin.database.util.SqlAndParameters;
 import cn.jiangzeyin.database.util.SqlUtil;
 import cn.jiangzeyin.system.SystemDbLog;
 import cn.jiangzeyin.system.SystemExecutorService;
-import cn.jiangzeyin.util.EntityInfo;
+import cn.jiangzeyin.database.EntityInfo;
 import com.alibaba.druid.util.JdbcUtils;
 import com.alibaba.druid.util.StringUtils;
 import com.mysql.jdbc.exceptions.jdbc4.MySQLIntegrityConstraintViolationException;
