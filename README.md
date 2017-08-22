@@ -3,6 +3,8 @@
 
 并且也上maven 库了：[https://mvnrepository.com/artifact/cn.jiangzeyin/dbutil](https://mvnrepository.com/artifact/cn.jiangzeyin/dbutil)
 
+博客专栏：[http://blog.csdn.net/column/details/17021.html](http://blog.csdn.net/column/details/17021.html)
+
 项目特点：
 
 1.支持多数据源
