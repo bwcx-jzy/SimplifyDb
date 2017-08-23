@@ -10,7 +10,7 @@ public interface InsertEvent {
     /**
      *
      */
-    enum BeforeCode implements BaseEnum {
+    enum BeforeCode {
         CONTINUE(0, "继续", 0), END(1, "结束", -100);
 
         BeforeCode(int code, String desc, int resultCode) {

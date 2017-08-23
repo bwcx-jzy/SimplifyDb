@@ -1,5 +1,6 @@
 package cn.jiangzeyin.database.run.write;
 
+import cn.jiangzeyin.database.EntityInfo;
 import cn.jiangzeyin.database.base.WriteBase;
 import cn.jiangzeyin.database.config.DatabaseContextHolder;
 import cn.jiangzeyin.database.config.SystemColumn;
@@ -9,7 +10,6 @@ import cn.jiangzeyin.database.util.SqlAndParameters;
 import cn.jiangzeyin.database.util.SqlUtil;
 import cn.jiangzeyin.system.SystemDbLog;
 import cn.jiangzeyin.system.SystemExecutorService;
-import cn.jiangzeyin.database.EntityInfo;
 import cn.jiangzeyin.util.ref.ReflectUtil;
 import com.alibaba.druid.util.JdbcUtils;
 import com.mysql.jdbc.exceptions.jdbc4.MySQLIntegrityConstraintViolationException;
@@ -138,7 +138,7 @@ public class Insert<T> extends WriteBase<T> {
                     int beforeCode = event.beforeI(getData());
                     if (beforeCode == InsertEvent.BeforeCode.END.getCode()) {
                         SystemDbLog.getInstance().info("本次执行取消：" + getData() + " " + list);
-                        return 0L;
+                        return InsertEvent.BeforeCode.END.getResultCode();
                     }
                 }
                 SystemDbLog.getInstance().info(sqlAndParameters.getSql());
@@ -149,7 +149,6 @@ public class Insert<T> extends WriteBase<T> {
                 }
                 if (event != null)
                     event.completeI(id);
-                // complete(cout);
                 return id;
             }
             // 添加集合（多个对象）
