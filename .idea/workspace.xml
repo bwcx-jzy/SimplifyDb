@@ -2,9 +2,6 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" readonly="true" id="f49d3c7b-4f0f-4dda-848d-99d647861d88" name="Default" comment="">
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/main/resources/readme.me" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/java/readme.me" afterPath="" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/vcs.xml" afterPath="$PROJECT_DIR$/.idea/vcs.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="$PROJECT_DIR$/out/" />
@@ -484,7 +481,7 @@
       <workItem from="1503368980337" duration="9465000" />
       <workItem from="1503455391631" duration="2372000" />
       <workItem from="1503565136861" duration="174000" />
-      <workItem from="1508815621417" duration="66000" />
+      <workItem from="1508815621417" duration="88000" />
     </task>
     <task id="LOCAL-00001">
       <created>1502717080705</created>
@@ -591,11 +588,18 @@
       <option name="project" value="LOCAL" />
       <updated>1503460932269</updated>
     </task>
-    <option name="localTasksCounter" value="16" />
+    <task id="LOCAL-00016" summary="git">
+      <created>1508815699459</created>
+      <option name="number" value="00016" />
+      <option name="presentableId" value="LOCAL-00016" />
+      <option name="project" value="LOCAL" />
+      <updated>1508815699459</updated>
+    </task>
+    <option name="localTasksCounter" value="17" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="75488000" />
+    <option name="totallyTimeSpent" value="75510000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="1911" y="-9" width="1938" height="1098" extended-state="6" />
@@ -647,7 +651,8 @@
     <MESSAGE value="示例配置" />
     <MESSAGE value="增加博客专栏" />
     <MESSAGE value="去掉base enm" />
-    <option name="LAST_COMMIT_MESSAGE" value="去掉base enm" />
+    <MESSAGE value="git" />
+    <option name="LAST_COMMIT_MESSAGE" value="git" />
     <option name="CHANGE_BROWSER_SETTINGS">
       <map>
         <entry key="svn">
