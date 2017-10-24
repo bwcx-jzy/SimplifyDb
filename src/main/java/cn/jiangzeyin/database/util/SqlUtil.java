@@ -3,6 +3,7 @@ package cn.jiangzeyin.database.util;
 
 import cn.jiangzeyin.database.EntityInfo;
 import cn.jiangzeyin.database.Page;
+import cn.jiangzeyin.database.annotation.EntityConfig;
 import cn.jiangzeyin.database.base.WriteBase;
 import cn.jiangzeyin.database.config.ModifyUser;
 import cn.jiangzeyin.database.config.SystemColumn;
@@ -129,7 +130,10 @@ public class SqlUtil {
         SqlAndParameters sqlAndParameters = getWriteSql(insert);
         int isDelete = SystemColumn.Active.NO_ACTIVE;
         if (!StringUtils.isEmpty(SystemColumn.Active.getColumn())) {
-            Object isDeleteF = ReflectUtil.getFieldValue(insert.getData(), SystemColumn.Active.getColumn());
+            Object isDeleteF = null;
+            EntityConfig entityConfig = insert.getData().getClass().getAnnotation(EntityConfig.class);
+            if (entityConfig != null && entityConfig.active())
+                isDeleteF = ReflectUtil.getFieldValue(insert.getData(), SystemColumn.Active.getColumn());
             isDelete = isDeleteF == null ? SystemColumn.Active.getActiveValue() : Integer.parseInt(isDeleteF.toString());
         }
         sqlAndParameters.setSql(makeInsertToTableSql(insert.getData().getClass(), insert.getOptUserId(), sqlAndParameters.getCloums(), sqlAndParameters.getSystemMap(), isDelete));
@@ -153,7 +157,10 @@ public class SqlUtil {
             SqlAndParameters sqlAndParameters = getWriteSql(insert, object);
             int isDelete = SystemColumn.Active.NO_ACTIVE;
             if (!StringUtils.isEmpty(SystemColumn.Active.getColumn())) {
-                Object isDeleteF = ReflectUtil.getFieldValue(object, SystemColumn.Active.getColumn());
+                Object isDeleteF = null;
+                EntityConfig entityConfig = object.getClass().getAnnotation(EntityConfig.class);
+                if (entityConfig != null && entityConfig.active())
+                    isDeleteF = ReflectUtil.getFieldValue(object, SystemColumn.Active.getColumn());
                 isDelete = isDeleteF == null ? SystemColumn.Active.getActiveValue() : Integer.parseInt(isDeleteF.toString());
             }
             sqlAndParameters.setSql(makeInsertToTableSql(object.getClass(), insert.getOptUserId(), sqlAndParameters.getCloums(), sqlAndParameters.getSystemMap(), isDelete));
