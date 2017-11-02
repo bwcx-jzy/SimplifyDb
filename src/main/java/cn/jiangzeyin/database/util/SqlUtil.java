@@ -1,6 +1,7 @@
 package cn.jiangzeyin.database.util;
 
 
+import cn.jiangzeyin.StringUtil;
 import cn.jiangzeyin.database.EntityInfo;
 import cn.jiangzeyin.database.Page;
 import cn.jiangzeyin.database.annotation.EntityConfig;
@@ -13,7 +14,6 @@ import cn.jiangzeyin.database.run.write.Insert;
 import cn.jiangzeyin.database.run.write.Remove;
 import cn.jiangzeyin.database.run.write.Update;
 import cn.jiangzeyin.util.Assert;
-import cn.jiangzeyin.util.StringUtil;
 import cn.jiangzeyin.util.ref.ReflectCache;
 import cn.jiangzeyin.util.ref.ReflectUtil;
 import com.alibaba.druid.util.StringUtils;

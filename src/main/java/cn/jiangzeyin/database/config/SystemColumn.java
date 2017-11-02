@@ -1,6 +1,6 @@
 package cn.jiangzeyin.database.config;
 
-import cn.jiangzeyin.util.StringUtil;
+import cn.jiangzeyin.StringUtil;
 import com.alibaba.druid.util.StringUtils;
 
 import java.util.*;

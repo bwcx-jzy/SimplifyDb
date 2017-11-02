@@ -1,8 +1,8 @@
 package cn.jiangzeyin.database.config;
 
+import cn.jiangzeyin.StringUtil;
 import cn.jiangzeyin.system.SystemDbLog;
 import cn.jiangzeyin.util.Assert;
-import cn.jiangzeyin.util.StringUtil;
 import com.alibaba.druid.util.StringUtils;
 
 import java.util.ArrayList;
