@@ -181,22 +181,26 @@ public class SqlUtil {
     public static SqlAndParameters getUpdateSql(Update<?> update) throws Exception {
         SqlAndParameters sqlAndParameters;
         StringBuffer sbSql;
+        Class<?> class1 = update.getTclass(false);
+        if (class1 == null)
+            class1 = update.getData().getClass();
+        EntityConfig entityConfig = class1.getAnnotation(EntityConfig.class);
+        boolean isLogUpdate = true;
+        if (entityConfig != null && !entityConfig.update())
+            isLogUpdate = false;
         // 更新部分列
         if (update.getUpdate() != null) {
             sqlAndParameters = new SqlAndParameters();
-            String sql = makeUpdateToTableSql(getTableName(update.getTclass(), false), update.getUpdate());
+            String sql = makeUpdateToTableSql(getTableName(update.getTclass(), false), update.getUpdate(), isLogUpdate);
             sbSql = new StringBuffer(sql);
         } else {
             // 按照实体更新
             sqlAndParameters = getWriteSql(update);
-            String sql = makeUpdateToTableSql(getTableName(update.getData().getClass(), false), sqlAndParameters.getCloums(), sqlAndParameters.getSystemMap());
+            String sql = makeUpdateToTableSql(getTableName(update.getData().getClass(), false), sqlAndParameters.getCloums(), sqlAndParameters.getSystemMap(), isLogUpdate);
             sbSql = new StringBuffer(sql);
         }
         // 获取修改数据的操作人
         if (update.getOptUserId() != -1) {
-            Class<?> class1 = update.getTclass(false);
-            if (class1 == null)
-                class1 = update.getData().getClass();
             if (ModifyUser.Modify.isModifyClass(class1)) {
                 sbSql.append(",").append(ModifyUser.Modify.getColumnUser()).append("=").append(update.getOptUserId());
                 sbSql.append(",").append(ModifyUser.Modify.getColumnTime()).append("=").append(ModifyUser.Modify.getModifyTime()).append("");
@@ -348,10 +352,14 @@ public class SqlUtil {
                     .append(getTableName(cls, false));
         } else {
             int status = type == Remove.Type.remove ? SystemColumn.Active.getInActiveValue() : SystemColumn.Active.getActiveValue();
+            EntityConfig entityConfig = cls.getAnnotation(EntityConfig.class);
+            boolean isLogUpdate = true;
+            if (entityConfig != null && !entityConfig.update())
+                isLogUpdate = false;
             sql.append("update ")//
                     .append(getTableName(cls, false))//
                     .append(String.format(" set " + SystemColumn.Active.getColumn() + "=%d", status));
-            if (SystemColumn.Modify.isStatus()) {
+            if (isLogUpdate && SystemColumn.Modify.isStatus()) {
                 //,modifyTime=UNIX_TIMESTAMP(NOW())
                 sql.append(",").append(SystemColumn.Modify.getColumn()).append("=").append(SystemColumn.Modify.getTime());
             }
@@ -584,7 +592,7 @@ public class SqlUtil {
      * @return 结果
      * @author jiangzeyin
      */
-    private static String makeUpdateToTableSql(String tableName, Collection<String> names, HashMap<String, String> systemMap) {
+    private static String makeUpdateToTableSql(String tableName, Collection<String> names, HashMap<String, String> systemMap, boolean isLogUpdate) {
         StringBuilder sql = new StringBuilder() //
                 .append("update ") //
                 .append(tableName) //
@@ -604,7 +612,7 @@ public class SqlUtil {
                 sql.append(va);
             nameCount++;
         }
-        if (SystemColumn.Modify.isStatus()) {
+        if (isLogUpdate && SystemColumn.Modify.isStatus()) {
             String time = SystemColumn.Modify.getColumn() + "=" + SystemColumn.Modify.getTime();
             if (sql.indexOf(time) == -1)
                 sql.append(",").append(time);
@@ -620,7 +628,7 @@ public class SqlUtil {
      * @return 结果
      * @author jiangzeyin
      */
-    private static String makeUpdateToTableSql(String tableName, HashMap<String, Object> columns) {
+    private static String makeUpdateToTableSql(String tableName, HashMap<String, Object> columns, boolean isLogUpdate) {
         StringBuilder sql = new StringBuilder() //
                 .append("update ") //
                 .append(tableName) //
@@ -659,7 +667,7 @@ public class SqlUtil {
             }
             nameCount++;
         }
-        if (SystemColumn.Modify.isStatus()) {
+        if (isLogUpdate && SystemColumn.Modify.isStatus()) {
             sql.append(",").append(SystemColumn.Modify.getColumn()).append("=").append(SystemColumn.Modify.getTime());
         }
         return sql.toString();

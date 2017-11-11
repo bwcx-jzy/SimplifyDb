@@ -11,4 +11,6 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface EntityConfig {
     boolean active() default true;
+
+    boolean update() default true;
 }

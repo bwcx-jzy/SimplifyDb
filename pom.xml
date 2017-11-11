@@ -19,6 +19,7 @@
         <mysql.version>5.1.40</mysql.version>
         <druid.version>1.1.2</druid.version>
         <fastjson.version>1.2.40</fastjson.version>
+        <simple-util>1.0.0</simple-util>
     </properties>
 
     <dependencies>
@@ -43,7 +44,7 @@
         <dependency>
             <groupId>cn.jiangzeyin</groupId>
             <artifactId>simple-util</artifactId>
-            <version>1.0.0</version>
+            <version>${simple-util}</version>
         </dependency>
     </dependencies>
 
