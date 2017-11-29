@@ -1,5 +1,6 @@
 package cn.jiangzeyin.database.run.write;
 
+import cn.jiangzeyin.database.EntityInfo;
 import cn.jiangzeyin.database.base.WriteBase;
 import cn.jiangzeyin.database.config.DatabaseContextHolder;
 import cn.jiangzeyin.database.config.SystemColumn;
@@ -8,10 +9,8 @@ import cn.jiangzeyin.database.util.SqlAndParameters;
 import cn.jiangzeyin.database.util.SqlUtil;
 import cn.jiangzeyin.system.SystemDbLog;
 import cn.jiangzeyin.system.SystemExecutorService;
-import cn.jiangzeyin.database.EntityInfo;
 import com.alibaba.druid.util.JdbcUtils;
 import com.alibaba.druid.util.StringUtils;
-import com.mysql.jdbc.exceptions.jdbc4.MySQLIntegrityConstraintViolationException;
 
 import javax.sql.DataSource;
 import java.util.Collections;
@@ -156,10 +155,8 @@ public class Update<T> extends WriteBase<T> {
     public void run() {
         setAsync(true);
         setThrowable(new Throwable());
-        SystemExecutorService.execute(() -> {
-            // TODO Auto-generated method stub
-            syncRun();
-        });
+        // TODO Auto-generated method stub
+        SystemExecutorService.execute(this::syncRun);
     }
 
     /**
@@ -180,12 +177,6 @@ public class Update<T> extends WriteBase<T> {
             if (event != null)
                 event.completeU(getKeyValue());
             return count;
-        } catch (MySQLIntegrityConstraintViolationException e) {
-            // 数据操作外键约束错误
-            SystemDbLog.getInstance().error(e.getLocalizedMessage() + "主键约束", e);
-            if (event != null)
-                event.errorU(e);
-            return -1L;
         } catch (Exception e) {
             // TODO: handle exception
             isThrows(e);

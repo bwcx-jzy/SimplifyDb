@@ -1,6 +1,5 @@
 package cn.jiangzeyin.database.util;
 
-
 import cn.jiangzeyin.StringUtil;
 import cn.jiangzeyin.database.EntityInfo;
 import cn.jiangzeyin.database.Page;
@@ -99,7 +98,7 @@ public class SqlUtil {
         }
         SqlAndParameters sqlAndParameters = new SqlAndParameters();
         sqlAndParameters.setParameters(values);
-        sqlAndParameters.setCloums(cloums);
+        sqlAndParameters.setColumns(cloums);
         sqlAndParameters.setSystemMap(systemMap);
         return sqlAndParameters;
     }
@@ -136,7 +135,7 @@ public class SqlUtil {
                 isDelete = isDeleteF == null ? SystemColumn.Active.getActiveValue() : Integer.parseInt(isDeleteF.toString());
             }
         }
-        sqlAndParameters.setSql(makeInsertToTableSql(insert.getData().getClass(), insert.getOptUserId(), sqlAndParameters.getCloums(), sqlAndParameters.getSystemMap(), isDelete));
+        sqlAndParameters.setSql(makeInsertToTableSql(insert.getData().getClass(), insert.getOptUserId(), sqlAndParameters.getColumns(), sqlAndParameters.getSystemMap(), isDelete));
         return sqlAndParameters;
     }
 
@@ -163,7 +162,7 @@ public class SqlUtil {
                     isDelete = isDeleteF == null ? SystemColumn.Active.getActiveValue() : Integer.parseInt(isDeleteF.toString());
                 }
             }
-            sqlAndParameters.setSql(makeInsertToTableSql(object.getClass(), insert.getOptUserId(), sqlAndParameters.getCloums(), sqlAndParameters.getSystemMap(), isDelete));
+            sqlAndParameters.setSql(makeInsertToTableSql(object.getClass(), insert.getOptUserId(), sqlAndParameters.getColumns(), sqlAndParameters.getSystemMap(), isDelete));
             andParameters[i] = sqlAndParameters;
         }
         return andParameters;
@@ -196,7 +195,7 @@ public class SqlUtil {
         } else {
             // 按照实体更新
             sqlAndParameters = getWriteSql(update);
-            String sql = makeUpdateToTableSql(getTableName(update.getData().getClass(), false), sqlAndParameters.getCloums(), sqlAndParameters.getSystemMap(), isLogUpdate);
+            String sql = makeUpdateToTableSql(getTableName(update.getData().getClass(), false), sqlAndParameters.getColumns(), sqlAndParameters.getSystemMap(), isLogUpdate);
             sbSql = new StringBuffer(sql);
         }
         // 获取修改数据的操作人

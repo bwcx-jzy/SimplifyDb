@@ -1,12 +1,12 @@
 package cn.jiangzeyin.database.run.write;
 
+import cn.jiangzeyin.database.EntityInfo;
 import cn.jiangzeyin.database.base.Base;
 import cn.jiangzeyin.database.config.DatabaseContextHolder;
 import cn.jiangzeyin.database.config.SystemColumn;
 import cn.jiangzeyin.database.util.SqlUtil;
 import cn.jiangzeyin.system.SystemDbLog;
 import cn.jiangzeyin.system.SystemExecutorService;
-import cn.jiangzeyin.database.EntityInfo;
 import com.alibaba.druid.util.JdbcUtils;
 
 import javax.sql.DataSource;
@@ -101,13 +101,8 @@ public class Remove<T> extends Base<T> {
      * @author jiangzeyin
      */
     public void run() {
-        SystemExecutorService.execute(() -> {
-            // TODO Auto-generated method stub
-            int count = syncRun();
-            if (count <= 0) {
-                SystemDbLog.getInstance().warn(runSql + " yx " + count);
-            }
-        });
+        // TODO Auto-generated method stub
+        SystemExecutorService.execute(this::syncRun);
     }
 
     /**

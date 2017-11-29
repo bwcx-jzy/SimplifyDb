@@ -12,7 +12,6 @@ import cn.jiangzeyin.system.SystemDbLog;
 import cn.jiangzeyin.system.SystemExecutorService;
 import cn.jiangzeyin.util.ref.ReflectUtil;
 import com.alibaba.druid.util.JdbcUtils;
-import com.mysql.jdbc.exceptions.jdbc4.MySQLIntegrityConstraintViolationException;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
@@ -44,6 +43,14 @@ public class Insert<T> extends WriteBase<T> {
             }
         }
         return event;
+    }
+
+    private InsertEvent getEvent(Object data) {
+        if (event != null)
+            return event;
+        if (data != null && InsertEvent.class.isAssignableFrom(data.getClass()))
+            return (InsertEvent) data;
+        return null;
     }
 
     /**
@@ -110,7 +117,7 @@ public class Insert<T> extends WriteBase<T> {
             // TODO Auto-generated method stub
             long id = syncRun();
             if (id <= 0) {
-                SystemDbLog.getInstance().warn(getData() + "异步执行失败：" + id);
+                SystemDbLog.getInstance().info(getData() + "异步执行失败：" + id);
             }
         });
     }
@@ -129,11 +136,6 @@ public class Insert<T> extends WriteBase<T> {
             getEvent();
             // 单个对象添加
             if (this.list == null && getData() != null) {
-                String tag = EntityInfo.getDatabaseName(getData());
-                SqlAndParameters sqlAndParameters = SqlUtil.getInsertSql(getWriteBase());
-                DataSource dataSource = DatabaseContextHolder.getWriteDataSource(tag);
-                // System.out.println(sqlAndParameters.getSql());
-                setRunSql(sqlAndParameters.getSql());
                 if (event != null) {
                     int beforeCode = event.beforeI(getData());
                     if (beforeCode == InsertEvent.BeforeCode.END.getCode()) {
@@ -141,6 +143,10 @@ public class Insert<T> extends WriteBase<T> {
                         return InsertEvent.BeforeCode.END.getResultCode();
                     }
                 }
+                String tag = EntityInfo.getDatabaseName(getData());
+                SqlAndParameters sqlAndParameters = SqlUtil.getInsertSql(getWriteBase());
+                DataSource dataSource = DatabaseContextHolder.getWriteDataSource(tag);
+                setRunSql(sqlAndParameters.getSql());
                 SystemDbLog.getInstance().info(sqlAndParameters.getSql());
                 Long id = JdbcUtil.executeInsert(dataSource, sqlAndParameters.getSql(), sqlAndParameters.getParameters());
                 T data = getData();
@@ -160,14 +166,24 @@ public class Insert<T> extends WriteBase<T> {
                     connection = DatabaseContextHolder.getWriteConnection(tag);
                     setRunSql("more:" + sqlAndParameters[0].getSql());
                     for (int i = 0; i < sqlAndParameters.length; i++) {
+                        T data = this.list.get(i);
+                        if (data == null)
+                            continue;
+                        InsertEvent insertEvent = getEvent(data);
+                        if (insertEvent != null) {
+                            int beforeCode = insertEvent.beforeI(data);
+                            if (beforeCode == InsertEvent.BeforeCode.END.getCode()) {
+                                SystemDbLog.getInstance().info("本次执行取消：" + data + " " + list);
+                                continue;
+                            }
+                        }
                         SystemDbLog.getInstance().info(sqlAndParameters[i].getSql());
                         Long id = JdbcUtil.executeInsert(connection, sqlAndParameters[i].getSql(), sqlAndParameters[i].getParameters());
                         if (id < 1)
                             return -1;
-                        T data = this.list.get(i);
-                        if (data != null) {
-                            ReflectUtil.setFieldValue(data, SystemColumn.getDefaultKeyName(), id);
-                        }
+                        ReflectUtil.setFieldValue(data, SystemColumn.getDefaultKeyName(), id);
+                        if (insertEvent != null)
+                            insertEvent.completeI(id);
                     }
                     return 1;
                 } finally {
@@ -176,12 +192,6 @@ public class Insert<T> extends WriteBase<T> {
                 }
             }
             return -1;
-        } catch (MySQLIntegrityConstraintViolationException e) {
-            // TODO: handle exception
-            SystemDbLog.getInstance().error(e.getLocalizedMessage() + "主键约束", e);
-            if (event != null)
-                event.errorI(e);
-            return -1L;
         } catch (Exception e) {
             // TODO: handle exception
             isThrows(e);

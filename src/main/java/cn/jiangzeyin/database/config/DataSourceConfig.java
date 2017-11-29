@@ -1,13 +1,13 @@
 package cn.jiangzeyin.database.config;
 
 
+import cn.jiangzeyin.StringUtil;
 import cn.jiangzeyin.system.SystemDbLog;
 import cn.jiangzeyin.system.SystemKey;
 import cn.jiangzeyin.util.Assert;
 import cn.jiangzeyin.util.PropertiesParser;
 import cn.jiangzeyin.util.ResourceUtil;
 import com.alibaba.druid.pool.DruidDataSourceFactory;
-import com.mysql.jdbc.StringUtils;
 
 import javax.sql.DataSource;
 import java.io.IOException;
@@ -28,7 +28,7 @@ public final class DataSourceConfig {
     private static PropertiesParser systemPropertiesParser;
 
     public static void init(String propertyPath) throws Exception {
-        if (StringUtils.isNullOrEmpty(propertyPath))
+        if (StringUtil.isEmpty(propertyPath))
             throw new IllegalArgumentException("propertyPath is null ");
         InputStream inputStream = ResourceUtil.getResource(propertyPath);
         systemPropertiesParser = new PropertiesParser(inputStream);

@@ -11,15 +11,19 @@ import java.util.List;
 public class SqlAndParameters {
     private String sql;
     private List<Object> parameters;
-    private List<String> cloums;
+    private List<String> columns;
     private HashMap<String, String> systemMap;
 
-    public List<String> getCloums() {
-        return cloums;
+    public void setSql(String sql) {
+        this.sql = sql;
     }
 
-    public void setCloums(List<String> cloums) {
-        this.cloums = cloums;
+    public List<String> getColumns() {
+        return columns;
+    }
+
+    public void setColumns(List<String> columns) {
+        this.columns = columns;
     }
 
     public HashMap<String, String> getSystemMap() {
