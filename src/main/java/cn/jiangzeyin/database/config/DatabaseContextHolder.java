@@ -57,26 +57,6 @@ public final class DatabaseContextHolder {
         SystemDbLog.getInstance().info(" 数据库操作：" + databaseOptType.toString());
     }
 
-//    public static void setThreadLocal(String tag) {
-//        threadLocal.set(tag);
-//    }
-
-
-//    public void setTargetDataSources(Map<Object, Object> targetDataSources) {
-//        //    super.setTargetDataSources(targetDataSources);
-//        DatabaseContextHolder.targetDataSourcesMap = targetDataSources;
-//    }
-
-//    @Override
-//    protected Object determineCurrentLookupKey() {
-//        return threadLocal.get();
-//    }
-//
-//    @Override
-//    protected DataSource determineTargetDataSource() {
-//        return super.determineTargetDataSource();
-//    }
-
     private static Map<String, DataSource> randMap() {
         int index = random.nextInt(MAPS.length);
         threadLocal.set(tagNames[index]);
@@ -85,9 +65,10 @@ public final class DatabaseContextHolder {
 
     public static DataSource getReadDataSource(String tag) {
         DataSource dataSource = null;
-        if (databaseOptType == DatabaseOptType.One)
+        if (databaseOptType == DatabaseOptType.One) {
             dataSource = targetDataSourcesMap.get(tag);
-        else if (databaseOptType == DatabaseOptType.Two) {
+            threadLocal.set(tagNames[0]);
+        } else if (databaseOptType == DatabaseOptType.Two) {
             dataSource = MAPS[1].get(tag);
             threadLocal.set(tagNames[1]);
         } else if (databaseOptType == DatabaseOptType.More)
@@ -115,9 +96,10 @@ public final class DatabaseContextHolder {
 
     public static DataSource getWriteDataSource(String tag) {
         DataSource dataSource = null;
-        if (databaseOptType == DatabaseOptType.One)
+        if (databaseOptType == DatabaseOptType.One) {
             dataSource = targetDataSourcesMap.get(tag);
-        else if (databaseOptType == DatabaseOptType.Two) {
+            threadLocal.set(tagNames[0]);
+        } else if (databaseOptType == DatabaseOptType.Two) {
             dataSource = targetDataSourcesMap.get(tag);
             threadLocal.set(tagNames[0]);
         } else if (databaseOptType == DatabaseOptType.More)
@@ -125,10 +107,6 @@ public final class DatabaseContextHolder {
         Assert.notNull(dataSource, "没有找到对应数据源：" + tag);
         return dataSource;
     }
-
-//    public static Connection getReadConnection(String tag) throws SQLException {
-//        return getReadDataSource(tag).getConnection();
-//    }
 
     public static Connection getWriteConnection(String tag) throws SQLException {
         return getWriteDataSource(tag).getConnection();

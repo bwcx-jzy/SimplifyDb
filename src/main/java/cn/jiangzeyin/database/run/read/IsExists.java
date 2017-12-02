@@ -111,7 +111,7 @@ public class IsExists<T> extends Base<T> {
      */
     public boolean run() {
         Class runClass = getTclass();
-        synchronized (runClass) {
+        synchronized (runClass.getName()) {
             try {
                 if (StringUtils.isEmpty(getKeyColumn()))
                     throw new IllegalArgumentException(" keycolumn 不能为null");
@@ -119,7 +119,6 @@ public class IsExists<T> extends Base<T> {
                 if (StringUtils.isEmpty(tag))
                     tag = EntityInfo.getDatabaseName(runClass);
                 String sql = SqlUtil.getIsExistsSql(runClass, getKeyColumn(), getWhere(), getColumn(), getLimit());
-                //SystemLog.SystemLog(LogType.sql, sql);
                 setRunSql(sql);
                 SystemDbLog.getInstance().info(sql);
                 DataSource dataSource = DatabaseContextHolder.getReadDataSource(tag);
@@ -132,16 +131,13 @@ public class IsExists<T> extends Base<T> {
                     throw new RuntimeException("查询结果没有countSum");
                 if (object instanceof Long) {
                     Long count = (Long) object;
-                    if (count > 0L)
-                        return true;
-                } else if (object instanceof Integer) {
-                    Integer count = (Integer) object;
-                    if (count > 0)
-                        return true;
-                } else {
-                    throw new RuntimeException("查询结果类型异常" + object);
+                    return count > 0L;
                 }
-                return false;
+                if (object instanceof Integer) {
+                    Integer count = (Integer) object;
+                    return count > 0;
+                }
+                throw new RuntimeException("查询结果类型异常" + object);
             } catch (Exception e) {
                 // TODO: handle exception
                 isThrows(e);
@@ -162,7 +158,7 @@ public class IsExists<T> extends Base<T> {
      */
     public Object runColumn() {
         Class runClass = getTclass();
-        synchronized (runClass) {
+        synchronized (runClass.getName()) {
             try {
                 if (StringUtils.isEmpty(getKeyColumn()))
                     throw new IllegalArgumentException(" keyColumn 不能为null");
@@ -181,10 +177,11 @@ public class IsExists<T> extends Base<T> {
                 String[] keys = StringUtil.stringToArray(getColumn());
                 if (keys == null || keys.length <= 0) {
                     return map.get("countSum");
-                } else if (keys.length == 1) {
+                }
+                if (keys.length == 1) {
                     return map.get(keys[0]);
-                } else
-                    return map;
+                }
+                return map;
             } catch (Exception e) {
                 // TODO: handle exception
                 isThrows(e);
