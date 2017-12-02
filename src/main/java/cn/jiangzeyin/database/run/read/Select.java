@@ -162,7 +162,7 @@ public class Select<T> extends ReadBase<T> {
         setResultType(resultType);
     }
 
-    public <T> T run(int resultType) {
+    public T run(int resultType) {
         setResultType(resultType);
         return run();
     }
@@ -177,12 +177,9 @@ public class Select<T> extends ReadBase<T> {
         try {
             if (getResultType() == Result.JsonObject)
                 setLimitCount(1);
-
             String tag = getTag() == null ? EntityInfo.getDatabaseName(getTclass()) : getTag();
             setTag(tag);
             DataSource dataSource = DatabaseContextHolder.getReadDataSource(tag);
-            //setConnection(connection);
-
             String runSql = getSql();
             if (StringUtils.isEmpty(runSql)) {
                 runSql = SqlUtil.getSelectSql(this);
@@ -192,7 +189,7 @@ public class Select<T> extends ReadBase<T> {
             List<Map<String, Object>> result = JdbcUtils.executeQuery(dataSource, runSql, getParameters());
             switch (getResultType()) {
                 case Result.JsonArray:
-                    return (T) JSON.parseArray(JSON.toJSONString(result));// new JSONArray(result);
+                    return (T) JSON.toJSON(result);
                 case Result.JsonObject: {
                     if (result == null || result.size() < 1)
                         return null;
@@ -243,8 +240,7 @@ public class Select<T> extends ReadBase<T> {
      * @return 结果
      * @author jiangzeyin
      */
-    @SuppressWarnings("hiding")
-    public <T> T runOne() {
+    public T runOne() {
         setLimitCount(1);
         List<T> list = run();
         if (list == null)

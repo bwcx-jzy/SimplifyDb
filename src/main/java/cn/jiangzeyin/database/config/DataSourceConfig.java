@@ -97,7 +97,7 @@ public final class DataSourceConfig {
             int port = Integer.parseInt(ipInfo[1]);
             boolean flag = isConnect(ipInfo[0], port);
             if (!flag) {
-                SystemDbLog.getInstance().warn(ip + "not Connect continue");
+                SystemDbLog.getInstance().warn(ip + "not Connect continue   " + tag);
                 continue;
             }
             properties_tag.setProperty(DruidDataSourceFactory.PROP_URL, url);
