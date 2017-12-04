@@ -1,10 +1,9 @@
 package cn.jiangzeyin.system;
 
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.ThreadFactory;
-import java.util.concurrent.ThreadPoolExecutor;
+import com.alibaba.fastjson.JSONObject;
+
+import java.util.concurrent.*;
 import java.util.concurrent.ThreadPoolExecutor.CallerRunsPolicy;
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -14,6 +13,8 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 public class DBExecutorService {
     private final static ThreadPoolExecutor THREAD_POOL_EXECUTOR = newCachedThreadPool();
+    private final static BlockingQueue<Runnable> BLOCKING_QUEUE = new LinkedBlockingQueue<>();
+    private final static ProxyHeader PROXY_HEADER = new ProxyHeader();
 
     /**
      * 创建一个线程池
@@ -22,15 +23,30 @@ public class DBExecutorService {
      * @author jiangzeyin
      */
     private static ThreadPoolExecutor newCachedThreadPool() {
-        ThreadPoolExecutor executorService = new ThreadPoolExecutor(50, Integer.MAX_VALUE,
-                60L, TimeUnit.SECONDS,
-                new LinkedBlockingQueue<>());
-        // 提交线程池失败 处理方法
-        executorService.setRejectedExecutionHandler(new CallerRunsPolicy());
-        // 创建线程方法
         SystemThreadFactory systemThreadFactory = new SystemThreadFactory("dbutil");
-        executorService.setThreadFactory(systemThreadFactory);
-        return executorService;
+        assert BLOCKING_QUEUE != null;
+        assert PROXY_HEADER != null;
+        return new ThreadPoolExecutor(50,
+                Integer.MAX_VALUE,
+                60L,
+                TimeUnit.SECONDS,
+                BLOCKING_QUEUE, systemThreadFactory,
+                PROXY_HEADER);
+    }
+
+    public static JSONObject getPoolRunInfo() {
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("name", "dbutil");
+        jsonObject.put("activeCount", THREAD_POOL_EXECUTOR.getActiveCount());
+        jsonObject.put("maximumPoolSize", THREAD_POOL_EXECUTOR.getMaximumPoolSize());
+        jsonObject.put("corePoolSize", THREAD_POOL_EXECUTOR.getCorePoolSize());
+        jsonObject.put("largestPoolSize", THREAD_POOL_EXECUTOR.getLargestPoolSize());
+        jsonObject.put("completedTaskCount", THREAD_POOL_EXECUTOR.getCompletedTaskCount());
+        jsonObject.put("taskCount", THREAD_POOL_EXECUTOR.getTaskCount());
+        jsonObject.put("poolSize", THREAD_POOL_EXECUTOR.getPoolSize());
+        jsonObject.put("queueSize", BLOCKING_QUEUE.size());
+        jsonObject.put("rejectedExecutionCount", PROXY_HEADER.rejectedExecutionCount.get());
+        return jsonObject;
     }
 
     /**
@@ -58,13 +74,6 @@ public class DBExecutorService {
         private final AtomicInteger threadNumber = new AtomicInteger(1);
         private final String namePrefix;
 
-        /**
-         * @return the threadNumber
-         */
-        public int getThreadNumber() {
-            return threadNumber.get();
-        }
-
         SystemThreadFactory(String poolName) {
             if (poolName == null || poolName.isEmpty())
                 poolName = "pool";
@@ -78,9 +87,19 @@ public class DBExecutorService {
             Thread t = new Thread(group, r, namePrefix + threadNumber.getAndIncrement(), 0);
             if (t.isDaemon())
                 t.setDaemon(false);
-            if (t.getPriority() != Thread.NORM_PRIORITY)
-                t.setPriority(Thread.NORM_PRIORITY);
+            if (t.getPriority() != Thread.MAX_PRIORITY)
+                t.setPriority(Thread.MAX_PRIORITY);
             return t;
+        }
+    }
+
+    private static class ProxyHeader extends CallerRunsPolicy {
+        private final AtomicInteger rejectedExecutionCount = new AtomicInteger(0);
+
+        @Override
+        public void rejectedExecution(Runnable r, ThreadPoolExecutor e) {
+            rejectedExecutionCount.getAndIncrement();
+            super.rejectedExecution(r, e);
         }
     }
 }
