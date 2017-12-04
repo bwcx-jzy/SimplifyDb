@@ -185,7 +185,7 @@ public class Select<T> extends ReadBase<T> {
                 runSql = SqlUtil.getSelectSql(this);
             }
             setRunSql(runSql);
-            SystemDbLog.getInstance().info(runSql);
+            SystemDbLog.getInstance().info(getTransferLog() + runSql);
             List<Map<String, Object>> result = JdbcUtils.executeQuery(dataSource, runSql, getParameters());
             switch (getResultType()) {
                 case Result.JsonArray:
@@ -227,9 +227,8 @@ public class Select<T> extends ReadBase<T> {
             // TODO: handle exception
             isThrows(e);
         } finally {
-            recycling();
-            //JdbcUtils.close(getConnection());
             runEnd();
+            recycling();
         }
         return null;
     }

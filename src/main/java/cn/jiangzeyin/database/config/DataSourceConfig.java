@@ -21,6 +21,12 @@ import java.util.*;
  * Created by jiangzeyin on 2017/1/6.
  */
 public final class DataSourceConfig {
+    private static boolean active;
+
+    public static boolean isActive() {
+        return active;
+    }
+
     private DataSourceConfig() {
 
     }
@@ -32,6 +38,8 @@ public final class DataSourceConfig {
             throw new IllegalArgumentException("propertyPath is null ");
         InputStream inputStream = ResourceUtil.getResource(propertyPath);
         systemPropertiesParser = new PropertiesParser(inputStream);
+        String active = systemPropertiesParser.getStringProperty(ConfigProperties.ACTIVE, "dev");
+        DataSourceConfig.active = "prod".equals(active);
         String[] sourceTags = systemPropertiesParser.getStringArrayProperty(ConfigProperties.PROP_SOURCE_TAG);
         Assert.notNull(sourceTags, "sourceTag is blank");
         if (sourceTags.length < 1) {
@@ -55,7 +63,7 @@ public final class DataSourceConfig {
         SystemDbLog.getInstance().info("初始化连接数据库");
         if (configPaths.length == 1) {
             Map<String, DataSource> concurrentHashMap = initConfigPath(sourceTags, configPaths[0]);
-            DatabaseContextHolder.init(concurrentHashMap);
+            DatabaseContextHolder.init(concurrentHashMap, configPaths[0]);
         } else {
             List<Map<String, DataSource>> mapList = new ArrayList<>();
             List<String> configList = new ArrayList<>();

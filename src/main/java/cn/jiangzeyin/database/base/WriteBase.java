@@ -92,5 +92,6 @@ public abstract class WriteBase<T> extends Base<T> {
         // TODO Auto-generated method stub
         super.recycling();
         data = null;
+        throwable = null;
     }
 }

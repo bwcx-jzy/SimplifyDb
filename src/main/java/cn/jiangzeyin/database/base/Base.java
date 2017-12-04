@@ -1,10 +1,12 @@
 package cn.jiangzeyin.database.base;
 
 
+import cn.jiangzeyin.database.config.DataSourceConfig;
 import cn.jiangzeyin.database.config.DatabaseContextHolder;
 import cn.jiangzeyin.database.config.SystemColumn;
 import cn.jiangzeyin.system.SystemDbLog;
 import cn.jiangzeyin.system.SystemSessionInfo;
+import cn.jiangzeyin.util.Assert;
 import cn.jiangzeyin.util.ref.ReflectUtil;
 import com.alibaba.druid.util.StringUtils;
 
@@ -28,6 +30,7 @@ public abstract class Base<T> {
     private int optUserId; // 操作人
     private long runTime;
     protected String runSql;
+    protected String tempTransferLog;
 
     private String tagName;
 
@@ -181,9 +184,7 @@ public abstract class Base<T> {
     public void isThrows(Throwable t) {
         if (isThrows)
             throw new RuntimeException(t);
-        else {
-            SystemDbLog.getInstance().error("执行数据库操作", t);
-        }
+        SystemDbLog.getInstance().error("执行数据库操作", t);
     }
 
     /**
@@ -194,9 +195,28 @@ public abstract class Base<T> {
     protected void recycling() {
         refMap = null;
         refKey = null;
+        refWhere = null;
         remove = null;
         tag = null;
         tclass = null;
         optUserId = 0;
+        runSql = null;
+        runTime = 0L;
+        tagName = null;
+    }
+
+    protected String getTransferLog() {
+        if (tempTransferLog != null)
+            return tempTransferLog;
+        return DataSourceConfig.isActive() ? "" : getLine();
+    }
+
+    private String getLine() {
+        StackTraceElement stackTraceElement = Thread.currentThread().getStackTrace()[4];
+        return String.format("[%s-%s-%s]", Assert.simplifyClassName(stackTraceElement.getClassName()), stackTraceElement.getMethodName(), stackTraceElement.getLineNumber());
+    }
+
+    protected void getAsyncLog() {
+        tempTransferLog = getLine();
     }
 }

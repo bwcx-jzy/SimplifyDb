@@ -6,7 +6,7 @@ import cn.jiangzeyin.database.config.DatabaseContextHolder;
 import cn.jiangzeyin.database.config.SystemColumn;
 import cn.jiangzeyin.database.util.SqlUtil;
 import cn.jiangzeyin.system.SystemDbLog;
-import cn.jiangzeyin.system.SystemExecutorService;
+import cn.jiangzeyin.system.DBExecutorService;
 import com.alibaba.druid.util.JdbcUtils;
 
 import javax.sql.DataSource;
@@ -102,7 +102,8 @@ public class Remove<T> extends Base<T> {
      */
     public void run() {
         // TODO Auto-generated method stub
-        SystemExecutorService.execute(this::syncRun);
+        getAsyncLog();
+        DBExecutorService.execute(this::syncRun);
     }
 
     /**
@@ -113,7 +114,7 @@ public class Remove<T> extends Base<T> {
         try {
             String tag = EntityInfo.getDatabaseName(getTclass());
             String sql = SqlUtil.getRemoveSql(getTclass(), type, getIds(), getWhere());
-            SystemDbLog.getInstance().info(sql);
+            SystemDbLog.getInstance().info(getTransferLog() + sql);
             setRunSql(sql);
             DataSource dataSource = DatabaseContextHolder.getWriteDataSource(tag);
             return JdbcUtils.executeUpdate(dataSource, sql, getParameters());
@@ -121,11 +122,11 @@ public class Remove<T> extends Base<T> {
             // TODO: handle exception
             isThrows(e);
         } finally {
+            runEnd();
             recycling();
             parameters = null;
             ids = null;
             where = null;
-            runEnd();
         }
         return 0;
     }

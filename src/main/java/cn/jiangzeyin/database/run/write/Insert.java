@@ -9,7 +9,7 @@ import cn.jiangzeyin.database.util.JdbcUtil;
 import cn.jiangzeyin.database.util.SqlAndParameters;
 import cn.jiangzeyin.database.util.SqlUtil;
 import cn.jiangzeyin.system.SystemDbLog;
-import cn.jiangzeyin.system.SystemExecutorService;
+import cn.jiangzeyin.system.DBExecutorService;
 import cn.jiangzeyin.util.ref.ReflectUtil;
 import com.alibaba.druid.util.JdbcUtils;
 
@@ -113,7 +113,8 @@ public class Insert<T> extends WriteBase<T> {
     public void run() {
         setAsync(true);
         setThrowable(new Throwable());
-        SystemExecutorService.execute(() -> {
+        getAsyncLog();
+        DBExecutorService.execute(() -> {
             // TODO Auto-generated method stub
             long id = syncRun();
             if (id <= 0) {
@@ -147,7 +148,7 @@ public class Insert<T> extends WriteBase<T> {
                 SqlAndParameters sqlAndParameters = SqlUtil.getInsertSql(getWriteBase());
                 DataSource dataSource = DatabaseContextHolder.getWriteDataSource(tag);
                 setRunSql(sqlAndParameters.getSql());
-                SystemDbLog.getInstance().info(sqlAndParameters.getSql());
+                SystemDbLog.getInstance().info(getTransferLog() + sqlAndParameters.getSql());
                 Long id = JdbcUtil.executeInsert(dataSource, sqlAndParameters.getSql(), sqlAndParameters.getParameters());
                 T data = getData();
                 if (data != null) {
@@ -198,8 +199,8 @@ public class Insert<T> extends WriteBase<T> {
             if (event != null)
                 event.errorI(e);
         } finally {
-            recycling();
             runEnd();
+            recycling();
         }
         return 0L;
     }

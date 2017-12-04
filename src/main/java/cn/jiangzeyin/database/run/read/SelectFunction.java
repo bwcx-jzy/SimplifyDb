@@ -41,7 +41,7 @@ public class SelectFunction<T> extends ReadBase<T> {
             DataSource dataSource = DatabaseContextHolder.getReadDataSource(getTag());
             String sql = SqlUtil.function(getName(), getParameters());
             setRunSql(sql);
-            SystemDbLog.getInstance().info(sql);
+            SystemDbLog.getInstance().info(getTransferLog() + sql);
             List<Map<String, Object>> list = JdbcUtils.executeQuery(dataSource, sql, getParameters());
             if (list == null || list.size() < 1)
                 return null;
@@ -54,8 +54,8 @@ public class SelectFunction<T> extends ReadBase<T> {
             // TODO: handle exception
             isThrows(e);
         } finally {
-            recycling();
             runEnd();
+            recycling();
         }
         return null;
     }

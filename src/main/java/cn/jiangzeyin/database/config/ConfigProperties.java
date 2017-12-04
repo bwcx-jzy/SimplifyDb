@@ -10,7 +10,9 @@ public class ConfigProperties {
     public static final String PROP_CONFIG_PATH = "configPath";
 
     public static final String PROP_SYSTEM_KEY = "systemKey";
-
+    // 运行模式  dev  prod
+    public static final String ACTIVE = "active";
+    //
     public static final String PROP_SYSTEM_KEY_COLUMN = "systemKeyColumn";
     // 修改
     public static final String PROP_LAST_MODIFY = "lastModify";

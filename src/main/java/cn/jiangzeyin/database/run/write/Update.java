@@ -8,7 +8,7 @@ import cn.jiangzeyin.database.event.UpdateEvent;
 import cn.jiangzeyin.database.util.SqlAndParameters;
 import cn.jiangzeyin.database.util.SqlUtil;
 import cn.jiangzeyin.system.SystemDbLog;
-import cn.jiangzeyin.system.SystemExecutorService;
+import cn.jiangzeyin.system.DBExecutorService;
 import com.alibaba.druid.util.JdbcUtils;
 import com.alibaba.druid.util.StringUtils;
 
@@ -155,8 +155,9 @@ public class Update<T> extends WriteBase<T> {
     public void run() {
         setAsync(true);
         setThrowable(new Throwable());
+        getAsyncLog();
         // TODO Auto-generated method stub
-        SystemExecutorService.execute(this::syncRun);
+        DBExecutorService.execute(this::syncRun);
     }
 
     /**
@@ -171,7 +172,7 @@ public class Update<T> extends WriteBase<T> {
             String tag = data == null ? EntityInfo.getDatabaseName(getTclass()) : EntityInfo.getDatabaseName(data);
             SqlAndParameters sqlAndParameters = SqlUtil.getUpdateSql(this);
             DataSource dataSource = DatabaseContextHolder.getWriteDataSource(tag);
-            SystemDbLog.getInstance().info(sqlAndParameters.getSql());
+            SystemDbLog.getInstance().info(getTransferLog() + sqlAndParameters.getSql());
             setRunSql(sqlAndParameters.getSql());
             int count = JdbcUtils.executeUpdate(dataSource, sqlAndParameters.getSql(), sqlAndParameters.getParameters());
             if (event != null)
@@ -183,11 +184,11 @@ public class Update<T> extends WriteBase<T> {
             if (event != null)
                 event.errorU(e);
         } finally {
+            runEnd();
             recycling();
             this.update = null;
             this.whereParameters = null;
             this.event = null;
-            runEnd();
         }
         return 0L;
     }

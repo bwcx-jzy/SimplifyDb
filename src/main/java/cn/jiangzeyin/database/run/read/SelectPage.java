@@ -1,5 +1,6 @@
 package cn.jiangzeyin.database.run.read;
 
+import cn.jiangzeyin.database.EntityInfo;
 import cn.jiangzeyin.database.Page;
 import cn.jiangzeyin.database.base.ReadBase;
 import cn.jiangzeyin.database.config.DatabaseContextHolder;
@@ -7,7 +8,6 @@ import cn.jiangzeyin.database.util.SqlUtil;
 import cn.jiangzeyin.database.util.Util;
 import cn.jiangzeyin.system.SystemDbLog;
 import cn.jiangzeyin.util.Assert;
-import cn.jiangzeyin.database.EntityInfo;
 import com.alibaba.druid.util.JdbcUtils;
 import com.alibaba.druid.util.StringUtils;
 import com.alibaba.fastjson.JSON;
@@ -88,19 +88,19 @@ public class SelectPage<T> extends ReadBase<T> {
             }
             { // 查询数据
                 setRunSql(pageSql[1]);
-                SystemDbLog.getInstance().info(pageSql[1]);
+                SystemDbLog.getInstance().info(getTransferLog() + pageSql[1]);
                 list = JdbcUtils.executeQuery(dataSource, pageSql[1], getParameters());
                 page.setMapList(list);
 //                if (list == null || list.size() < 1)  此处为更改注释
 //                    return null;
                 if (getResultType() == Result.JsonArray) {
-                    return (T) JSON.parseArray(JSON.toJSONString(list));// new JSONArray(list);
+                    return (T) JSON.toJSON(list);
                 }
                 // 新增部分----------------
                 if (getResultType() == Result.JsonArray) {
                     if (list == null)
                         return null;
-                    return (T) JSONArray.toJSON(list);// JSON.parseArray(JSON.toJSONString(list));// new JSONArray(list);
+                    return (T) JSONArray.toJSON(list);
                 }
                 if (getResultType() == PageResultType) {
                     JSONObject data = new JSONObject();
@@ -119,8 +119,8 @@ public class SelectPage<T> extends ReadBase<T> {
             // TODO: handle exception
             isThrows(e);
         } finally {
-            recycling();
             runEnd();
+            recycling();
         }
         return null;
     }

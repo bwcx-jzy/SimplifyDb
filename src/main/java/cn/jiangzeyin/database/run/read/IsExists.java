@@ -120,7 +120,7 @@ public class IsExists<T> extends Base<T> {
                     tag = EntityInfo.getDatabaseName(runClass);
                 String sql = SqlUtil.getIsExistsSql(runClass, getKeyColumn(), getWhere(), getColumn(), getLimit());
                 setRunSql(sql);
-                SystemDbLog.getInstance().info(sql);
+                SystemDbLog.getInstance().info(getTransferLog() + sql);
                 DataSource dataSource = DatabaseContextHolder.getReadDataSource(tag);
                 List<Map<String, Object>> list = JdbcUtils.executeQuery(dataSource, sql, getParameters());
                 if (list == null || list.size() < 1)
@@ -142,9 +142,9 @@ public class IsExists<T> extends Base<T> {
                 // TODO: handle exception
                 isThrows(e);
             } finally {
+                runEnd();
                 recycling();
                 this.parameters = null;
-                runEnd();
             }
             return true;
         }
@@ -167,7 +167,7 @@ public class IsExists<T> extends Base<T> {
                     tag = EntityInfo.getDatabaseName(runClass);
                 String sql = SqlUtil.getIsExistsSql(runClass, getKeyColumn(), getWhere(), getColumn(), getLimit());
                 setRunSql(sql);
-                SystemDbLog.getInstance().info(sql);
+                SystemDbLog.getInstance().info(getTransferLog() + sql);
                 DataSource dataSource = DatabaseContextHolder.getReadDataSource(tag);
                 List<Map<String, Object>> list = JdbcUtils.executeQuery(dataSource, sql, getParameters());
                 if (list == null || list.size() < 1)
@@ -186,9 +186,9 @@ public class IsExists<T> extends Base<T> {
                 // TODO: handle exception
                 isThrows(e);
             } finally {
+                runEnd();
                 recycling();
                 this.parameters = null;
-                runEnd();
             }
             return null;
         }

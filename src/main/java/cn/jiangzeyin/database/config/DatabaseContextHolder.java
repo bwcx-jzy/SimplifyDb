@@ -49,11 +49,12 @@ public final class DatabaseContextHolder {
         SystemDbLog.getInstance().info(" 数据库操作：" + databaseOptType.toString());
     }
 
-    static void init(Map<String, DataSource> map) {
+    static void init(Map<String, DataSource> map, String tagName) {
         Assert.notNull(map);
         if (map.size() < 1)
             throw new RuntimeException("数据库连接加载为空");
         DatabaseContextHolder.targetDataSourcesMap = map;
+        DatabaseContextHolder.tagNames = new String[]{tagName};
         SystemDbLog.getInstance().info(" 数据库操作：" + databaseOptType.toString());
     }
 
