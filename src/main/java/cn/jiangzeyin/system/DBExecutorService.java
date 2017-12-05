@@ -12,9 +12,10 @@ import java.util.concurrent.atomic.AtomicInteger;
  * @author jiangzeyin
  */
 public class DBExecutorService {
-    private final static ThreadPoolExecutor THREAD_POOL_EXECUTOR = newCachedThreadPool();
     private final static BlockingQueue<Runnable> BLOCKING_QUEUE = new LinkedBlockingQueue<>();
     private final static ProxyHeader PROXY_HEADER = new ProxyHeader();
+    private final static SystemThreadFactory SYSTEM_THREAD_FACTORY = new SystemThreadFactory("dbutil");
+    private final static ThreadPoolExecutor THREAD_POOL_EXECUTOR = newCachedThreadPool();
 
     /**
      * 创建一个线程池
@@ -23,29 +24,28 @@ public class DBExecutorService {
      * @author jiangzeyin
      */
     private static ThreadPoolExecutor newCachedThreadPool() {
-        SystemThreadFactory systemThreadFactory = new SystemThreadFactory("dbutil");
-        assert BLOCKING_QUEUE != null;
-        assert PROXY_HEADER != null;
         return new ThreadPoolExecutor(50,
                 Integer.MAX_VALUE,
-                60L,
-                TimeUnit.SECONDS,
-                BLOCKING_QUEUE, systemThreadFactory,
+                5L,
+                TimeUnit.MINUTES,
+                BLOCKING_QUEUE,
+                SYSTEM_THREAD_FACTORY,
                 PROXY_HEADER);
     }
 
     public static JSONObject getPoolRunInfo() {
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("name", "dbutil");
-        jsonObject.put("activeCount", THREAD_POOL_EXECUTOR.getActiveCount());
-        jsonObject.put("maximumPoolSize", THREAD_POOL_EXECUTOR.getMaximumPoolSize());
-        jsonObject.put("corePoolSize", THREAD_POOL_EXECUTOR.getCorePoolSize());
-        jsonObject.put("largestPoolSize", THREAD_POOL_EXECUTOR.getLargestPoolSize());
-        jsonObject.put("completedTaskCount", THREAD_POOL_EXECUTOR.getCompletedTaskCount());
-        jsonObject.put("taskCount", THREAD_POOL_EXECUTOR.getTaskCount());
-        jsonObject.put("poolSize", THREAD_POOL_EXECUTOR.getPoolSize());
-        jsonObject.put("queueSize", BLOCKING_QUEUE.size());
-        jsonObject.put("rejectedExecutionCount", PROXY_HEADER.rejectedExecutionCount.get());
+        jsonObject.put("corePoolSize", THREAD_POOL_EXECUTOR.getCorePoolSize()); // 核心数
+        jsonObject.put("poolSize", THREAD_POOL_EXECUTOR.getPoolSize()); // 当前工作集数
+        jsonObject.put("activeCount", THREAD_POOL_EXECUTOR.getActiveCount()); // 活跃线程数
+        jsonObject.put("largestPoolSize", THREAD_POOL_EXECUTOR.getLargestPoolSize()); // 曾经最大线程数
+        jsonObject.put("completedTaskCount", THREAD_POOL_EXECUTOR.getCompletedTaskCount()); // 已完成数
+        jsonObject.put("taskCount", THREAD_POOL_EXECUTOR.getTaskCount()); // 当前任务数
+        jsonObject.put("queueSize", BLOCKING_QUEUE.size()); // 任务队列数
+        jsonObject.put("rejectedExecutionCount", PROXY_HEADER.rejectedExecutionCount.get()); // 拒绝任务数
+        jsonObject.put("maxThreadNumber", SYSTEM_THREAD_FACTORY.threadNumber.get()); // 最大线程编号
+        jsonObject.put("maximumPoolSize", THREAD_POOL_EXECUTOR.getMaximumPoolSize());// 最大线程数
         return jsonObject;
     }
 
@@ -69,7 +69,6 @@ public class DBExecutorService {
      * @author jiangzeyin
      */
     private static class SystemThreadFactory implements ThreadFactory {
-
         private final ThreadGroup group;
         private final AtomicInteger threadNumber = new AtomicInteger(1);
         private final String namePrefix;
