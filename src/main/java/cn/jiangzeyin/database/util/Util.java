@@ -6,7 +6,7 @@ import cn.jiangzeyin.database.config.SystemColumn;
 import cn.jiangzeyin.system.DbLog;
 import cn.jiangzeyin.util.Assert;
 import cn.jiangzeyin.util.KeyMap;
-import cn.jiangzeyin.util.ref.ReflectUtil;
+import cn.jiangzeyin.util.DbReflectUtil;
 import com.alibaba.druid.util.JdbcUtils;
 
 import javax.sql.DataSource;
@@ -62,7 +62,7 @@ public class Util {
         HashMap<String, String> refWhere = read.getRefWhere();
         List<String> remove = read.getRemove();
         // 给 JavaBean 对象的属性赋值
-        List<Method> methods = ReflectUtil.getAllSetMethods(obj.getClass());// .getDeclaredMethods();
+        List<Method> methods = DbReflectUtil.getAllSetMethods(obj.getClass());// .getDeclaredMethods();
         DataSource dataSource = DatabaseContextHolder.getReadDataSource(read.getTag());
         for (Method method : methods) {
             String name = method.getName();

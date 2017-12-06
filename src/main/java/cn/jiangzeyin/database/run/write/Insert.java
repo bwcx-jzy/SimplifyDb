@@ -10,7 +10,7 @@ import cn.jiangzeyin.database.util.SqlAndParameters;
 import cn.jiangzeyin.database.util.SqlUtil;
 import cn.jiangzeyin.system.DbLog;
 import cn.jiangzeyin.system.DBExecutorService;
-import cn.jiangzeyin.util.ref.ReflectUtil;
+import cn.jiangzeyin.util.DbReflectUtil;
 import com.alibaba.druid.util.JdbcUtils;
 
 import javax.sql.DataSource;
@@ -152,7 +152,7 @@ public class Insert<T> extends WriteBase<T> {
                 Long id = JdbcUtil.executeInsert(dataSource, sqlAndParameters.getSql(), sqlAndParameters.getParameters());
                 T data = getData();
                 if (data != null) {
-                    ReflectUtil.setFieldValue(data, SystemColumn.getDefaultKeyName(), id);
+                    DbReflectUtil.setFieldValue(data, SystemColumn.getDefaultKeyName(), id);
                 }
                 if (event != null)
                     event.completeI(id);
@@ -182,7 +182,7 @@ public class Insert<T> extends WriteBase<T> {
                         Long id = JdbcUtil.executeInsert(connection, sqlAndParameters[i].getSql(), sqlAndParameters[i].getParameters());
                         if (id < 1)
                             return -1;
-                        ReflectUtil.setFieldValue(data, SystemColumn.getDefaultKeyName(), id);
+                        DbReflectUtil.setFieldValue(data, SystemColumn.getDefaultKeyName(), id);
                         if (insertEvent != null)
                             insertEvent.completeI(id);
                     }

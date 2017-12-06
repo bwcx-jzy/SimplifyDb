@@ -13,7 +13,7 @@ import cn.jiangzeyin.database.run.write.Insert;
 import cn.jiangzeyin.database.run.write.Remove;
 import cn.jiangzeyin.database.run.write.Update;
 import cn.jiangzeyin.util.Assert;
-import cn.jiangzeyin.util.ref.ReflectUtil;
+import cn.jiangzeyin.util.DbReflectUtil;
 import com.alibaba.druid.util.StringUtils;
 
 import java.lang.reflect.Field;
@@ -58,7 +58,7 @@ public class SqlUtil {
         List<String> remove = write.getRemove();
         HashMap<String, Class<?>> refMap = write.getRefMap();
 
-        Field[] fields = ReflectUtil.getDeclaredFields(data.getClass());
+        Field[] fields = DbReflectUtil.getDeclaredFields(data.getClass());
         for (Field field : fields) {
             if (!isWrite(field))
                 continue;
@@ -74,7 +74,7 @@ public class SqlUtil {
             // 判断是否为系统字段
             String value1 = SystemColumn.getDefaultValue(name);// getSystemValue(field.getName());
             if (value1 == null) {
-                Object va = ReflectUtil.getFieldValue(data, name);
+                Object va = DbReflectUtil.getFieldValue(data, name);
                 // 密码字段
                 if (SystemColumn.getPwdColumn().equalsIgnoreCase(name)) {
                     systemMap.put(name, "PASSWORD(?)");
@@ -82,10 +82,10 @@ public class SqlUtil {
                 } else {
                     // 读取外键
                     if (refMap != null && refMap.containsKey(name.toLowerCase())) {
-                        Object refData = ReflectUtil.getFieldValue(data, field.getName());
+                        Object refData = DbReflectUtil.getFieldValue(data, field.getName());
                         if (refData == null)
                             throw new RuntimeException(name + " 为null");
-                        va = ReflectUtil.getFieldValue(refData, write.getRefKey());
+                        va = DbReflectUtil.getFieldValue(refData, write.getRefKey());
                     }
                     values.add(va);
                 }
@@ -128,7 +128,7 @@ public class SqlUtil {
         if (!StringUtils.isEmpty(SystemColumn.Active.getColumn())) {
             EntityConfig entityConfig = insert.getData().getClass().getAnnotation(EntityConfig.class);
             if (entityConfig == null || entityConfig.active()) {
-                Object isDeleteF = ReflectUtil.getFieldValue(insert.getData(), SystemColumn.Active.getColumn());
+                Object isDeleteF = DbReflectUtil.getFieldValue(insert.getData(), SystemColumn.Active.getColumn());
                 isDelete = isDeleteF == null ? SystemColumn.Active.getActiveValue() : Integer.parseInt(isDeleteF.toString());
             }
         }
@@ -155,7 +155,7 @@ public class SqlUtil {
             if (!StringUtils.isEmpty(SystemColumn.Active.getColumn())) {
                 EntityConfig entityConfig = object.getClass().getAnnotation(EntityConfig.class);
                 if (entityConfig == null || entityConfig.active()) {
-                    Object isDeleteF = ReflectUtil.getFieldValue(object, SystemColumn.Active.getColumn());
+                    Object isDeleteF = DbReflectUtil.getFieldValue(object, SystemColumn.Active.getColumn());
                     isDelete = isDeleteF == null ? SystemColumn.Active.getActiveValue() : Integer.parseInt(isDeleteF.toString());
                 }
             }
@@ -225,7 +225,7 @@ public class SqlUtil {
         // 没有任何更新条件
         if (!isWhere) {
             if (update.getData() != null) {
-                Object objId = ReflectUtil.getFieldValue(update.getData(), SystemColumn.getDefaultKeyName());
+                Object objId = DbReflectUtil.getFieldValue(update.getData(), SystemColumn.getDefaultKeyName());
                 Assert.notNull(objId, "没有找到任何更新条件");
                 sbSql.append(" where id=");
                 sbSql.append(Long.parseLong(objId.toString()));

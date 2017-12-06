@@ -110,7 +110,7 @@ public class Select<T> extends ReadBase<T> {
     }
 
     public Select() {
-        // setTclass(ReflectUtil.getTClass(this));
+        // setTclass(DbReflectUtil.getTClass(this));
     }
 
     public Select(int isDelete) {

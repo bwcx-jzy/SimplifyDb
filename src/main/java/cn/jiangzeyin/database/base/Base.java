@@ -7,7 +7,7 @@ import cn.jiangzeyin.database.config.SystemColumn;
 import cn.jiangzeyin.system.DbLog;
 import cn.jiangzeyin.system.SystemSessionInfo;
 import cn.jiangzeyin.util.Assert;
-import cn.jiangzeyin.util.ref.ReflectUtil;
+import cn.jiangzeyin.util.DbReflectUtil;
 import com.alibaba.druid.util.StringUtils;
 
 import java.util.HashMap;
@@ -82,7 +82,7 @@ public abstract class Base<T> {
 
     public Class<?> getTclass(boolean getRef) {
         if (tclass == null && getRef) {
-            tclass = ReflectUtil.getTClass(getClass());
+            tclass = DbReflectUtil.getTClass(getClass());
         }
         return tclass;
     }
