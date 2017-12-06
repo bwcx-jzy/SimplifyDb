@@ -5,7 +5,7 @@ import cn.jiangzeyin.database.EntityInfo;
 import cn.jiangzeyin.database.base.Base;
 import cn.jiangzeyin.database.config.DatabaseContextHolder;
 import cn.jiangzeyin.database.util.SqlUtil;
-import cn.jiangzeyin.system.SystemDbLog;
+import cn.jiangzeyin.system.DbLog;
 import com.alibaba.druid.util.JdbcUtils;
 import com.alibaba.druid.util.StringUtils;
 
@@ -120,7 +120,7 @@ public class IsExists<T> extends Base<T> {
                     tag = EntityInfo.getDatabaseName(runClass);
                 String sql = SqlUtil.getIsExistsSql(runClass, getKeyColumn(), getWhere(), getColumn(), getLimit());
                 setRunSql(sql);
-                SystemDbLog.getInstance().info(getTransferLog() + sql);
+                DbLog.getInstance().info(getTransferLog() + sql);
                 DataSource dataSource = DatabaseContextHolder.getReadDataSource(tag);
                 List<Map<String, Object>> list = JdbcUtils.executeQuery(dataSource, sql, getParameters());
                 if (list == null || list.size() < 1)
@@ -167,7 +167,7 @@ public class IsExists<T> extends Base<T> {
                     tag = EntityInfo.getDatabaseName(runClass);
                 String sql = SqlUtil.getIsExistsSql(runClass, getKeyColumn(), getWhere(), getColumn(), getLimit());
                 setRunSql(sql);
-                SystemDbLog.getInstance().info(getTransferLog() + sql);
+                DbLog.getInstance().info(getTransferLog() + sql);
                 DataSource dataSource = DatabaseContextHolder.getReadDataSource(tag);
                 List<Map<String, Object>> list = JdbcUtils.executeQuery(dataSource, sql, getParameters());
                 if (list == null || list.size() < 1)

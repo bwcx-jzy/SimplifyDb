@@ -6,7 +6,7 @@ import cn.jiangzeyin.database.base.ReadBase;
 import cn.jiangzeyin.database.config.DatabaseContextHolder;
 import cn.jiangzeyin.database.util.SqlUtil;
 import cn.jiangzeyin.database.util.Util;
-import cn.jiangzeyin.system.SystemDbLog;
+import cn.jiangzeyin.system.DbLog;
 import cn.jiangzeyin.util.Assert;
 import com.alibaba.druid.util.JdbcUtils;
 import com.alibaba.druid.util.StringUtils;
@@ -87,7 +87,7 @@ public class SelectPage<T> extends ReadBase<T> {
             }
             { // 查询数据
                 setRunSql(pageSql[1]);
-                SystemDbLog.getInstance().info(getTransferLog() + pageSql[1]);
+                DbLog.getInstance().info(getTransferLog() + pageSql[1]);
                 list = JdbcUtils.executeQuery(dataSource, pageSql[1], getParameters());
                 page.setMapList(list);
                 if (getResultType() == Result.JsonArray) {

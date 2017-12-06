@@ -7,7 +7,7 @@ import cn.jiangzeyin.database.config.DatabaseContextHolder;
 import cn.jiangzeyin.database.config.SystemColumn;
 import cn.jiangzeyin.database.util.SqlUtil;
 import cn.jiangzeyin.database.util.Util;
-import cn.jiangzeyin.system.SystemDbLog;
+import cn.jiangzeyin.system.DbLog;
 import com.alibaba.druid.util.JdbcUtils;
 import com.alibaba.druid.util.StringUtils;
 import com.alibaba.fastjson.JSON;
@@ -185,7 +185,7 @@ public class Select<T> extends ReadBase<T> {
                 runSql = SqlUtil.getSelectSql(this);
             }
             setRunSql(runSql);
-            SystemDbLog.getInstance().info(getTransferLog() + runSql);
+            DbLog.getInstance().info(getTransferLog() + runSql);
             List<Map<String, Object>> result = JdbcUtils.executeQuery(dataSource, runSql, getParameters());
             switch (getResultType()) {
                 case Result.JsonArray:

@@ -55,7 +55,7 @@ public class DBExecutorService {
      * @author jiangzeyin
      */
     public static void shutdown() {
-        SystemDbLog.getInstance().info("关闭数据库使用的线程池");
+        DbLog.getInstance().info("关闭数据库使用的线程池");
         THREAD_POOL_EXECUTOR.shutdown();
     }
 

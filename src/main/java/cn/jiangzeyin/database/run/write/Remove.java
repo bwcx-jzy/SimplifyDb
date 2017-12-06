@@ -5,7 +5,7 @@ import cn.jiangzeyin.database.base.Base;
 import cn.jiangzeyin.database.config.DatabaseContextHolder;
 import cn.jiangzeyin.database.config.SystemColumn;
 import cn.jiangzeyin.database.util.SqlUtil;
-import cn.jiangzeyin.system.SystemDbLog;
+import cn.jiangzeyin.system.DbLog;
 import cn.jiangzeyin.system.DBExecutorService;
 import com.alibaba.druid.util.JdbcUtils;
 
@@ -114,7 +114,7 @@ public class Remove<T> extends Base<T> {
         try {
             String tag = EntityInfo.getDatabaseName(getTclass());
             String sql = SqlUtil.getRemoveSql(getTclass(), type, getIds(), getWhere());
-            SystemDbLog.getInstance().info(getTransferLog() + sql);
+            DbLog.getInstance().info(getTransferLog() + sql);
             setRunSql(sql);
             DataSource dataSource = DatabaseContextHolder.getWriteDataSource(tag);
             return JdbcUtils.executeUpdate(dataSource, sql, getParameters());

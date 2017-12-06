@@ -2,7 +2,7 @@ package cn.jiangzeyin.database.config;
 
 
 import cn.jiangzeyin.StringUtil;
-import cn.jiangzeyin.system.SystemDbLog;
+import cn.jiangzeyin.system.DbLog;
 import cn.jiangzeyin.system.SystemKey;
 import cn.jiangzeyin.util.Assert;
 import cn.jiangzeyin.util.PropertiesParser;
@@ -60,7 +60,7 @@ public final class DataSourceConfig {
     }
 
     private static void dataSource(String[] sourceTags, String[] configPaths) throws Exception {
-        SystemDbLog.getInstance().info("初始化连接数据库");
+        DbLog.getInstance().info("初始化连接数据库");
         if (configPaths.length == 1) {
             Map<String, DataSource> concurrentHashMap = initConfigPath(sourceTags, configPaths[0]);
             DatabaseContextHolder.init(concurrentHashMap, configPaths[0]);
@@ -79,7 +79,7 @@ public final class DataSourceConfig {
     }
 
     private static Map<String, DataSource> initConfigPath(String[] sourceTags, String configPath) throws Exception {
-        SystemDbLog.getInstance().info("load " + configPath);
+        DbLog.getInstance().info("load " + configPath);
         PropertiesParser propertiesParser = new PropertiesParser(ResourceUtil.getResource(configPath));
         Map<String, DataSource> hashMap = new HashMap<>();
         String systemKey = systemPropertiesParser.getStringProperty(ConfigProperties.PROP_SYSTEM_KEY);
@@ -89,12 +89,12 @@ public final class DataSourceConfig {
         }
         String[] systemKeyColumn = systemPropertiesParser.getStringArrayProperty(ConfigProperties.PROP_SYSTEM_KEY_COLUMN, null);
         if (systemKeyColumn != null && systemKey1 == null) {
-            SystemDbLog.getInstance().warn(" use systemKeyColumn moust systemKey");
+            DbLog.getInstance().warn(" use systemKeyColumn moust systemKey");
         }
         for (String tag : sourceTags) {
             Properties properties_tag = propertiesParser.getPropertyGroup(tag, true);
             if (properties_tag.isEmpty()) {
-                SystemDbLog.getInstance().warn(tag + "is blank");
+                DbLog.getInstance().warn(tag + "is blank");
                 continue;
             }
             String url = properties_tag.getProperty(DruidDataSourceFactory.PROP_URL);
@@ -105,7 +105,7 @@ public final class DataSourceConfig {
             int port = Integer.parseInt(ipInfo[1]);
             boolean flag = isConnect(ipInfo[0], port);
             if (!flag) {
-                SystemDbLog.getInstance().warn(ip + "not Connect continue   " + tag);
+                DbLog.getInstance().warn(ip + "not Connect continue   " + tag);
                 continue;
             }
             properties_tag.setProperty(DruidDataSourceFactory.PROP_URL, url);

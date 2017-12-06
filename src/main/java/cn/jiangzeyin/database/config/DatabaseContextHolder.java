@@ -1,6 +1,6 @@
 package cn.jiangzeyin.database.config;
 
-import cn.jiangzeyin.system.SystemDbLog;
+import cn.jiangzeyin.system.DbLog;
 import cn.jiangzeyin.util.Assert;
 
 import javax.sql.DataSource;
@@ -46,7 +46,7 @@ public final class DatabaseContextHolder {
         else
             DatabaseContextHolder.databaseOptType = DatabaseOptType.More;
         DatabaseContextHolder.targetDataSourcesMap = MAPS[0];
-        SystemDbLog.getInstance().info(" 数据库操作：" + databaseOptType.toString());
+        DbLog.getInstance().info(" 数据库操作：" + databaseOptType.toString());
     }
 
     static void init(Map<String, DataSource> map, String tagName) {
@@ -55,7 +55,7 @@ public final class DatabaseContextHolder {
             throw new RuntimeException("数据库连接加载为空");
         DatabaseContextHolder.targetDataSourcesMap = map;
         DatabaseContextHolder.tagNames = new String[]{tagName};
-        SystemDbLog.getInstance().info(" 数据库操作：" + databaseOptType.toString());
+        DbLog.getInstance().info(" 数据库操作：" + databaseOptType.toString());
     }
 
     private static Map<String, DataSource> randMap() {

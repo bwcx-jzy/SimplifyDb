@@ -3,7 +3,7 @@ package cn.jiangzeyin.database.util;
 import cn.jiangzeyin.database.base.ReadBase;
 import cn.jiangzeyin.database.config.DatabaseContextHolder;
 import cn.jiangzeyin.database.config.SystemColumn;
-import cn.jiangzeyin.system.SystemDbLog;
+import cn.jiangzeyin.system.DbLog;
 import cn.jiangzeyin.util.Assert;
 import cn.jiangzeyin.util.KeyMap;
 import cn.jiangzeyin.util.ref.ReflectUtil;
@@ -83,19 +83,17 @@ public class Util {
                 String where = refWhere == null ? null : refWhere.get(name);
                 Class refMapClass = refMap.get(name);
                 String sql = SqlUtil.getRefSql(refMapClass, read.getRefKey(), where);
-                SystemDbLog.getInstance().info(sql);
+                DbLog.getInstance().info(sql);
                 List<Object> parameters = new ArrayList<>();
                 parameters.add(value);
                 List<Map<String, Object>> refList = JdbcUtils.executeQuery(dataSource, sql, parameters);
                 if (refList != null && refList.size() > 0) {
                     Map<String, Object> refMap_data = refList.get(0);
                     Object refValue = convertMap(read, refMap_data, refMapClass);
-                    //System.out.println(refValue);
                     try {
                         method.invoke(obj, refValue);
-                        //ReflectUtil.setFieldValue(obj, name, refValue);
                     } catch (IllegalArgumentException e) {
-                        SystemDbLog.getInstance().error(String.format(obj.getClass() + " map转实体%s字段错误：%s -> %s", name, value.getClass(), value), e);
+                        DbLog.getInstance().error(String.format(obj.getClass() + " map转实体%s字段错误：%s -> %s", name, value.getClass(), value), e);
                     }
                 }
                 continue;
@@ -112,10 +110,10 @@ public class Util {
                 } else if (pClass == Integer.class || pClass == int.class) {
                     method.invoke(obj, (Integer) value);
                 } else {
-                    SystemDbLog.getInstance().error(String.format(obj.getClass() + " map转实体%s字段类型错误：%s -> %s", name, value.getClass(), value), ie);
+                    DbLog.getInstance().error(String.format(obj.getClass() + " map转实体%s字段类型错误：%s -> %s", name, value.getClass(), value), ie);
                 }
             } catch (Exception e) {
-                SystemDbLog.getInstance().error(String.format(obj.getClass() + " map转实体%s字段错误：%s -> %s", name, value.getClass(), value), e);
+                DbLog.getInstance().error(String.format(obj.getClass() + " map转实体%s字段错误：%s -> %s", name, value.getClass(), value), e);
             }
         }
         return obj;

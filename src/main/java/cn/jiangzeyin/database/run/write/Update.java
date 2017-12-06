@@ -7,7 +7,7 @@ import cn.jiangzeyin.database.config.SystemColumn;
 import cn.jiangzeyin.database.event.UpdateEvent;
 import cn.jiangzeyin.database.util.SqlAndParameters;
 import cn.jiangzeyin.database.util.SqlUtil;
-import cn.jiangzeyin.system.SystemDbLog;
+import cn.jiangzeyin.system.DbLog;
 import cn.jiangzeyin.system.DBExecutorService;
 import com.alibaba.druid.util.JdbcUtils;
 import com.alibaba.druid.util.StringUtils;
@@ -172,7 +172,7 @@ public class Update<T> extends WriteBase<T> {
             String tag = data == null ? EntityInfo.getDatabaseName(getTclass()) : EntityInfo.getDatabaseName(data);
             SqlAndParameters sqlAndParameters = SqlUtil.getUpdateSql(this);
             DataSource dataSource = DatabaseContextHolder.getWriteDataSource(tag);
-            SystemDbLog.getInstance().info(getTransferLog() + sqlAndParameters.getSql());
+            DbLog.getInstance().info(getTransferLog() + sqlAndParameters.getSql());
             setRunSql(sqlAndParameters.getSql());
             int count = JdbcUtils.executeUpdate(dataSource, sqlAndParameters.getSql(), sqlAndParameters.getParameters());
             if (event != null)

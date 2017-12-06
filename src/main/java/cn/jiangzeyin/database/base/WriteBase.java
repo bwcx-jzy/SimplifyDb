@@ -1,7 +1,7 @@
 package cn.jiangzeyin.database.base;
 
 
-import cn.jiangzeyin.system.SystemDbLog;
+import cn.jiangzeyin.system.DbLog;
 
 /**
  * 写入数据
@@ -77,7 +77,7 @@ public abstract class WriteBase<T> extends Base<T> {
             if (isThrows()) {
                 throw new RuntimeException(t);
             } else {
-                SystemDbLog.getInstance().error("执行数据库操作", t);
+                DbLog.getInstance().error("执行数据库操作", t);
             }
         } else {
             super.isThrows(t);

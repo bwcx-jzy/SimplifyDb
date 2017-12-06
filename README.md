@@ -27,7 +27,7 @@
 
 cn.jiangzeyin.database.config.DataSourceConfig  工具使用配置类
 
-cn.jiangzeyin.system.SystemDbLog  工具日志为了各个项目适配，使用了接口形式来提供记录日志
+cn.jiangzeyin.system.DbLog  工具日志为了各个项目适配，使用了接口形式来提供记录日志
 
 cn.jiangzeyin.database.run.read.IsExists 判断是否存在
 

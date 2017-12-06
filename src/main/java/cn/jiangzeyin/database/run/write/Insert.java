@@ -8,7 +8,7 @@ import cn.jiangzeyin.database.event.InsertEvent;
 import cn.jiangzeyin.database.util.JdbcUtil;
 import cn.jiangzeyin.database.util.SqlAndParameters;
 import cn.jiangzeyin.database.util.SqlUtil;
-import cn.jiangzeyin.system.SystemDbLog;
+import cn.jiangzeyin.system.DbLog;
 import cn.jiangzeyin.system.DBExecutorService;
 import cn.jiangzeyin.util.ref.ReflectUtil;
 import com.alibaba.druid.util.JdbcUtils;
@@ -118,7 +118,7 @@ public class Insert<T> extends WriteBase<T> {
             // TODO Auto-generated method stub
             long id = syncRun();
             if (id <= 0) {
-                SystemDbLog.getInstance().info(getData() + "异步执行失败：" + id);
+                DbLog.getInstance().info(getData() + "异步执行失败：" + id);
             }
         });
     }
@@ -140,7 +140,7 @@ public class Insert<T> extends WriteBase<T> {
                 if (event != null) {
                     int beforeCode = event.beforeI(getData());
                     if (beforeCode == InsertEvent.BeforeCode.END.getCode()) {
-                        SystemDbLog.getInstance().info("本次执行取消：" + getData() + " " + list);
+                        DbLog.getInstance().info("本次执行取消：" + getData() + " " + list);
                         return InsertEvent.BeforeCode.END.getResultCode();
                     }
                 }
@@ -148,7 +148,7 @@ public class Insert<T> extends WriteBase<T> {
                 SqlAndParameters sqlAndParameters = SqlUtil.getInsertSql(getWriteBase());
                 DataSource dataSource = DatabaseContextHolder.getWriteDataSource(tag);
                 setRunSql(sqlAndParameters.getSql());
-                SystemDbLog.getInstance().info(getTransferLog() + sqlAndParameters.getSql());
+                DbLog.getInstance().info(getTransferLog() + sqlAndParameters.getSql());
                 Long id = JdbcUtil.executeInsert(dataSource, sqlAndParameters.getSql(), sqlAndParameters.getParameters());
                 T data = getData();
                 if (data != null) {
@@ -174,11 +174,11 @@ public class Insert<T> extends WriteBase<T> {
                         if (insertEvent != null) {
                             int beforeCode = insertEvent.beforeI(data);
                             if (beforeCode == InsertEvent.BeforeCode.END.getCode()) {
-                                SystemDbLog.getInstance().info("本次执行取消：" + data + " " + list);
+                                DbLog.getInstance().info("本次执行取消：" + data + " " + list);
                                 continue;
                             }
                         }
-                        SystemDbLog.getInstance().info(sqlAndParameters[i].getSql());
+                        DbLog.getInstance().info(sqlAndParameters[i].getSql());
                         Long id = JdbcUtil.executeInsert(connection, sqlAndParameters[i].getSql(), sqlAndParameters[i].getParameters());
                         if (id < 1)
                             return -1;

@@ -13,7 +13,6 @@ import cn.jiangzeyin.database.run.write.Insert;
 import cn.jiangzeyin.database.run.write.Remove;
 import cn.jiangzeyin.database.run.write.Update;
 import cn.jiangzeyin.util.Assert;
-import cn.jiangzeyin.util.ref.ReflectCache;
 import cn.jiangzeyin.util.ref.ReflectUtil;
 import com.alibaba.druid.util.StringUtils;
 
@@ -59,41 +58,39 @@ public class SqlUtil {
         List<String> remove = write.getRemove();
         HashMap<String, Class<?>> refMap = write.getRefMap();
 
-        for (Class<?> calzz = data.getClass(); calzz != Object.class; calzz = calzz.getSuperclass()) {
-            Field[] fields = ReflectCache.getDeclaredFields(calzz);
-            for (Field field : fields) {
-                if (!isWrite(field))
-                    continue;
-                String name = field.getName();
-                // 判断排除字段
-                if (remove != null && remove.contains(name.toLowerCase())) {
-                    continue;
-                }
-                // 系统默认不可以操作
-                if (SystemColumn.isWriteRemove(name))
-                    continue;
-                cloums.add(name);
-                // 判断是否为系统字段
-                String value1 = SystemColumn.getDefaultValue(name);// getSystemValue(field.getName());
-                if (value1 == null) {
-                    Object va = ReflectUtil.getFieldValue(data, name);
-                    // 密码字段
-                    if (SystemColumn.getPwdColumn().equalsIgnoreCase(name)) {
-                        systemMap.put(name, "PASSWORD(?)");
-                        values.add(va);
-                    } else {
-                        // 读取外键
-                        if (refMap != null && refMap.containsKey(name.toLowerCase())) {
-                            Object refData = ReflectUtil.getFieldValue(data, field.getName());
-                            if (refData == null)
-                                throw new RuntimeException(name + " 为null");
-                            va = ReflectUtil.getFieldValue(refData, write.getRefKey());
-                        }
-                        values.add(va);
-                    }
+        Field[] fields = ReflectUtil.getDeclaredFields(data.getClass());
+        for (Field field : fields) {
+            if (!isWrite(field))
+                continue;
+            String name = field.getName();
+            // 判断排除字段
+            if (remove != null && remove.contains(name.toLowerCase())) {
+                continue;
+            }
+            // 系统默认不可以操作
+            if (SystemColumn.isWriteRemove(name))
+                continue;
+            cloums.add(name);
+            // 判断是否为系统字段
+            String value1 = SystemColumn.getDefaultValue(name);// getSystemValue(field.getName());
+            if (value1 == null) {
+                Object va = ReflectUtil.getFieldValue(data, name);
+                // 密码字段
+                if (SystemColumn.getPwdColumn().equalsIgnoreCase(name)) {
+                    systemMap.put(name, "PASSWORD(?)");
+                    values.add(va);
                 } else {
-                    systemMap.put(name, value1);
+                    // 读取外键
+                    if (refMap != null && refMap.containsKey(name.toLowerCase())) {
+                        Object refData = ReflectUtil.getFieldValue(data, field.getName());
+                        if (refData == null)
+                            throw new RuntimeException(name + " 为null");
+                        va = ReflectUtil.getFieldValue(refData, write.getRefKey());
+                    }
+                    values.add(va);
                 }
+            } else {
+                systemMap.put(name, value1);
             }
         }
         SqlAndParameters sqlAndParameters = new SqlAndParameters();

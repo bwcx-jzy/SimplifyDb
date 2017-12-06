@@ -4,7 +4,7 @@ package cn.jiangzeyin.database.base;
 import cn.jiangzeyin.database.config.DataSourceConfig;
 import cn.jiangzeyin.database.config.DatabaseContextHolder;
 import cn.jiangzeyin.database.config.SystemColumn;
-import cn.jiangzeyin.system.SystemDbLog;
+import cn.jiangzeyin.system.DbLog;
 import cn.jiangzeyin.system.SystemSessionInfo;
 import cn.jiangzeyin.util.Assert;
 import cn.jiangzeyin.util.ref.ReflectUtil;
@@ -64,7 +64,7 @@ public abstract class Base<T> {
         long time = System.currentTimeMillis() - runTime;
         if (time > 2 * 1000L) {
             String tagName = DatabaseContextHolder.getConnectionTagName();
-            SystemDbLog.getInstance().warn(tagName + "执行时间过长：" + time + "  " + runSql);
+            DbLog.getInstance().warn(tagName + "执行时间过长：" + time + "  " + runSql);
         }
     }
 
@@ -184,7 +184,7 @@ public abstract class Base<T> {
     public void isThrows(Throwable t) {
         if (isThrows)
             throw new RuntimeException(t);
-        SystemDbLog.getInstance().error("执行数据库操作", t);
+        DbLog.getInstance().error("执行数据库操作", t);
     }
 
     /**

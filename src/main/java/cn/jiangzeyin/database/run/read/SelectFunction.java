@@ -3,7 +3,7 @@ package cn.jiangzeyin.database.run.read;
 import cn.jiangzeyin.database.base.ReadBase;
 import cn.jiangzeyin.database.config.DatabaseContextHolder;
 import cn.jiangzeyin.database.util.SqlUtil;
-import cn.jiangzeyin.system.SystemDbLog;
+import cn.jiangzeyin.system.DbLog;
 import com.alibaba.druid.util.JdbcUtils;
 
 import javax.sql.DataSource;
@@ -41,7 +41,7 @@ public class SelectFunction<T> extends ReadBase<T> {
             DataSource dataSource = DatabaseContextHolder.getReadDataSource(getTag());
             String sql = SqlUtil.function(getName(), getParameters());
             setRunSql(sql);
-            SystemDbLog.getInstance().info(getTransferLog() + sql);
+            DbLog.getInstance().info(getTransferLog() + sql);
             List<Map<String, Object>> list = JdbcUtils.executeQuery(dataSource, sql, getParameters());
             if (list == null || list.size() < 1)
                 return null;
