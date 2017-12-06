@@ -11,7 +11,6 @@ import cn.jiangzeyin.util.Assert;
 import com.alibaba.druid.util.JdbcUtils;
 import com.alibaba.druid.util.StringUtils;
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 
 import javax.sql.DataSource;
@@ -91,17 +90,10 @@ public class SelectPage<T> extends ReadBase<T> {
                 SystemDbLog.getInstance().info(getTransferLog() + pageSql[1]);
                 list = JdbcUtils.executeQuery(dataSource, pageSql[1], getParameters());
                 page.setMapList(list);
-//                if (list == null || list.size() < 1)  此处为更改注释
-//                    return null;
                 if (getResultType() == Result.JsonArray) {
                     return (T) JSON.toJSON(list);
                 }
-                // 新增部分----------------
-                if (getResultType() == Result.JsonArray) {
-                    if (list == null)
-                        return null;
-                    return (T) JSONArray.toJSON(list);
-                }
+                // 结果是分页数据
                 if (getResultType() == PageResultType) {
                     JSONObject data = new JSONObject();
                     data.put("results", list);
@@ -110,7 +102,6 @@ public class SelectPage<T> extends ReadBase<T> {
                     data.put("totalPage", page.getTotalPage());
                     return (T) data;
                 }
-                // 新增部分结束
                 List<?> result_list = Util.convertList(this, list);
                 page.setResultsT(result_list);
                 return (T) result_list;
