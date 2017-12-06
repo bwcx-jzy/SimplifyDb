@@ -50,7 +50,7 @@ public abstract class ReadBase<T> extends Base<T> {
     private String columns; // 查询哪些列
     private String index; // 查询索引
     private List<Object> parameters; // 参数
-    private int ResultType; // 返回值类型
+    private int resultType; // 返回值类型
     private int isDelete = SystemColumn.Active.NO_ACTIVE;
 
     public int getIsDelete() {
@@ -62,13 +62,12 @@ public abstract class ReadBase<T> extends Base<T> {
     }
 
     protected int getResultType() {
-        return ResultType;
+        return resultType;
     }
 
     public void setResultType(int resultType) {
-        ResultType = resultType;
+        this.resultType = resultType;
     }
-
 
     public List<Object> getParameters() {
         if (parameters == null)
@@ -137,7 +136,7 @@ public abstract class ReadBase<T> extends Base<T> {
         super.recycling();
         //connection = null;
         parameters = null;
-        ResultType = -1;
+        resultType = -1;
         columns = null;
         index = null;
     }
