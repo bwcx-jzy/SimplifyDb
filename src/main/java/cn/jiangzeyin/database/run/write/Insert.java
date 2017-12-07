@@ -8,8 +8,8 @@ import cn.jiangzeyin.database.event.InsertEvent;
 import cn.jiangzeyin.database.util.JdbcUtil;
 import cn.jiangzeyin.database.util.SqlAndParameters;
 import cn.jiangzeyin.database.util.SqlUtil;
-import cn.jiangzeyin.system.DbLog;
 import cn.jiangzeyin.system.DBExecutorService;
+import cn.jiangzeyin.system.DbLog;
 import cn.jiangzeyin.util.DbReflectUtil;
 import com.alibaba.druid.util.JdbcUtils;
 
@@ -145,7 +145,7 @@ public class Insert<T> extends WriteBase<T> {
                     }
                 }
                 String tag = EntityInfo.getDatabaseName(getData());
-                SqlAndParameters sqlAndParameters = SqlUtil.getInsertSql(getWriteBase());
+                SqlAndParameters sqlAndParameters = SqlUtil.getInsertSql(this);
                 DataSource dataSource = DatabaseContextHolder.getWriteDataSource(tag);
                 setRunSql(sqlAndParameters.getSql());
                 DbLog.getInstance().info(getTransferLog() + sqlAndParameters.getSql());
@@ -163,7 +163,7 @@ public class Insert<T> extends WriteBase<T> {
                 Connection connection = null;
                 try {
                     String tag = EntityInfo.getDatabaseName(list.get(0));
-                    SqlAndParameters[] sqlAndParameters = SqlUtil.getInsertSql(this);
+                    SqlAndParameters[] sqlAndParameters = SqlUtil.getInsertSqls(this);
                     connection = DatabaseContextHolder.getWriteConnection(tag);
                     setRunSql("more:" + sqlAndParameters[0].getSql());
                     for (int i = 0; i < sqlAndParameters.length; i++) {

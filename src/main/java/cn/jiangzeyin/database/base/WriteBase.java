@@ -61,10 +61,6 @@ public abstract class WriteBase<T> extends Base<T> {
         this.data = data;
     }
 
-    public WriteBase<T> getWriteBase() {
-        return this;
-    }
-
     /**
      * @param t 异常
      * @author jiangzeyin

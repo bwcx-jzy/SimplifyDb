@@ -25,7 +25,7 @@ import java.util.*;
  *
  * @author jiangzeyin
  */
-public class SqlUtil {
+public final class SqlUtil {
 
     /**
      * 判断是否写
@@ -51,15 +51,16 @@ public class SqlUtil {
             data = write.getData();
         Assert.notNull(data, String.format("%s", write.getTclass(false)));
 
-        List<String> cloums = new ArrayList<>();
+        List<String> columns = new ArrayList<>();
         List<Object> values = new ArrayList<>();
         HashMap<String, String> systemMap = new HashMap<>();
 
         List<String> remove = write.getRemove();
         HashMap<String, Class<?>> refMap = write.getRefMap();
 
-        Field[] fields = DbReflectUtil.getDeclaredFields(data.getClass());
-        for (Field field : fields) {
+        List fieldList = DbReflectUtil.getDeclaredFields(data.getClass());
+        for (Object object : fieldList) {
+            Field field = (Field) object;
             if (!isWrite(field))
                 continue;
             String name = field.getName();
@@ -70,9 +71,9 @@ public class SqlUtil {
             // 系统默认不可以操作
             if (SystemColumn.isWriteRemove(name))
                 continue;
-            cloums.add(name);
+            columns.add(name);
             // 判断是否为系统字段
-            String value1 = SystemColumn.getDefaultValue(name);// getSystemValue(field.getName());
+            String value1 = SystemColumn.getDefaultValue(name);
             if (value1 == null) {
                 Object va = DbReflectUtil.getFieldValue(data, name);
                 // 密码字段
@@ -95,7 +96,7 @@ public class SqlUtil {
         }
         SqlAndParameters sqlAndParameters = new SqlAndParameters();
         sqlAndParameters.setParameters(values);
-        sqlAndParameters.setColumns(cloums);
+        sqlAndParameters.setColumns(columns);
         sqlAndParameters.setSystemMap(systemMap);
         return sqlAndParameters;
     }
@@ -122,7 +123,7 @@ public class SqlUtil {
      * @throws IllegalAccessException   y
      * @author jiangzeyin
      */
-    public static SqlAndParameters getInsertSql(WriteBase<?> insert) throws Exception {
+    public static SqlAndParameters getInsertSql(Insert<?> insert) throws Exception {
         SqlAndParameters sqlAndParameters = getWriteSql(insert);
         int isDelete = SystemColumn.Active.NO_ACTIVE;
         if (!StringUtils.isEmpty(SystemColumn.Active.getColumn())) {
@@ -143,7 +144,7 @@ public class SqlUtil {
      * @throws IllegalAccessException   y
      * @author jiangzeyin
      */
-    public static SqlAndParameters[] getInsertSql(Insert<?> insert) throws Exception {
+    public static SqlAndParameters[] getInsertSqls(Insert<?> insert) throws Exception {
         List<?> list = insert.getList();
         SqlAndParameters[] andParameters = new SqlAndParameters[list.size()];
         for (int i = 0; i < andParameters.length; i++) {

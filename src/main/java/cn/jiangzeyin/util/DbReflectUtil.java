@@ -1,12 +1,11 @@
 package cn.jiangzeyin.util;
 
-import cn.jiangzeyin.util.Assert;
-
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -45,20 +44,23 @@ public class DbReflectUtil {
     }
 
     /**
-     * 获取class 所有字段
+     * 获取class 所有字段 (包括父类)
      *
      * @param cls 类
      * @return 结果
      * @author jiangzeyin
      */
-    public static Field[] getDeclaredFields(Class<?> cls) {
+    public static List getDeclaredFields(Class<?> cls) {
         String key = cls.getName() + "_DeclaredFields";
         Object object = ReflectCache.get(key);
-        if (object instanceof Field[])
-            return (Field[]) object;
-        Field[] fields = cls.getDeclaredFields();
-        ReflectCache.put(key, fields);
-        return fields;
+        if (object instanceof List)
+            return (List) object;
+        List<Field> fieldList = new ArrayList<>();
+        for (Class<?> clazz = cls; clazz != Object.class; clazz = clazz.getSuperclass()) {
+            fieldList.addAll(Arrays.asList(cls.getDeclaredFields()));
+        }
+        ReflectCache.put(key, fieldList);
+        return fieldList;
     }
 
     /**

@@ -74,7 +74,7 @@ public final class DataSourceConfig {
                 mapList.add(map);
                 configList.add(configPath);
             }
-            DatabaseContextHolder.init(mapList.toArray(new Map[0]), configList.toArray(new String[0]));
+            DatabaseContextHolder.init(mapList.toArray(new Map[mapList.size()]), configList.toArray(new String[configList.size()]));
         }
     }
 
@@ -105,6 +105,7 @@ public final class DataSourceConfig {
             int port = Integer.parseInt(ipInfo[1]);
             boolean flag = isConnect(ipInfo[0], port);
             if (!flag) {
+                System.err.println(ip + "not Connect continue   " + tag);
                 DbLog.getInstance().warn(ip + "not Connect continue   " + tag);
                 continue;
             }
