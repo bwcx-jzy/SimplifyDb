@@ -15,6 +15,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author jiangzeyin
  */
 public class DbReflectUtil {
+
     /**
      * 利用反射获取指定对象的指定属性
      *
@@ -26,20 +27,7 @@ public class DbReflectUtil {
      */
     public static Object getFieldValue(Object obj, String fieldName) throws NoSuchFieldException, IllegalAccessException {
         Assert.notNull(obj);
-        Field field = null;
-        NoSuchFieldException noSuchFieldException = null;
-        for (Class<?> clazz = obj.getClass(); clazz != Object.class; clazz = clazz.getSuperclass()) {
-            try {
-                field = clazz.getDeclaredField(fieldName);
-                field.setAccessible(true);
-            } catch (NoSuchFieldException ignored) {
-                noSuchFieldException = ignored;
-            }
-        }
-        if (field == null) {
-            assert noSuchFieldException != null;
-            throw noSuchFieldException;
-        }
+        Field field = getField(obj.getClass(), fieldName);
         return field.get(obj);
     }
 
@@ -103,27 +91,32 @@ public class DbReflectUtil {
      */
     public static void setFieldValue(Object obj, String fieldName, Object fieldValue) throws IllegalAccessException, NoSuchFieldException {
         Field field = getField(obj.getClass(), fieldName);
-        if (field != null) {
-            field.setAccessible(true);
-            Class type = field.getType();
-            if (type == int.class) {
-                field.set(obj, Integer.parseInt(fieldValue.toString()));
-            } else if (type == double.class) {
-                field.set(obj, Double.parseDouble(fieldValue.toString()));
-            } else if (type == String.class) {
-                if (fieldValue == null)
-                    field.set(obj, "");
-                else
-                    field.set(obj, fieldValue.toString());
-            } else if (type == long.class) {
-                field.set(obj, Long.parseLong(fieldValue.toString()));
-            } else if (type == Integer.class) {
-                field.set(obj, Integer.valueOf(fieldValue.toString()));
-            } else {
-                field.set(obj, fieldValue);
-            }
+        Class type = field.getType();
+        if (fieldValue == null) {
+            field.set(obj, null);
+            return;
         }
-
+        if (type == int.class) {
+            field.set(obj, Integer.parseInt(fieldValue.toString()));
+            return;
+        }
+        if (type == Integer.class) {
+            field.set(obj, Integer.valueOf(fieldValue.toString()));
+            return;
+        }
+        if (type == double.class) {
+            field.set(obj, Double.parseDouble(fieldValue.toString()));
+            return;
+        }
+        if (type == String.class) {
+            field.set(obj, fieldValue.toString());
+            return;
+        }
+        if (type == long.class) {
+            field.set(obj, Long.parseLong(fieldValue.toString()));
+            return;
+        }
+        field.set(obj, fieldValue);
     }
 
     /**
@@ -141,16 +134,16 @@ public class DbReflectUtil {
         return null;
     }
 
-    public static List<Method> getAllSetMethods(Class cls) {
+    public static List getAllSetMethods(Class cls) {
         return getAllMethods(cls, "set");
     }
 
-    private static List<Method> getAllMethods(Class cls, String prefix) {
+    private static List getAllMethods(Class cls, String prefix) {
         Assert.notNull(cls);
         String key = cls.getName() + "_" + prefix;
         Object object = ReflectCache.get(key);
         if (object instanceof List)
-            return (List<Method>) object;
+            return (List) object;
         List<Method> list = new ArrayList<>();
         for (Class<?> clazz = cls; clazz != Object.class; clazz = clazz.getSuperclass()) {
             Method[] methods = clazz.getDeclaredMethods();
@@ -165,8 +158,6 @@ public class DbReflectUtil {
     }
 
     private static final class ReflectCache {
-        private final static ConcurrentHashMap<String, Field> fieldMap = new ConcurrentHashMap<>();
-        private final static ConcurrentHashMap<String, Field[]> fieldsMap = new ConcurrentHashMap<>();
         private final static ConcurrentHashMap<String, Object> CACHE = new ConcurrentHashMap<>();
 
         static void put(String key, Object object) {

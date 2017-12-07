@@ -5,8 +5,8 @@ import cn.jiangzeyin.database.config.DatabaseContextHolder;
 import cn.jiangzeyin.database.config.SystemColumn;
 import cn.jiangzeyin.system.DbLog;
 import cn.jiangzeyin.util.Assert;
-import cn.jiangzeyin.util.KeyMap;
 import cn.jiangzeyin.util.DbReflectUtil;
+import cn.jiangzeyin.util.KeyMap;
 import com.alibaba.druid.util.JdbcUtils;
 
 import javax.sql.DataSource;
@@ -36,7 +36,7 @@ public class Util {
     public static <T> List<T> convertList(ReadBase<T> reBase, List<Map<String, Object>> list) throws Exception {
         Assert.notNull(list, "list map");
         Assert.notNull(reBase, "reBase");
-        List<T> list_r = new ArrayList<T>();
+        List<T> list_r = new ArrayList<>();
         for (Map<String, Object> t : list) {
             list_r.add(convertMap(reBase, t, null));
         }
@@ -62,7 +62,7 @@ public class Util {
         HashMap<String, String> refWhere = read.getRefWhere();
         List<String> remove = read.getRemove();
         // 给 JavaBean 对象的属性赋值
-        List<Method> methods = DbReflectUtil.getAllSetMethods(obj.getClass());// .getDeclaredMethods();
+        List<Method> methods = DbReflectUtil.getAllSetMethods(obj.getClass());
         DataSource dataSource = DatabaseContextHolder.getReadDataSource(read.getTag());
         for (Method method : methods) {
             String name = method.getName();
