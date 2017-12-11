@@ -10,7 +10,24 @@ import java.lang.annotation.*;
 @Inherited
 @Retention(RetentionPolicy.RUNTIME)
 public @interface EntityConfig {
+    /**
+     * 是否记录数据状态
+     *
+     * @return boolean
+     */
     boolean active() default true;
 
+    /**
+     * 是否记录update  时间信息
+     *
+     * @return boolean
+     */
     boolean update() default true;
+
+    /**
+     * baseEntity mark 字段
+     *
+     * @return
+     */
+    boolean baseMark() default true;
 }

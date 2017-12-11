@@ -1,12 +1,12 @@
 package cn.jiangzeyin.database.run.write;
 
-import cn.jiangzeyin.database.EntityInfo;
+import cn.jiangzeyin.database.DbWriteService;
 import cn.jiangzeyin.database.base.Base;
 import cn.jiangzeyin.database.config.DatabaseContextHolder;
 import cn.jiangzeyin.database.config.SystemColumn;
 import cn.jiangzeyin.database.util.SqlUtil;
-import cn.jiangzeyin.system.DbLog;
 import cn.jiangzeyin.system.DBExecutorService;
+import cn.jiangzeyin.system.DbLog;
 import com.alibaba.druid.util.JdbcUtils;
 
 import javax.sql.DataSource;
@@ -112,8 +112,8 @@ public class Remove<T> extends Base<T> {
      */
     public int syncRun() {
         try {
-            String tag = EntityInfo.getDatabaseName(getTclass());
-            String sql = SqlUtil.getRemoveSql(getTclass(), type, getIds(), getWhere());
+            String tag = DbWriteService.getDatabaseName(getTclass());
+            String sql = SqlUtil.getRemoveSql(this);
             DbLog.getInstance().info(getTransferLog() + sql);
             setRunSql(sql);
             DataSource dataSource = DatabaseContextHolder.getWriteDataSource(tag);

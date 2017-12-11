@@ -45,7 +45,7 @@ public class DbReflectUtil {
             return (List) object;
         List<Field> fieldList = new ArrayList<>();
         for (Class<?> clazz = cls; clazz != Object.class; clazz = clazz.getSuperclass()) {
-            fieldList.addAll(Arrays.asList(cls.getDeclaredFields()));
+            fieldList.addAll(Arrays.asList(clazz.getDeclaredFields()));
         }
         ReflectCache.put(key, fieldList);
         return fieldList;

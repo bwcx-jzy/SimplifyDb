@@ -1,9 +1,11 @@
 package cn.jiangzeyin.database.util;
 
 import cn.jiangzeyin.StringUtil;
-import cn.jiangzeyin.database.EntityInfo;
+import cn.jiangzeyin.database.DbWriteService;
 import cn.jiangzeyin.database.Page;
 import cn.jiangzeyin.database.annotation.EntityConfig;
+import cn.jiangzeyin.database.annotation.FieldConfig;
+import cn.jiangzeyin.database.base.Base;
 import cn.jiangzeyin.database.base.WriteBase;
 import cn.jiangzeyin.database.config.ModifyUser;
 import cn.jiangzeyin.database.config.SystemColumn;
@@ -57,8 +59,9 @@ public final class SqlUtil {
 
         List<String> remove = write.getRemove();
         HashMap<String, Class<?>> refMap = write.getRefMap();
-
-        List fieldList = DbReflectUtil.getDeclaredFields(data.getClass());
+        boolean isInsert = write instanceof Insert;
+        Class classT = data.getClass();
+        List fieldList = DbReflectUtil.getDeclaredFields(classT);
         for (Object object : fieldList) {
             Field field = (Field) object;
             if (!isWrite(field))
@@ -71,6 +74,25 @@ public final class SqlUtil {
             // 系统默认不可以操作
             if (SystemColumn.isWriteRemove(name))
                 continue;
+            // 判断insert 注解
+            if (isInsert) {
+                // 去掉mark 字段
+                EntityConfig entityConfig = (EntityConfig) classT.getAnnotation(EntityConfig.class);
+                if (entityConfig != null && !entityConfig.baseMark()) {
+                    if ("mark".equals(name))
+                        continue;
+                }
+                // 获取字段属性
+                FieldConfig fieldConfig = field.getAnnotation(FieldConfig.class);
+                if (fieldConfig != null) {
+                    String insertDelValue = fieldConfig.insertDefValue();
+                    if (!StringUtil.isEmpty(insertDelValue)) {
+                        columns.add(name);
+                        systemMap.put(name, insertDelValue);
+                        continue;
+                    }
+                }
+            }
             columns.add(name);
             // 判断是否为系统字段
             String value1 = SystemColumn.getDefaultValue(name);
@@ -178,9 +200,7 @@ public final class SqlUtil {
     public static SqlAndParameters getUpdateSql(Update<?> update) throws Exception {
         SqlAndParameters sqlAndParameters;
         StringBuffer sbSql;
-        Class<?> class1 = update.getTclass(false);
-        if (class1 == null)
-            class1 = update.getData().getClass();
+        Class<?> class1 = update.getTclass();
         EntityConfig entityConfig = class1.getAnnotation(EntityConfig.class);
         boolean isLogUpdate = true;
         if (entityConfig != null && !entityConfig.update())
@@ -188,21 +208,16 @@ public final class SqlUtil {
         // 更新部分列
         if (update.getUpdate() != null) {
             sqlAndParameters = new SqlAndParameters();
-            String sql = makeUpdateToTableSql(getTableName(update.getTclass(), false), update.getUpdate(), isLogUpdate);
+            String sql = makeUpdateToTableSql(getTableName(class1, false), update.getUpdate(), isLogUpdate);
             sbSql = new StringBuffer(sql);
         } else {
             // 按照实体更新
             sqlAndParameters = getWriteSql(update);
-            String sql = makeUpdateToTableSql(getTableName(update.getData().getClass(), false), sqlAndParameters.getColumns(), sqlAndParameters.getSystemMap(), isLogUpdate);
+            String sql = makeUpdateToTableSql(getTableName(class1, false), sqlAndParameters.getColumns(), sqlAndParameters.getSystemMap(), isLogUpdate);
             sbSql = new StringBuffer(sql);
         }
         // 获取修改数据的操作人
-        if (update.getOptUserId() != -1) {
-            if (ModifyUser.Modify.isModifyClass(class1)) {
-                sbSql.append(",").append(ModifyUser.Modify.getColumnUser()).append("=").append(update.getOptUserId());
-                sbSql.append(",").append(ModifyUser.Modify.getColumnTime()).append("=").append(ModifyUser.Modify.getModifyTime()).append("");
-            }
-        }
+        loadModifyUser(update, sbSql);
         // 处理where 条件
         boolean isAppendWhere = false;
         boolean isWhere = false;
@@ -271,7 +286,7 @@ public final class SqlUtil {
                 .append(" ");//
         String[] countSql = new String[2];
         countSql[0] = getCountSql(sql.toString(), select.getPage());
-        countSql[1] = getMysqlPageSql(select.getPage(), sql);//sql.toString();
+        countSql[1] = getMysqlPageSql(select.getPage(), sql);
         return countSql;
     }
 
@@ -336,14 +351,16 @@ public final class SqlUtil {
     /**
      * 获取移除sql 语句
      *
-     * @param cls   类
-     * @param ids   ids
-     * @param where 条件
+     * @param remove 类
      * @return sql
      * @author jiangzeyin
      */
-    public static String getRemoveSql(Class<?> cls, Remove.Type type, String ids, String where) {
-        StringBuilder sql = new StringBuilder();
+    public static String getRemoveSql(Remove<?> remove) {
+        String where = remove.getWhere();
+        Class<?> cls = remove.getTclass();
+        Remove.Type type = remove.getType();
+        String ids = remove.getIds();
+        StringBuffer sql = new StringBuffer();
         if (type == Remove.Type.delete) {
             sql.append("delete from ")//
                     .append(getTableName(cls, false));
@@ -357,9 +374,10 @@ public final class SqlUtil {
                     .append(getTableName(cls, false))//
                     .append(String.format(" set " + SystemColumn.Active.getColumn() + "=%d", status));
             if (isLogUpdate && SystemColumn.Modify.isStatus()) {
-                //,modifyTime=UNIX_TIMESTAMP(NOW())
                 sql.append(",").append(SystemColumn.Modify.getColumn()).append("=").append(SystemColumn.Modify.getTime());
             }
+
+            loadModifyUser(remove, sql);
         }
         boolean isWhere = false;
         if (!StringUtils.isEmpty(ids)) {
@@ -370,6 +388,23 @@ public final class SqlUtil {
             sql.append(isWhere ? " and " : " where ").append(where);
         }
         return sql.toString();
+    }
+
+    /**
+     * sql 记录操作人
+     *
+     * @param base         base
+     * @param stringBuffer sql 对象
+     */
+    private static void loadModifyUser(Base<?> base, StringBuffer stringBuffer) {
+        int optUserId = base.getOptUserId();
+        if (optUserId < 1)
+            return;
+        Class cls = base.getTclass();
+        if (ModifyUser.Modify.isModifyClass(cls)) {
+            stringBuffer.append(",").append(ModifyUser.Modify.getColumnUser()).append("=").append(optUserId);
+            stringBuffer.append(",").append(ModifyUser.Modify.getColumnTime()).append("=").append(ModifyUser.Modify.getModifyTime()).append("");
+        }
     }
 
     /**
@@ -499,7 +534,7 @@ public final class SqlUtil {
      * @author jiangzeyin
      */
     private static String getTableName(Class<?> class1, boolean isIndex, String index, boolean isDatabaseName) {
-        return EntityInfo.getTableName(class1, isIndex, index, isDatabaseName);
+        return DbWriteService.getTableName(class1, isIndex, index, isDatabaseName);
     }
 
     /**

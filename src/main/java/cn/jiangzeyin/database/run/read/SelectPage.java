@@ -1,6 +1,6 @@
 package cn.jiangzeyin.database.run.read;
 
-import cn.jiangzeyin.database.EntityInfo;
+import cn.jiangzeyin.database.DbWriteService;
 import cn.jiangzeyin.database.Page;
 import cn.jiangzeyin.database.base.ReadBase;
 import cn.jiangzeyin.database.config.DatabaseContextHolder;
@@ -65,7 +65,7 @@ public class SelectPage<T> extends ReadBase<T> {
         try {
             String tag = getTag();
             if (StringUtils.isEmpty(tag)) {
-                tag = EntityInfo.getDatabaseName(getTclass());
+                tag = DbWriteService.getDatabaseName(getTclass());
                 setTag(tag);
             }
             String[] pageSql;

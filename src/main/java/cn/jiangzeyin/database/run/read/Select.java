@@ -1,7 +1,7 @@
 package cn.jiangzeyin.database.run.read;
 
 import cn.jiangzeyin.StringUtil;
-import cn.jiangzeyin.database.EntityInfo;
+import cn.jiangzeyin.database.DbWriteService;
 import cn.jiangzeyin.database.base.ReadBase;
 import cn.jiangzeyin.database.config.DatabaseContextHolder;
 import cn.jiangzeyin.database.config.SystemColumn;
@@ -177,7 +177,7 @@ public class Select<T> extends ReadBase<T> {
         try {
             if (getResultType() == Result.JsonObject)
                 setLimitCount(1);
-            String tag = getTag() == null ? EntityInfo.getDatabaseName(getTclass()) : getTag();
+            String tag = getTag() == null ? DbWriteService.getDatabaseName(getTclass()) : getTag();
             setTag(tag);
             DataSource dataSource = DatabaseContextHolder.getReadDataSource(tag);
             String runSql = getSql();

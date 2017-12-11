@@ -1,6 +1,6 @@
 package cn.jiangzeyin.database.run.write;
 
-import cn.jiangzeyin.database.EntityInfo;
+import cn.jiangzeyin.database.DbWriteService;
 import cn.jiangzeyin.database.base.WriteBase;
 import cn.jiangzeyin.database.config.DatabaseContextHolder;
 import cn.jiangzeyin.database.config.SystemColumn;
@@ -144,7 +144,7 @@ public class Insert<T> extends WriteBase<T> {
                         return InsertEvent.BeforeCode.END.getResultCode();
                     }
                 }
-                String tag = EntityInfo.getDatabaseName(getData());
+                String tag = DbWriteService.getDatabaseName(getData());
                 SqlAndParameters sqlAndParameters = SqlUtil.getInsertSql(this);
                 DataSource dataSource = DatabaseContextHolder.getWriteDataSource(tag);
                 setRunSql(sqlAndParameters.getSql());
@@ -162,7 +162,7 @@ public class Insert<T> extends WriteBase<T> {
             if (this.list.size() > 0) {
                 Connection connection = null;
                 try {
-                    String tag = EntityInfo.getDatabaseName(list.get(0));
+                    String tag = DbWriteService.getDatabaseName(list.get(0));
                     SqlAndParameters[] sqlAndParameters = SqlUtil.getInsertSqls(this);
                     connection = DatabaseContextHolder.getWriteConnection(tag);
                     setRunSql("more:" + sqlAndParameters[0].getSql());

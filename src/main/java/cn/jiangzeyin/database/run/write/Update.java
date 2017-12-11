@@ -1,14 +1,14 @@
 package cn.jiangzeyin.database.run.write;
 
-import cn.jiangzeyin.database.EntityInfo;
+import cn.jiangzeyin.database.DbWriteService;
 import cn.jiangzeyin.database.base.WriteBase;
 import cn.jiangzeyin.database.config.DatabaseContextHolder;
 import cn.jiangzeyin.database.config.SystemColumn;
 import cn.jiangzeyin.database.event.UpdateEvent;
 import cn.jiangzeyin.database.util.SqlAndParameters;
 import cn.jiangzeyin.database.util.SqlUtil;
-import cn.jiangzeyin.system.DbLog;
 import cn.jiangzeyin.system.DBExecutorService;
+import cn.jiangzeyin.system.DbLog;
 import com.alibaba.druid.util.JdbcUtils;
 import com.alibaba.druid.util.StringUtils;
 
@@ -160,6 +160,14 @@ public class Update<T> extends WriteBase<T> {
         DBExecutorService.execute(this::syncRun);
     }
 
+    @Override
+    public Class<?> getTclass() {
+        T t = getData();
+        if (t != null)
+            return t.getClass();
+        return super.getTclass();
+    }
+
     /**
      * @return 影响行数
      * @author jiangzeyin
@@ -169,7 +177,7 @@ public class Update<T> extends WriteBase<T> {
         // TODO Auto-generated method stub
         try {
             T data = getData();
-            String tag = data == null ? EntityInfo.getDatabaseName(getTclass()) : EntityInfo.getDatabaseName(data);
+            String tag = data == null ? DbWriteService.getDatabaseName(getTclass()) : DbWriteService.getDatabaseName(data);
             SqlAndParameters sqlAndParameters = SqlUtil.getUpdateSql(this);
             DataSource dataSource = DatabaseContextHolder.getWriteDataSource(tag);
             DbLog.getInstance().info(getTransferLog() + sqlAndParameters.getSql());

@@ -1,7 +1,7 @@
 package cn.jiangzeyin.database.run.read;
 
 import cn.jiangzeyin.StringUtil;
-import cn.jiangzeyin.database.EntityInfo;
+import cn.jiangzeyin.database.DbWriteService;
 import cn.jiangzeyin.database.base.Base;
 import cn.jiangzeyin.database.config.DatabaseContextHolder;
 import cn.jiangzeyin.database.util.SqlUtil;
@@ -117,7 +117,7 @@ public class IsExists<T> extends Base<T> {
                     throw new IllegalArgumentException(" keycolumn 不能为null");
                 String tag = getTag();
                 if (StringUtils.isEmpty(tag))
-                    tag = EntityInfo.getDatabaseName(runClass);
+                    tag = DbWriteService.getDatabaseName(runClass);
                 String sql = SqlUtil.getIsExistsSql(runClass, getKeyColumn(), getWhere(), getColumn(), getLimit());
                 setRunSql(sql);
                 DbLog.getInstance().info(getTransferLog() + sql);
@@ -164,7 +164,7 @@ public class IsExists<T> extends Base<T> {
                     throw new IllegalArgumentException(" keyColumn 不能为null");
                 String tag = getTag();
                 if (StringUtils.isEmpty(tag))
-                    tag = EntityInfo.getDatabaseName(runClass);
+                    tag = DbWriteService.getDatabaseName(runClass);
                 String sql = SqlUtil.getIsExistsSql(runClass, getKeyColumn(), getWhere(), getColumn(), getLimit());
                 setRunSql(sql);
                 DbLog.getInstance().info(getTransferLog() + sql);

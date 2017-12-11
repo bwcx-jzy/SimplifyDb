@@ -76,10 +76,21 @@ public abstract class Base<T> {
         this.optUserId = optUserId;
     }
 
+    /**
+     * 返回操作的泛型类
+     *
+     * @return class
+     */
     public Class<?> getTclass() {
         return getTclass(true);
     }
 
+    /**
+     * 获取tclass
+     *
+     * @param getRef true 获取泛型
+     * @return 返回当前操作的泛型
+     */
     public Class<?> getTclass(boolean getRef) {
         if (tclass == null && getRef) {
             tclass = DbReflectUtil.getTClass(getClass());
