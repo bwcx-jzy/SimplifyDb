@@ -100,6 +100,7 @@ public class SelectPage<T> extends ReadBase<T> {
                     data.put("pageNo", page.getPageNo());
                     data.put("pageSize", page.getPageSize());
                     data.put("totalPage", page.getTotalPage());
+                    data.put("totalRecord", page.getTotalRecord());
                     return (T) data;
                 }
                 List<?> result_list = Util.convertList(this, list);
