@@ -157,12 +157,12 @@ public class Select<T> extends ReadBase<T> {
         this.sql = sql;
     }
 
-    public void setSql(String sql, int resultType) {
+    public void setSql(String sql, Result resultType) {
         this.sql = sql;
         setResultType(resultType);
     }
 
-    public T run(int resultType) {
+    public T run(Result resultType) {
         setResultType(resultType);
         return run();
     }
@@ -188,20 +188,20 @@ public class Select<T> extends ReadBase<T> {
             DbLog.getInstance().info(getTransferLog() + runSql);
             List<Map<String, Object>> result = JdbcUtils.executeQuery(dataSource, runSql, getParameters());
             switch (getResultType()) {
-                case Result.JsonArray:
+                case JsonArray:
                     return (T) JSON.toJSON(result);
-                case Result.JsonObject: {
+                case JsonObject: {
                     if (result == null || result.size() < 1)
                         return null;
                     Map<String, Object> map = result.get(0);
                     return (T) new JSONObject(map);
                 }
-                case Result.Entity:
+                case Entity:
                     return (T) Util.convertList(this, result);
-                case Result.ListMap:
+                case ListMap:
                     return (T) result;
-                case Result.String:
-                case Result.Integer: {
+                case String:
+                case Integer: {
                     if (result == null || result.size() < 1)
                         return null;
                     Map<String, Object> map = result.get(0);

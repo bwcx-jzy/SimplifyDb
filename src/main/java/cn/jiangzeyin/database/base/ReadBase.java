@@ -20,14 +20,20 @@ public abstract class ReadBase<T> extends Base<T> {
      *
      * @author jiangzeyin
      */
-    public static class Result {
-        public static final int JsonArray = 1;
+    public enum Result {
+        JsonArray,
         /**
          * 返回单个实体 json 一行
          */
-        public static final int JsonObject = 6;
-        public static final int Entity = 0;
-        public static final int ListMap = 2;
+        JsonObject,
+        /**
+         * 返回实体新
+         */
+        Entity,
+        /**
+         * 原数据格式
+         */
+        ListMap,
         /**
          * 支持取一行数据
          * <p>
@@ -35,7 +41,7 @@ public abstract class ReadBase<T> extends Base<T> {
          * <p>
          * 默认第一行第一列
          */
-        public static final int String = 3;
+        String,
         /**
          * 支持取一行数据
          * <p>
@@ -43,14 +49,21 @@ public abstract class ReadBase<T> extends Base<T> {
          * <p>
          * 默认第一行第一列
          */
-        public static final int Integer = 5;
-        //public static final int Array = 4;
+        Integer,
+        /**
+         * 分页信息查询
+         */
+        PageResultType;
+    }
+
+    protected ReadBase() {
+        setThrows(true);
     }
 
     private String columns; // 查询哪些列
     private String index; // 查询索引
     private List<Object> parameters; // 参数
-    private int resultType; // 返回值类型
+    private Result resultType = Result.Entity; // 返回值类型
     private int isDelete = SystemColumn.Active.NO_ACTIVE;
 
     public int getIsDelete() {
@@ -61,11 +74,11 @@ public abstract class ReadBase<T> extends Base<T> {
         this.isDelete = isDelete;
     }
 
-    protected int getResultType() {
+    protected Result getResultType() {
         return resultType;
     }
 
-    public void setResultType(int resultType) {
+    public void setResultType(Result resultType) {
         this.resultType = resultType;
     }
 
@@ -74,7 +87,6 @@ public abstract class ReadBase<T> extends Base<T> {
             return new ArrayList<>();
         return parameters;
     }
-
 
     /**
      * @param parameters 参数
@@ -136,7 +148,7 @@ public abstract class ReadBase<T> extends Base<T> {
         super.recycling();
         //connection = null;
         parameters = null;
-        resultType = -1;
+        resultType = null;
         columns = null;
         index = null;
     }

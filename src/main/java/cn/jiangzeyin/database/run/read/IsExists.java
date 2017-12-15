@@ -63,6 +63,7 @@ public class IsExists<T> extends Base<T> {
     }
 
     public IsExists(String keyColumn, String keyValue) {
+        this(true);
         this.keyColumn = keyColumn;
         this.keyValue = keyValue;
     }
@@ -71,6 +72,11 @@ public class IsExists<T> extends Base<T> {
         setThrows(true);
     }
 
+    /**
+     * 异常是否抛出
+     *
+     * @param isThrows isThrows
+     */
     public IsExists(boolean isThrows) {
         setThrows(isThrows);
     }

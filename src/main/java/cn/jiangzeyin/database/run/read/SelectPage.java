@@ -26,10 +26,9 @@ public class SelectPage<T> extends ReadBase<T> {
 
     private Page<T> page;
 
-    public static final int PageResultType = -2;
 
     /**
-     *
+     * 分页基本使用
      */
     public SelectPage(Page<T> page) {
         // TODO Auto-generated constructor stub
@@ -40,7 +39,7 @@ public class SelectPage<T> extends ReadBase<T> {
      * @param page       page
      * @param resultType 返回类型
      */
-    public SelectPage(Page<T> page, int resultType) {
+    public SelectPage(Page<T> page, Result resultType) {
         this.page = page;
         setResultType(resultType);
     }
@@ -94,7 +93,7 @@ public class SelectPage<T> extends ReadBase<T> {
                     return (T) JSON.toJSON(list);
                 }
                 // 结果是分页数据
-                if (getResultType() == PageResultType) {
+                if (getResultType() == Result.PageResultType) {
                     JSONObject data = new JSONObject();
                     data.put("results", list);
                     data.put("pageNo", page.getPageNo());
