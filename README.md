@@ -43,12 +43,12 @@ cn.jiangzeyin.database.run.write.Remove 删除数据
 
 cn.jiangzeyin.database.run.write.Update 修改数据
 
-示例配置：
+示例配置：(db.properties)
 
 ```
-sourceTag=core,user,roles,tongji,news
-configPath=file:/ztoutiao/read.properties
-systemKey=com.yoke
+sourceTag=core
+configPath=file:/test/read.properties
+systemKey=com.yoke   
 systemKeyColumn=url,username,password
 #
 lastModify.time=UNIX_TIMESTAMP(NOW())
@@ -78,3 +78,28 @@ systemColumn.defaultRefKeyName=id
 systemColumn.defaultKeyName=id
 ```
 
+systemKey 为configPath 中加密的密钥
+
+systemKeyColumn  为configPath 中哪些字段是为加密的字段
+
+实例配置：(file:/test/read.properties)
+
+```
+core.driver=com.mysql.jdbc.Driver
+core.url=1953342c4b
+core.username=12b0ecd
+core.password=9085ada2469
+core.init=true
+core.maxActive=10000
+core.validationQuery=SELECT 'x'
+core.testOnReturn=false
+core.testOnBorrow=false
+core.testWhileIdle=true
+core.minIdle=30
+core.initialSize=1
+core.removeAbandoned=true
+core.removeAbandonedTimeout=60
+core.logAbandoned=true
+```
+ 
+配置字段具体含义请 查看[https://github.com/alibaba/druid/wiki/DruidDataSource%E9%85%8D%E7%BD%AE%E5%B1%9E%E6%80%A7%E5%88%97%E8%A1%A8](https://github.com/alibaba/druid/wiki/DruidDataSource%E9%85%8D%E7%BD%AE%E5%B1%9E%E6%80%A7%E5%88%97%E8%A1%A8)
