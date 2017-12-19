@@ -5,7 +5,7 @@
 
 博客专栏：[http://blog.csdn.net/column/details/17021.html](http://blog.csdn.net/column/details/17021.html)
 
-项目特点：
+项目特点：(使用druid 连接池)
 
 1.支持多数据源
 
@@ -78,6 +78,10 @@ systemColumn.defaultRefKeyName=id
 systemColumn.defaultKeyName=id
 ```
 
+sourceTag,configPath 为必需字段
+
+其他字段均根据自己实际情况配置
+
 systemKey 为configPath 中加密的密钥
 
 systemKeyColumn  为configPath 中哪些字段是为加密的字段
@@ -104,7 +108,8 @@ core.logAbandoned=true
  
 配置字段具体含义请 查看[https://github.com/alibaba/druid/wiki/DruidDataSource%E9%85%8D%E7%BD%AE%E5%B1%9E%E6%80%A7%E5%88%97%E8%A1%A8](https://github.com/alibaba/druid/wiki/DruidDataSource%E9%85%8D%E7%BD%AE%E5%B1%9E%E6%80%A7%E5%88%97%E8%A1%A8)
 
-初始化：
+**初始化**：
+
 1.先设置日志接口
 
 cn.jiangzeyin.system.DbLog.setDbLogInterface()
@@ -113,7 +118,7 @@ cn.jiangzeyin.system.DbLog.setDbLogInterface()
 
 cn.jiangzeyin.database.config.DataSourceConfig.init()  参数为配置文件的路径
 
-3.设置实体转换数据库接口
+3.设置实体转换数据库接口（根据class 获取该实体存在的数据源中）
 
 cn.jiangzeyin.database.DbWriteService.setWriteInterface()
 
