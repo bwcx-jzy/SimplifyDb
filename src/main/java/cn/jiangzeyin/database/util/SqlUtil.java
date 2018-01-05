@@ -474,23 +474,28 @@ public final class SqlUtil {
     private static String getMysqlPageSql(Page<?> page, StringBuffer sqlBuffer) {
         // 计算第一条记录的位置，Mysql中记录的位置是从0开始的。
         long offset = (page.getPageNo() - 1) * page.getPageSize();
+        // 条件
         doWhere(sqlBuffer, page);
         // 判断是否需要排序
-        if (page.getOrderBy() != null && !"".equals(page.getOrderBy())) {
-            sqlBuffer.append(" order by ").append(page.getOrderBy());
-        }
+        doCount(sqlBuffer, page);
         sqlBuffer.append(" limit ").append(offset).append(",").append(page.getPageSize());
         return sqlBuffer.toString();
     }
 
     private static void doWhere(StringBuffer sqlBuffer, Page page) {
-        if (!StringUtils.isEmpty(page.getWhereWord())) {
+        if (!StringUtil.isEmpty(page.getWhereWord())) {
             if (sqlBuffer.indexOf("where") == -1) {
                 sqlBuffer.append(" where ");
             } else {
                 sqlBuffer.append(" and ");
             }
             sqlBuffer.append(page.getWhereWord());
+        }
+    }
+
+    private static void doCount(StringBuffer stringBuffer, Page page) {
+        if (!StringUtil.isEmpty(page.getOrderBy())) {
+            stringBuffer.append(" order by ").append(page.getOrderBy());
         }
     }
 
@@ -505,6 +510,8 @@ public final class SqlUtil {
     private static String getCountSql(String sql, Page<?> page) {
         StringBuffer sqlBuffer = new StringBuffer(sql);
         doWhere(sqlBuffer, page);
+        //
+        //doCount(sqlBuffer, page);
         return "select count(1)  as count from (" + sqlBuffer + ") as total";
     }
 

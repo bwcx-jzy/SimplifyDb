@@ -8,12 +8,13 @@ import java.util.*;
  *
  */
 public class PropertiesParser {
-    Properties props = null;
+    private Properties props;
 
     public PropertiesParser(InputStream inputStream) throws IOException {
         Assert.notNull(inputStream, "inputStream is null");
         Properties properties = new Properties();
         properties.load(inputStream);
+        inputStream.close();
         this.props = properties;
     }
 
@@ -67,7 +68,7 @@ public class PropertiesParser {
 
     public boolean getBooleanProperty(String name, boolean def) {
         String val = this.getStringProperty(name);
-        return val == null ? def : Boolean.valueOf(val).booleanValue();
+        return val == null ? def : Boolean.valueOf(val);
     }
 
     public byte getByteProperty(String name) throws NumberFormatException {
