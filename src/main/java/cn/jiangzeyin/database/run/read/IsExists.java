@@ -180,11 +180,15 @@ public class IsExists<T> extends Base<T> {
                     return null;
                 Map<String, Object> map = list.get(0);
 
-                String[] keys = StringUtil.stringToArray(getColumn());
+                String[] keys = StringUtil.stringToArray(getColumn(), ",");
                 if (keys == null || keys.length <= 0) {
                     return map.get("countSum");
                 }
                 if (keys.length == 1) {
+                    String[] array = StringUtil.stringToArray(keys[0]);
+                    if (array != null && array.length >= 3 && "as".equalsIgnoreCase(array[array.length - 2])) {
+                        return map.get(array[array.length - 1]);
+                    }
                     return map.get(keys[0]);
                 }
                 return map;
