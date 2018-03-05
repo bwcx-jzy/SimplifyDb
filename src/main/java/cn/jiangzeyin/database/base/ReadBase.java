@@ -1,5 +1,6 @@
 package cn.jiangzeyin.database.base;
 
+import cn.jiangzeyin.StringUtil;
 import cn.jiangzeyin.database.config.SystemColumn;
 import com.alibaba.druid.util.StringUtils;
 
@@ -63,8 +64,89 @@ public abstract class ReadBase<T> extends Base<T> {
     private String columns; // 查询哪些列
     private String index; // 查询索引
     private List<Object> parameters; // 参数
-    private Result resultType = Result.Entity; // 返回值类型
+    /**
+     * 返回值类型
+     */
+    private Result resultType = Result.Entity;
     private int isDelete = SystemColumn.Active.NO_ACTIVE;
+    // 主键值
+    private Object keyValue;
+    // 主键列
+    private String keyColumn;
+    /**
+     * 条件
+     */
+    private String where;
+    /**
+     * 是否使用索引
+     */
+    private boolean useIndex;
+
+    public boolean isUseIndex() {
+        return useIndex;
+    }
+
+    public void setUseIndex(boolean useIndex) {
+        this.useIndex = useIndex;
+    }
+
+    public String getWhere() {
+        return where;
+    }
+
+    public void setWhere(String where) {
+        this.where = where;
+    }
+
+    public void appendWhere(String where) {
+        String temp = StringUtil.convertNULL(this.where);
+        where = StringUtil.convertNULL(where);
+        this.where = String.format("%s %s", temp, where);
+    }
+
+    /**
+     * 获取主键列
+     *
+     * @return key
+     * @author jiangzeyin
+     */
+    public String getKeyColumn() {
+        if (StringUtils.isEmpty(keyColumn))
+            return SystemColumn.getDefaultKeyName();
+        return keyColumn;
+    }
+
+    /**
+     * 设置主键列名
+     * <p>
+     * 默认为 id
+     *
+     * @param keyColumn 名称
+     * @author jiangzeyin
+     */
+    public void setKeyColumn(String keyColumn) {
+        this.keyColumn = keyColumn;
+    }
+
+    /**
+     * 获取主键值
+     *
+     * @return 键值
+     * @author jiangzeyin
+     */
+    public Object getKeyValue() {
+        return keyValue;
+    }
+
+    /**
+     * 设置查询主键值
+     *
+     * @param keyValue 键值
+     * @author jiangzeyin
+     */
+    public void setKeyValue(Object keyValue) {
+        this.keyValue = keyValue;
+    }
 
     public int getIsDelete() {
         return isDelete;
@@ -97,6 +179,11 @@ public abstract class ReadBase<T> extends Base<T> {
             this.parameters = new LinkedList<>();
         if (parameters != null)
             Collections.addAll(this.parameters, parameters);
+    }
+
+
+    public void setParameters(List<Object> whereParameters) {
+        this.parameters = whereParameters;
     }
 
     /**

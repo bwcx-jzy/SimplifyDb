@@ -24,7 +24,6 @@ import java.util.Map;
  */
 public class Select<T> extends ReadBase<T> {
 
-    private String where;
     private String orderBy;
     private String sql;
 
@@ -32,54 +31,8 @@ public class Select<T> extends ReadBase<T> {
     private int limitStart;
     // 查询数据个数
     private int limitCount;
-    // 主键值
-    private Object keyValue;
-    // 主键列
-    private String keyColumn;
 
-    /**
-     * 获取主键列
-     *
-     * @return key
-     * @author jiangzeyin
-     */
-    public String getKeyColumn() {
-        if (StringUtils.isEmpty(keyColumn))
-            return SystemColumn.getDefaultKeyName();
-        return keyColumn;
-    }
 
-    /**
-     * 设置主键列名
-     * <p>
-     * 默认为 id
-     *
-     * @param keyColumn 名称
-     * @author jiangzeyin
-     */
-    public void setKeyColumn(String keyColumn) {
-        this.keyColumn = keyColumn;
-    }
-
-    /**
-     * 获取主键值
-     *
-     * @return 键值
-     * @author jiangzeyin
-     */
-    public Object getKeyValue() {
-        return keyValue;
-    }
-
-    /**
-     * 设置查询主键值
-     *
-     * @param keyValue 键值
-     * @author jiangzeyin
-     */
-    public void setKeyValue(Object keyValue) {
-        this.keyValue = keyValue;
-    }
 
     public int getLimitStart() {
         return limitStart;
@@ -121,25 +74,7 @@ public class Select<T> extends ReadBase<T> {
         super.setTag(tag);
     }
 
-    public String getWhere() {
-        return where;
-    }
 
-    /**
-     * 查询条件
-     *
-     * @param where 条件
-     * @author jiangzeyin
-     */
-    public void setWhere(String where) {
-        this.where = where;
-    }
-
-    public void appendWhere(String where) {
-        String temp = StringUtil.convertNULL(this.where);
-        where = StringUtil.convertNULL(where);
-        this.where = String.format("%s %s", temp, where);
-    }
 
     public String getOrderBy() {
         return orderBy;

@@ -6,6 +6,7 @@ import cn.jiangzeyin.database.Page;
 import cn.jiangzeyin.database.annotation.EntityConfig;
 import cn.jiangzeyin.database.annotation.FieldConfig;
 import cn.jiangzeyin.database.base.Base;
+import cn.jiangzeyin.database.base.ReadBase;
 import cn.jiangzeyin.database.base.WriteBase;
 import cn.jiangzeyin.database.config.ModifyUser;
 import cn.jiangzeyin.database.config.SystemColumn;
@@ -209,12 +210,12 @@ public final class SqlUtil {
         // 更新部分列
         if (update.getUpdate() != null) {
             sqlAndParameters = new SqlAndParameters();
-            String sql = makeUpdateToTableSql(getTableName(update, class1, false), update.getUpdate(), isLogUpdate);
+            String sql = makeUpdateToTableSql(getTableName(update, class1), update.getUpdate(), isLogUpdate);
             sbSql = new StringBuffer(sql);
         } else {
             // 按照实体更新
             sqlAndParameters = getWriteSql(update);
-            String sql = makeUpdateToTableSql(getTableName(update, class1, false), sqlAndParameters.getColumns(), sqlAndParameters.getSystemMap(), isLogUpdate);
+            String sql = makeUpdateToTableSql(getTableName(update, class1), sqlAndParameters.getColumns(), sqlAndParameters.getSystemMap(), isLogUpdate);
             sbSql = new StringBuffer(sql);
         }
         // 获取修改数据的操作人
@@ -283,7 +284,7 @@ public final class SqlUtil {
         StringBuffer sql = new StringBuffer("select ");
         sql.append(select.getColumns())//
                 .append(" from ")//
-                .append(getTableName(select, select.getTclass(), true, select.getIndex(), false))//
+                .append(getTableName(select))//
                 .append(" ");//
         String[] countSql = new String[2];
         countSql[0] = getCountSql(sql.toString(), select.getPage());
@@ -329,7 +330,7 @@ public final class SqlUtil {
      */
     public static String getIsExistsSql(IsExists isExists, Class<?> clas, String keyColumn, String where) {
         StringBuilder sql = new StringBuilder("select ");//
-        String column = isExists.getColumn();
+        String column = isExists.getColumns();
         if (StringUtils.isEmpty(column)) {
             sql.append(" count(1) as countSum from ");//
         } else {
@@ -366,7 +367,7 @@ public final class SqlUtil {
         StringBuffer sql = new StringBuffer();
         if (type == Remove.Type.delete) {
             sql.append("delete from ")//
-                    .append(getTableName(remove, cls, false));
+                    .append(getTableName(remove, cls));
         } else {
             int status = type == Remove.Type.remove ? SystemColumn.Active.getInActiveValue() : SystemColumn.Active.getActiveValue();
             EntityConfig entityConfig = cls.getAnnotation(EntityConfig.class);
@@ -374,7 +375,7 @@ public final class SqlUtil {
             if (entityConfig != null && !entityConfig.update())
                 isLogUpdate = false;
             sql.append("update ")//
-                    .append(getTableName(remove, cls, false))//
+                    .append(getTableName(remove, cls))//
                     .append(String.format(" set " + SystemColumn.Active.getColumn() + "=%d", status));
             if (isLogUpdate && SystemColumn.Modify.isStatus()) {
                 sql.append(",").append(SystemColumn.Modify.getColumn()).append("=").append(SystemColumn.Modify.getTime());
@@ -422,7 +423,7 @@ public final class SqlUtil {
         StringBuilder sql = new StringBuilder("select ");
         sql.append(select.getColumns())//
                 .append(" from ")
-                .append(getTableName(select, select.getTclass(), true, select.getIndex(), false))//
+                .append(getTableName(select))//
                 .append(" ");//
         boolean isWhere = false;
         // datakey
@@ -520,37 +521,38 @@ public final class SqlUtil {
     /**
      * 获取表明 默认添加索引
      *
-     * @param base   数据库操作类
-     * @param class1 类
+     * @param base 数据库操作类
      * @return 表名
      * @author jiangzeyin
      */
-    private static String getTableName(Base base, Class<?> class1) {
-
-        return getTableName(base, class1, true, null, false);
-    }
-
-    private static String getTableName(Base base, Class<?> class1, boolean isIndex) {
-        return getTableName(base, class1, isIndex, null, false);
+    private static String getTableName(Base base) {
+        return getTableName(base, null);
     }
 
     /**
      * 获取表明 和 自动加主键索引
      *
-     * @param class1         类
-     * @param isIndex        索引
-     * @param index          索引
-     * @param isDatabaseName 数据库名
+     * @param base 类
      * @return 表名
      * @author jiangzeyin
      */
-    private static String getTableName(Base base, Class<?> class1, boolean isIndex, String index, boolean isDatabaseName) {
+    private static String getTableName(Base base, Class cls) {
         if (base != null) {
+            // 判断是否指定表名
             String tableName = base.getTableName();
             if (!StringUtil.isEmpty(tableName))
                 return tableName;
+            // 读取索引信息
+            boolean isIndex = false;
+            String index = null;
+            if (base instanceof ReadBase) {
+                ReadBase readBase = (ReadBase) base;
+                index = readBase.getIndex();
+                isIndex = readBase.isUseIndex();
+            }
+            return DbWriteService.getTableName(base.getTclass(), isIndex, index, base.isUseDataBaseName());
         }
-        return DbWriteService.getTableName(class1, isIndex, index, isDatabaseName);
+        return DbWriteService.getTableName(cls, false, null, false);
     }
 
     /**
@@ -583,7 +585,7 @@ public final class SqlUtil {
      * @author jiangzeyin
      */
     private static String makeInsertToTableSql(Class<?> class1, int createUser, Collection<String> names, HashMap<String, String> systemMap, int isDeleteValue) {
-        String tableName = getTableName(null, class1, false);
+        String tableName = getTableName(null, class1);
         StringBuilder sql = new StringBuilder() //
                 .append("insert into ") //
                 .append(tableName) //

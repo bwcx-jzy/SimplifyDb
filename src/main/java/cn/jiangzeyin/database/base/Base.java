@@ -38,6 +38,17 @@ public abstract class Base<T> {
      */
     private String tableName;
 
+    private boolean useDataBaseName;
+
+
+    public boolean isUseDataBaseName() {
+        return useDataBaseName;
+    }
+
+    public void setUseDataBaseName(boolean useDataBaseName) {
+        this.useDataBaseName = useDataBaseName;
+    }
+
     public String getTableName() {
         return tableName;
     }

@@ -2,7 +2,7 @@ package cn.jiangzeyin.database.run.read;
 
 import cn.jiangzeyin.StringUtil;
 import cn.jiangzeyin.database.DbWriteService;
-import cn.jiangzeyin.database.base.Base;
+import cn.jiangzeyin.database.base.ReadBase;
 import cn.jiangzeyin.database.config.DatabaseContextHolder;
 import cn.jiangzeyin.database.util.SqlUtil;
 import cn.jiangzeyin.system.DbLog;
@@ -11,8 +11,6 @@ import com.alibaba.druid.util.StringUtils;
 
 import javax.sql.DataSource;
 import java.sql.SQLException;
-import java.util.Collections;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -21,12 +19,7 @@ import java.util.Map;
  *
  * @author jiangzeyin
  */
-public class IsExists<T> extends Base<T> {
-    private String keyColumn;
-    private Object keyValue;
-    private String where;
-    private List<Object> parameters;
-    private String column;
+public class IsExists<T> extends ReadBase<T> {
     private int limit;
 
     public int getLimit() {
@@ -37,36 +30,20 @@ public class IsExists<T> extends Base<T> {
         this.limit = limit;
     }
 
-    public String getColumn() {
-        return column;
-    }
-
-    public void setColumn(String column) {
-        this.column = column;
-    }
 
     public List<Object> getParameters() {
-        List<Object> paList = new LinkedList<>();
-        paList.add(getKeyValue());
-        if (parameters != null)
-            paList.addAll(parameters);
+        List<Object> paList = super.getParameters();
+        paList.add(0, getKeyValue());
+        //paList.add(getKeyValue());
+        //if (parameters != null)
+        //  paList.addAll(parameters);
         return paList;
-    }
-
-    public void setParameters(List<Object> whereParameters) {
-        this.parameters = whereParameters;
-    }
-
-    public void setParameters(Object... parameters_) {
-        if (parameters == null)
-            parameters = new LinkedList<>();
-        Collections.addAll(parameters, parameters_);
     }
 
     public IsExists(String keyColumn, String keyValue) {
         this(true);
-        this.keyColumn = keyColumn;
-        this.keyValue = keyValue;
+        setKeyValue(keyValue);
+        setKeyColumn(keyColumn);
     }
 
     public IsExists() {
@@ -86,37 +63,13 @@ public class IsExists<T> extends Base<T> {
         setTag(tag);
     }
 
-    public String getKeyColumn() {
-        return keyColumn;
-    }
-
-    public void setKeyColumn(String keyColumn) {
-        this.keyColumn = keyColumn;
-    }
-
-    public Object getKeyValue() {
-        return keyValue;
-    }
-
-    public void setKeyValue(Object keyValue) {
-        this.keyValue = keyValue;
-    }
-
-    public String getWhere() {
-        return where;
-    }
-
-    public void setWhere(String where) {
-        this.where = where;
-    }
-
     /**
      * 判断是否存在
      *
      * @return 是否存在
      * @author jiangzeyin
      */
-    public boolean run() {
+    public boolean runBoolean() {
         try {
             List<Map<String, Object>> list = doData();
             if (list == null || list.size() < 1)
@@ -140,7 +93,6 @@ public class IsExists<T> extends Base<T> {
         } finally {
             runEnd();
             recycling();
-            this.parameters = null;
         }
         return true;
 
@@ -168,31 +120,30 @@ public class IsExists<T> extends Base<T> {
      * @return 结果
      * @author jiangzeyin
      */
-    public Object runColumn() {
+    public <T> T run() {
         try {
             List<Map<String, Object>> list = doData();
             if (list == null || list.size() < 1)
                 return null;
             Map<String, Object> map = list.get(0);
-            String[] keys = StringUtil.stringToArray(getColumn(), ",");
+            String[] keys = StringUtil.stringToArray(getColumns(), ",");
             if (keys == null || keys.length <= 0) {
-                return map.get("countSum");
+                return (T) map.get("countSum");
             }
             if (keys.length == 1) {
                 String[] array = StringUtil.stringToArray(keys[0]);
                 if (array != null && array.length >= 3 && "as".equalsIgnoreCase(array[array.length - 2])) {
-                    return map.get(array[array.length - 1]);
+                    return (T) map.get(array[array.length - 1]);
                 }
-                return map.get(keys[0]);
+                return (T) map.get(keys[0]);
             }
-            return map;
+            return (T) map;
         } catch (Exception e) {
             // TODO: handle exception
             isThrows(e);
         } finally {
             runEnd();
             recycling();
-            this.parameters = null;
         }
         return null;
     }
