@@ -29,16 +29,30 @@ public abstract class Base<T> {
     private Class<?> tclass; // 数据库对应class
     private int optUserId; // 操作人
     private long runTime;
-    protected String runSql;
-    protected String tempTransferLog;
-
+    private String runSql;
+    private String tempTransferLog;
+    // 操作的对应tag
     private String tagName;
+    /**
+     * 表名
+     */
+    private String tableName;
+
+    public String getTableName() {
+        return tableName;
+    }
+
+    public void setTableName(String tableName) {
+        this.tableName = tableName;
+    }
 
     public String getTagName() {
+        if (tagName == null)
+            return DatabaseContextHolder.getConnectionTagName();
         return tagName;
     }
 
-    public void setTagName(String tagName) {
+    private void setTagName(String tagName) {
         this.tagName = tagName;
     }
 
@@ -63,7 +77,7 @@ public abstract class Base<T> {
     protected void runEnd() {
         long time = System.currentTimeMillis() - runTime;
         if (time > 2 * 1000L) {
-            String tagName = DatabaseContextHolder.getConnectionTagName();
+            String tagName = getTagName();// DatabaseContextHolder.getConnectionTagName();
             DbLog.getInstance().warn(tagName + "执行时间过长：" + time + "  " + runSql);
         }
     }
@@ -229,5 +243,6 @@ public abstract class Base<T> {
 
     protected void getAsyncLog() {
         tempTransferLog = getLine();
+        setTagName(DatabaseContextHolder.getConnectionTagName());
     }
 }

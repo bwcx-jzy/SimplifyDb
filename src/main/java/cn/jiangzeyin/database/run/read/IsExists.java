@@ -10,6 +10,7 @@ import com.alibaba.druid.util.JdbcUtils;
 import com.alibaba.druid.util.StringUtils;
 
 import javax.sql.DataSource;
+import java.sql.SQLException;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
@@ -116,43 +117,48 @@ public class IsExists<T> extends Base<T> {
      * @author jiangzeyin
      */
     public boolean run() {
+        try {
+            List<Map<String, Object>> list = doData();
+            if (list == null || list.size() < 1)
+                return false;
+            Map<String, Object> map = list.get(0);
+            Object object = map.get("countSum");
+            if (object == null)
+                throw new RuntimeException("查询结果没有countSum");
+            if (object instanceof Long) {
+                Long count = (Long) object;
+                return count > 0L;
+            }
+            if (object instanceof Integer) {
+                Integer count = (Integer) object;
+                return count > 0;
+            }
+            throw new RuntimeException("查询结果类型异常" + object);
+        } catch (Exception e) {
+            // TODO: handle exception
+            isThrows(e);
+        } finally {
+            runEnd();
+            recycling();
+            this.parameters = null;
+        }
+        return true;
+
+    }
+
+    private List<Map<String, Object>> doData() throws SQLException {
         Class runClass = getTclass();
         synchronized (runClass.getName()) {
-            try {
-                if (StringUtils.isEmpty(getKeyColumn()))
-                    throw new IllegalArgumentException(" keycolumn 不能为null");
-                String tag = getTag();
-                if (StringUtils.isEmpty(tag))
-                    tag = DbWriteService.getDatabaseName(runClass);
-                String sql = SqlUtil.getIsExistsSql(runClass, getKeyColumn(), getWhere(), getColumn(), getLimit());
-                setRunSql(sql);
-                DbLog.getInstance().info(getTransferLog() + sql);
-                DataSource dataSource = DatabaseContextHolder.getReadDataSource(tag);
-                List<Map<String, Object>> list = JdbcUtils.executeQuery(dataSource, sql, getParameters());
-                if (list == null || list.size() < 1)
-                    return false;
-                Map<String, Object> map = list.get(0);
-                Object object = map.get("countSum");
-                if (object == null)
-                    throw new RuntimeException("查询结果没有countSum");
-                if (object instanceof Long) {
-                    Long count = (Long) object;
-                    return count > 0L;
-                }
-                if (object instanceof Integer) {
-                    Integer count = (Integer) object;
-                    return count > 0;
-                }
-                throw new RuntimeException("查询结果类型异常" + object);
-            } catch (Exception e) {
-                // TODO: handle exception
-                isThrows(e);
-            } finally {
-                runEnd();
-                recycling();
-                this.parameters = null;
-            }
-            return true;
+            if (StringUtils.isEmpty(getKeyColumn()))
+                throw new IllegalArgumentException(" keyColumn 不能为null");
+            String tag = getTag();
+            if (StringUtils.isEmpty(tag))
+                tag = DbWriteService.getDatabaseName(runClass);
+            String sql = SqlUtil.getIsExistsSql(this, runClass, getKeyColumn(), getWhere());
+            setRunSql(sql);
+            DbLog.getInstance().info(getTransferLog() + sql);
+            DataSource dataSource = DatabaseContextHolder.getReadDataSource(tag);
+            return JdbcUtils.executeQuery(dataSource, sql, getParameters());
         }
     }
 
@@ -163,44 +169,32 @@ public class IsExists<T> extends Base<T> {
      * @author jiangzeyin
      */
     public Object runColumn() {
-        Class runClass = getTclass();
-        synchronized (runClass.getName()) {
-            try {
-                if (StringUtils.isEmpty(getKeyColumn()))
-                    throw new IllegalArgumentException(" keyColumn 不能为null");
-                String tag = getTag();
-                if (StringUtils.isEmpty(tag))
-                    tag = DbWriteService.getDatabaseName(runClass);
-                String sql = SqlUtil.getIsExistsSql(runClass, getKeyColumn(), getWhere(), getColumn(), getLimit());
-                setRunSql(sql);
-                DbLog.getInstance().info(getTransferLog() + sql);
-                DataSource dataSource = DatabaseContextHolder.getReadDataSource(tag);
-                List<Map<String, Object>> list = JdbcUtils.executeQuery(dataSource, sql, getParameters());
-                if (list == null || list.size() < 1)
-                    return null;
-                Map<String, Object> map = list.get(0);
-
-                String[] keys = StringUtil.stringToArray(getColumn(), ",");
-                if (keys == null || keys.length <= 0) {
-                    return map.get("countSum");
-                }
-                if (keys.length == 1) {
-                    String[] array = StringUtil.stringToArray(keys[0]);
-                    if (array != null && array.length >= 3 && "as".equalsIgnoreCase(array[array.length - 2])) {
-                        return map.get(array[array.length - 1]);
-                    }
-                    return map.get(keys[0]);
-                }
-                return map;
-            } catch (Exception e) {
-                // TODO: handle exception
-                isThrows(e);
-            } finally {
-                runEnd();
-                recycling();
-                this.parameters = null;
+        try {
+            List<Map<String, Object>> list = doData();
+            if (list == null || list.size() < 1)
+                return null;
+            Map<String, Object> map = list.get(0);
+            String[] keys = StringUtil.stringToArray(getColumn(), ",");
+            if (keys == null || keys.length <= 0) {
+                return map.get("countSum");
             }
-            return null;
+            if (keys.length == 1) {
+                String[] array = StringUtil.stringToArray(keys[0]);
+                if (array != null && array.length >= 3 && "as".equalsIgnoreCase(array[array.length - 2])) {
+                    return map.get(array[array.length - 1]);
+                }
+                return map.get(keys[0]);
+            }
+            return map;
+        } catch (Exception e) {
+            // TODO: handle exception
+            isThrows(e);
+        } finally {
+            runEnd();
+            recycling();
+            this.parameters = null;
         }
+        return null;
     }
+
 }
