@@ -61,7 +61,7 @@ public abstract class ReadBase<T> extends Base<T> {
         setThrows(true);
     }
 
-    private String columns; // 查询哪些列
+    protected String columns; // 查询哪些列
     private String index; // 查询索引
     private List<Object> parameters; // 参数
     /**

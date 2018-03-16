@@ -114,6 +114,11 @@ public class IsExists<T> extends ReadBase<T> {
         }
     }
 
+    @Override
+    public String getColumns() {
+        return columns;
+    }
+
     /**
      * 查询是否存在
      *
