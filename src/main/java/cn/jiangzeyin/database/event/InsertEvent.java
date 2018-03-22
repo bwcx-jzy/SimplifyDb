@@ -1,48 +1,24 @@
 package cn.jiangzeyin.database.event;
 
+import cn.jiangzeyin.database.base.WriteBase;
+import cn.jiangzeyin.database.run.write.Insert;
 
 /**
  * 添加数据事件
  *
  * @author jiangzeyin
  */
-public interface InsertEvent {
-    /**
-     *
-     */
-    enum BeforeCode {
-        CONTINUE(0, "继续", 0), END(1, "结束", -100);
-
-        BeforeCode(int code, String desc, int resultCode) {
-            this.code = code;
-            this.desc = desc;
-            this.resultCode = resultCode;
-        }
-
-        private int code;
-        private String desc;
-        private int resultCode;
-
-        public int getResultCode() {
-            return resultCode;
-        }
-
-        public int getCode() {
-            return code;
-        }
-
-        public String getDesc() {
-            return desc;
-        }
-    }
+public interface InsertEvent extends WriteBase.Event {
 
     /**
      * 开始事件之前
      *
+     * @param object 添加的对象
+     * @param insert insert 操作对象
      * @return 验证结果
      * @author jiangzeyin
      */
-    int beforeI(Object object);
+    BeforeCode beforeInsert(Insert<?> insert, Object object);
 
     /**
      * 操作成功
@@ -50,7 +26,7 @@ public interface InsertEvent {
      * @param dataId 结果id
      * @author jiangzeyin
      */
-    void completeI(long dataId);
+    void completeInsert(Object dataId);
 
     /**
      * 出现异常
@@ -58,5 +34,5 @@ public interface InsertEvent {
      * @param throwable 异常
      * @author jiangzeyin
      */
-    void errorI(Throwable throwable);
+    void errorInsert(Throwable throwable);
 }

@@ -9,10 +9,18 @@ import cn.jiangzeyin.system.DbLog;
  * @author jiangzeyin
  */
 public abstract class WriteBase<T> extends Base<T> {
-
+    private Callback callback;
     private T data;
     private Throwable throwable;
     private boolean isAsync;
+
+    public void setCallback(Callback callback) {
+        this.callback = callback;
+    }
+
+    public Callback getCallback() {
+        return callback;
+    }
 
     public Throwable getThrowable() {
         return throwable;
@@ -37,13 +45,6 @@ public abstract class WriteBase<T> extends Base<T> {
      */
     public abstract void run();
 
-    /**
-     * 同步执行
-     *
-     * @return 结果id
-     * @author jiangzeyin
-     */
-    public abstract long syncRun();
 
     /**
      * @param data 对应实体
@@ -90,4 +91,36 @@ public abstract class WriteBase<T> extends Base<T> {
         data = null;
         throwable = null;
     }
+
+    public interface Event {
+
+        /**
+         * 操作前
+         */
+        enum BeforeCode {
+            CONTINUE("继续", 0),
+            END("结束", -100);
+
+            BeforeCode(String desc, int resultCode) {
+                this.desc = desc;
+                this.resultCode = resultCode;
+            }
+
+            private String desc;
+            private int resultCode;
+
+            public int getResultCode() {
+                return resultCode;
+            }
+
+            public String getDesc() {
+                return desc;
+            }
+        }
+    }
+
+    public interface Callback {
+        void success(Object key);
+    }
+
 }

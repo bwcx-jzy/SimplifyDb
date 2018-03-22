@@ -30,15 +30,15 @@ public class Update<T> extends WriteBase<T> {
     private Object keyValue;
     private String keyColumn;
     private HashMap<String, Object> update;
-    private UpdateEvent event;
+    // private UpdateEvent event;
 
-    public UpdateEvent getEvent() {
-        return event;
-    }
+//    public UpdateEvent getEvent() {
+//        return event;
+//    }
 
-    public void setEvent(UpdateEvent event) {
-        this.event = event;
-    }
+//    public void setEvent(UpdateEvent event) {
+//        this.event = event;
+//    }
 
     /**
      *
@@ -47,10 +47,6 @@ public class Update<T> extends WriteBase<T> {
         super(data);
     }
 
-    public Update(T data, UpdateEvent event) {
-        super(data);
-        this.event = event;
-    }
 
     public Update(T data, boolean isThrows) {
         super(data);
@@ -169,34 +165,72 @@ public class Update<T> extends WriteBase<T> {
     }
 
     /**
+     * 获取实体上的监听事件
+     *
+     * @return 事件接口
+     */
+    private UpdateEvent getEvent(Object data) {
+        if (data != null && UpdateEvent.class.isAssignableFrom(data.getClass()))
+            return (UpdateEvent) data;
+        return null;
+    }
+
+    /**
      * @return 影响行数
      * @author jiangzeyin
      */
-    @Override
     public long syncRun() {
         // TODO Auto-generated method stub
+        UpdateEvent event = null;
         try {
+            Callback callback = getCallback();
             T data = getData();
-            String tag = data == null ? DbWriteService.getDatabaseName(getTclass()) : DbWriteService.getDatabaseName(data);
+            String tag;
+            if (data == null) {
+                Class<?> tClass = getTclass();
+                tag = DbWriteService.getDatabaseName(tClass);
+                if (UpdateEvent.class.isAssignableFrom(tClass)) {
+                    event = (UpdateEvent) tClass.newInstance();
+                }
+            } else {
+                tag = DbWriteService.getDatabaseName(data);
+                event = getEvent(data);
+            }
+            if (event != null) {
+                Event.BeforeCode beforeCode = event.beforeUpdate(this, data);
+                if (beforeCode == Event.BeforeCode.END) {
+                    DbLog.getInstance().info("本次执行取消：" + data + "  " + getUpdate());
+                    return beforeCode.getResultCode();
+                }
+            }
+//            =data == null ?  :;
             SqlAndParameters sqlAndParameters = SqlUtil.getUpdateSql(this);
             DataSource dataSource = DatabaseContextHolder.getWriteDataSource(tag);
             DbLog.getInstance().info(getTransferLog() + sqlAndParameters.getSql());
             setRunSql(sqlAndParameters.getSql());
             int count = JdbcUtils.executeUpdate(dataSource, sqlAndParameters.getSql(), sqlAndParameters.getParameters());
-            if (event != null)
-                event.completeU(getKeyValue());
+            Object keyValue = getKeyValue();
+            if (event != null) {
+                if (keyValue != null) {
+                    event.completeUpdate(getKeyValue());
+                } else {
+                    event.completeUpdate(data);
+                }
+            }
+            if (callback != null) {
+                callback.success(keyValue);
+            }
             return count;
         } catch (Exception e) {
             // TODO: handle exception
             isThrows(e);
             if (event != null)
-                event.errorU(e);
+                event.errorUpdate(e);
         } finally {
             runEnd();
             recycling();
             this.update = null;
             this.whereParameters = null;
-            this.event = null;
         }
         return 0L;
     }

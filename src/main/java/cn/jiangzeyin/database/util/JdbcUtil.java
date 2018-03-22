@@ -23,7 +23,7 @@ public class JdbcUtil {
      * @throws SQLException 异常
      * @author jiangzeyin
      */
-    public static long executeInsert(DataSource dataSource, String sql, List<Object> parameters) throws SQLException {
+    public static Object executeInsert(DataSource dataSource, String sql, List<Object> parameters) throws SQLException {
         Connection conn = null;
         try {
             conn = dataSource.getConnection();
@@ -43,30 +43,27 @@ public class JdbcUtil {
      * @throws SQLException 异常
      * @author jiangzeyin
      */
-    public static long executeInsert(Connection conn, String sql, List<Object> parameters) throws SQLException {
+    public static Object executeInsert(Connection conn, String sql, List<Object> parameters) throws SQLException {
         PreparedStatement stmt = null;
         ResultSet rs = null;
 
-        int updateCount;
         try {
             stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
 
             setParameters(stmt, parameters);
-
-            updateCount = stmt.executeUpdate();
-
+            int updateCount = stmt.executeUpdate();
             if (updateCount > 0) {
                 rs = stmt.getGeneratedKeys();
                 if (rs.next()) {
-                    return rs.getLong(1);
+                    return rs.getObject(1);
+//                    return rs.getLong(1);
                 }
             }
         } finally {
             JdbcUtils.close(rs);
             JdbcUtils.close(stmt);
         }
-
-        return updateCount;
+        return null;
     }
 
     /**

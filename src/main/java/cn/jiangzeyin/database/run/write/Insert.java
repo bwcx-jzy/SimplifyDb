@@ -24,7 +24,6 @@ import java.util.List;
  */
 public class Insert<T> extends WriteBase<T> {
 
-    private InsertEvent event;
     private List<T> list;
 
     public List<T> getList() {
@@ -35,32 +34,16 @@ public class Insert<T> extends WriteBase<T> {
         this.list = list;
     }
 
-    public InsertEvent getEvent() {
-        if (event == null) {
-            T data = getData();
-            if (data != null && InsertEvent.class.isAssignableFrom(data.getClass())) {
-                setEvent((InsertEvent) data);
-            }
-        }
-        return event;
-    }
 
+    /**
+     * 获取实体上的监听事件
+     *
+     * @return 事件接口
+     */
     private InsertEvent getEvent(Object data) {
-        if (event != null)
-            return event;
         if (data != null && InsertEvent.class.isAssignableFrom(data.getClass()))
             return (InsertEvent) data;
         return null;
-    }
-
-    /**
-     * 添加数据事件对象
-     *
-     * @param event 事件
-     * @author jiangzeyin
-     */
-    public void setEvent(InsertEvent event) {
-        this.event = event;
     }
 
     /**
@@ -74,17 +57,6 @@ public class Insert<T> extends WriteBase<T> {
     public Insert(List<T> list) {
         super(null);
         this.list = list;
-    }
-
-    /**
-     * 添加数据 并设置添加事件对象
-     *
-     * @param data  对象
-     * @param event 事件
-     */
-    public Insert(T data, InsertEvent event) {
-        super(data);
-        this.event = event;
     }
 
     /**
@@ -116,9 +88,9 @@ public class Insert<T> extends WriteBase<T> {
         getAsyncLog();
         DBExecutorService.execute(() -> {
             // TODO Auto-generated method stub
-            long id = syncRun();
-            if (id <= 0) {
-                DbLog.getInstance().info(getData() + "异步执行失败：" + id);
+            Object id = syncRun();
+            if (id == null) {
+                DbLog.getInstance().info(getData() + "异步执行失败");
             }
         });
     }
@@ -129,37 +101,42 @@ public class Insert<T> extends WriteBase<T> {
      * @return 结果id
      * @author jiangzeyin
      */
-    @Override
-    public long syncRun() {
+    public Object syncRun() {
         // TODO Auto-generated method stub
+        InsertEvent event = null;
         try {
-            // 加载事件
-            getEvent();
+            Callback callback = getCallback();
             // 单个对象添加
-            if (this.list == null && getData() != null) {
+            T data = getData();
+            if (data != null) {
+                // 加载事件
+                event = getEvent(data);
                 if (event != null) {
-                    int beforeCode = event.beforeI(getData());
-                    if (beforeCode == InsertEvent.BeforeCode.END.getCode()) {
-                        DbLog.getInstance().info("本次执行取消：" + getData() + " " + list);
-                        return InsertEvent.BeforeCode.END.getResultCode();
+                    Event.BeforeCode beforeCode = event.beforeInsert(this, data);
+                    if (beforeCode == Event.BeforeCode.END) {
+                        DbLog.getInstance().info("本次执行取消：" + data);
+                        return beforeCode.getResultCode();
                     }
                 }
-                String tag = DbWriteService.getDatabaseName(getData());
+                String tag = DbWriteService.getDatabaseName(data);
                 SqlAndParameters sqlAndParameters = SqlUtil.getInsertSql(this);
                 DataSource dataSource = DatabaseContextHolder.getWriteDataSource(tag);
                 setRunSql(sqlAndParameters.getSql());
                 DbLog.getInstance().info(getTransferLog() + sqlAndParameters.getSql());
-                Long id = JdbcUtil.executeInsert(dataSource, sqlAndParameters.getSql(), sqlAndParameters.getParameters());
-                T data = getData();
-                if (data != null) {
-                    DbReflectUtil.setFieldValue(data, SystemColumn.getDefaultKeyName(), id);
-                }
+                Object key = JdbcUtil.executeInsert(dataSource, sqlAndParameters.getSql(), sqlAndParameters.getParameters());
+                //T data = getData();
+                DbReflectUtil.setFieldValue(data, SystemColumn.getDefaultKeyName(), key);
+                // 实体事件
                 if (event != null)
-                    event.completeI(id);
-                return id;
+                    event.completeInsert(key);
+                //  util
+                if (callback != null) {
+                    callback.success(key);
+                }
+                return key;
             }
             // 添加集合（多个对象）
-            if (this.list.size() > 0) {
+            if (this.list != null && this.list.size() > 0) {
                 Connection connection = null;
                 try {
                     String tag = DbWriteService.getDatabaseName(list.get(0));
@@ -167,24 +144,27 @@ public class Insert<T> extends WriteBase<T> {
                     connection = DatabaseContextHolder.getWriteConnection(tag);
                     setRunSql("more:" + sqlAndParameters[0].getSql());
                     for (int i = 0; i < sqlAndParameters.length; i++) {
-                        T data = this.list.get(i);
+                        data = this.list.get(i);
                         if (data == null)
                             continue;
-                        InsertEvent insertEvent = getEvent(data);
-                        if (insertEvent != null) {
-                            int beforeCode = insertEvent.beforeI(data);
-                            if (beforeCode == InsertEvent.BeforeCode.END.getCode()) {
+                        event = getEvent(data);
+                        if (event != null) {
+                            Event.BeforeCode beforeCode = event.beforeInsert(this, data);
+                            if (beforeCode == InsertEvent.BeforeCode.END) {
                                 DbLog.getInstance().info("本次执行取消：" + data + " " + list);
                                 continue;
                             }
                         }
                         DbLog.getInstance().info(sqlAndParameters[i].getSql());
-                        Long id = JdbcUtil.executeInsert(connection, sqlAndParameters[i].getSql(), sqlAndParameters[i].getParameters());
-                        if (id < 1)
-                            return -1;
-                        DbReflectUtil.setFieldValue(data, SystemColumn.getDefaultKeyName(), id);
-                        if (insertEvent != null)
-                            insertEvent.completeI(id);
+                        Object key = JdbcUtil.executeInsert(connection, sqlAndParameters[i].getSql(), sqlAndParameters[i].getParameters());
+                        if (key == null)
+                            return null;
+                        DbReflectUtil.setFieldValue(data, SystemColumn.getDefaultKeyName(), key);
+                        if (event != null)
+                            event.completeInsert(key);
+                        if (callback != null) {
+                            callback.success(key);
+                        }
                     }
                     return 1;
                 } finally {
@@ -192,16 +172,16 @@ public class Insert<T> extends WriteBase<T> {
                     JdbcUtils.close(connection);
                 }
             }
-            return -1;
+            throw new RuntimeException("please add data");
         } catch (Exception e) {
             // TODO: handle exception
             isThrows(e);
             if (event != null)
-                event.errorI(e);
+                event.errorInsert(e);
         } finally {
             runEnd();
             recycling();
         }
-        return 0L;
+        return null;
     }
 }
