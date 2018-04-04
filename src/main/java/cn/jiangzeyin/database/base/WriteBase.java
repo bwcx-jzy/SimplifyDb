@@ -3,6 +3,8 @@ package cn.jiangzeyin.database.base;
 
 import cn.jiangzeyin.system.DbLog;
 
+import java.sql.Connection;
+
 /**
  * 写入数据
  *
@@ -13,6 +15,11 @@ public abstract class WriteBase<T> extends Base<T> {
     private T data;
     private Throwable throwable;
     private boolean isAsync;
+    /**
+     * 事务的链接信息
+     */
+    protected Connection transactionConnection;
+
 
     public void setCallback(Callback callback) {
         this.callback = callback;
@@ -22,20 +29,28 @@ public abstract class WriteBase<T> extends Base<T> {
         return callback;
     }
 
-    public Throwable getThrowable() {
+    private Throwable getThrowable() {
         return throwable;
     }
 
-    public void setThrowable(Throwable throwable) {
+    protected void setThrowable(Throwable throwable) {
         this.throwable = throwable;
     }
 
-    public boolean isAsync() {
+    private boolean isAsync() {
         return isAsync;
     }
 
-    public void setAsync(boolean isAsyn) {
-        this.isAsync = isAsyn;
+    protected void setAsync() {
+        this.isAsync = true;
+    }
+
+    protected WriteBase(Connection transactionConnection) {
+        this.transactionConnection = transactionConnection;
+    }
+
+    protected WriteBase() {
+
     }
 
     /**
@@ -90,6 +105,7 @@ public abstract class WriteBase<T> extends Base<T> {
         super.recycling();
         data = null;
         throwable = null;
+        transactionConnection = null;
     }
 
     public interface Event {
@@ -119,7 +135,15 @@ public abstract class WriteBase<T> extends Base<T> {
         }
     }
 
+    /**
+     * 事件回调
+     */
     public interface Callback {
+        /**
+         * success
+         *
+         * @param key 主键
+         */
         void success(Object key);
     }
 

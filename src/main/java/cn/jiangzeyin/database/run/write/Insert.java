@@ -46,6 +46,10 @@ public class Insert<T> extends WriteBase<T> {
         return null;
     }
 
+    Insert(Connection connection) {
+        super(connection);
+    }
+
     /**
      *
      */
@@ -55,7 +59,7 @@ public class Insert<T> extends WriteBase<T> {
     }
 
     public Insert(List<T> list) {
-        super(null);
+        super((T) null);
         this.list = list;
     }
 
@@ -71,7 +75,7 @@ public class Insert<T> extends WriteBase<T> {
     }
 
     public Insert(List<T> list, boolean isThrows) {
-        super(null);
+        super((T) null);
         this.list = list;
         setThrows(isThrows);
     }
@@ -83,7 +87,9 @@ public class Insert<T> extends WriteBase<T> {
      */
     @Override
     public void run() {
-        setAsync(true);
+        if (transactionConnection != null)
+            throw new RuntimeException("Transaction must sync");
+        setAsync();
         setThrowable(new Throwable());
         getAsyncLog();
         DBExecutorService.execute(() -> {
@@ -120,10 +126,15 @@ public class Insert<T> extends WriteBase<T> {
                 }
                 String tag = DbWriteService.getDatabaseName(data);
                 SqlAndParameters sqlAndParameters = SqlUtil.getInsertSql(this);
-                DataSource dataSource = DatabaseContextHolder.getWriteDataSource(tag);
                 setRunSql(sqlAndParameters.getSql());
                 DbLog.getInstance().info(getTransferLog() + sqlAndParameters.getSql());
-                Object key = JdbcUtil.executeInsert(dataSource, sqlAndParameters.getSql(), sqlAndParameters.getParameters());
+                Object key;
+                if (transactionConnection == null) {
+                    DataSource dataSource = DatabaseContextHolder.getWriteDataSource(tag);
+                    key = JdbcUtil.executeInsert(dataSource, sqlAndParameters.getSql(), sqlAndParameters.getParameters());
+                } else {
+                    key = JdbcUtil.executeInsert(transactionConnection, sqlAndParameters.getSql(), sqlAndParameters.getParameters());
+                }
                 //T data = getData();
                 DbReflectUtil.setFieldValue(data, SystemColumn.getDefaultKeyName(), key);
                 // 实体事件

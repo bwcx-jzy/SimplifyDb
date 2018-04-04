@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>cn.jiangzeyin</groupId>
     <artifactId>dbutil</artifactId>
-    <version>1.1.10</version>
+    <version>1.1.11</version>
     <name>dbUtil</name>
     <url>http://blog.csdn.net/jiangzeyin_</url>
     <description>java dbutil</description>

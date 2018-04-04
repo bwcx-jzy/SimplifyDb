@@ -13,6 +13,7 @@ import com.alibaba.druid.util.JdbcUtils;
 import com.alibaba.druid.util.StringUtils;
 
 import javax.sql.DataSource;
+import java.sql.Connection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -30,15 +31,6 @@ public class Update<T> extends WriteBase<T> {
     private Object keyValue;
     private String keyColumn;
     private HashMap<String, Object> update;
-    // private UpdateEvent event;
-
-//    public UpdateEvent getEvent() {
-//        return event;
-//    }
-
-//    public void setEvent(UpdateEvent event) {
-//        this.event = event;
-//    }
 
     /**
      *
@@ -47,6 +39,14 @@ public class Update<T> extends WriteBase<T> {
         super(data);
     }
 
+    /**
+     * 事务对象
+     *
+     * @param connection 连接信息
+     */
+    Update(Connection connection) {
+        super(connection);
+    }
 
     public Update(T data, boolean isThrows) {
         super(data);
@@ -54,11 +54,11 @@ public class Update<T> extends WriteBase<T> {
     }
 
     public Update() {
-        super(null);
+        super((T) null);
     }
 
     public Update(boolean isThrows) {
-        super(null);
+        super((T) null);
         setThrows(isThrows);
     }
 
@@ -149,7 +149,9 @@ public class Update<T> extends WriteBase<T> {
 
     @Override
     public void run() {
-        setAsync(true);
+        if (transactionConnection != null)
+            throw new RuntimeException("Transaction must sync");
+        setAsync();
         setThrowable(new Throwable());
         getAsyncLog();
         // TODO Auto-generated method stub
@@ -203,12 +205,17 @@ public class Update<T> extends WriteBase<T> {
                     return beforeCode.getResultCode();
                 }
             }
-//            =data == null ?  :;
             SqlAndParameters sqlAndParameters = SqlUtil.getUpdateSql(this);
-            DataSource dataSource = DatabaseContextHolder.getWriteDataSource(tag);
-            DbLog.getInstance().info(getTransferLog() + sqlAndParameters.getSql());
-            setRunSql(sqlAndParameters.getSql());
-            int count = JdbcUtils.executeUpdate(dataSource, sqlAndParameters.getSql(), sqlAndParameters.getParameters());
+            String sql = sqlAndParameters.getSql();
+            DbLog.getInstance().info(getTransferLog() + sql);
+            setRunSql(sql);
+            int count;
+            if (transactionConnection == null) {
+                DataSource dataSource = DatabaseContextHolder.getWriteDataSource(tag);
+                count = JdbcUtils.executeUpdate(dataSource, sql, sqlAndParameters.getParameters());
+            } else {
+                count = JdbcUtils.executeUpdate(transactionConnection, sql, sqlAndParameters.getParameters());
+            }
             Object keyValue = getKeyValue();
             if (event != null) {
                 if (keyValue != null) {

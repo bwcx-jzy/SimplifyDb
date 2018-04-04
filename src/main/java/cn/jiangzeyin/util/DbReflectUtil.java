@@ -38,11 +38,11 @@ public class DbReflectUtil {
      * @return 结果
      * @author jiangzeyin
      */
-    public static List getDeclaredFields(Class<?> cls) {
+    public static List<Field> getDeclaredFields(Class<?> cls) {
         String key = cls.getName() + "_DeclaredFields";
         Object object = ReflectCache.get(key);
         if (object instanceof List)
-            return (List) object;
+            return (List<Field>) object;
         List<Field> fieldList = new ArrayList<>();
         for (Class<?> clazz = cls; clazz != Object.class; clazz = clazz.getSuperclass()) {
             fieldList.addAll(Arrays.asList(clazz.getDeclaredFields()));
