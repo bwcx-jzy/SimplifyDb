@@ -2,6 +2,7 @@ package cn.jiangzeyin.database.run.write;
 
 import cn.jiangzeyin.database.DbWriteService;
 import cn.jiangzeyin.database.base.Base;
+import cn.jiangzeyin.database.base.WriteBase;
 import cn.jiangzeyin.database.config.DatabaseContextHolder;
 import cn.jiangzeyin.database.config.SystemColumn;
 import cn.jiangzeyin.database.util.SqlUtil;
@@ -10,8 +11,7 @@ import cn.jiangzeyin.system.DbLog;
 import com.alibaba.druid.util.JdbcUtils;
 
 import javax.sql.DataSource;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 /**
  * 移除数据 即更改isDelete 状态
@@ -20,6 +20,7 @@ import java.util.List;
  */
 public class Remove<T> extends Base<T> {
 
+    private WriteBase.Callback callback;
 
     public enum Type {
         /**
@@ -40,6 +41,39 @@ public class Remove<T> extends Base<T> {
     private String where;
     private List<Object> parameters;
     private Type type;
+    private HashMap<String, Object> update;
+
+    public HashMap<String, Object> getUpdate() {
+        return update;
+    }
+
+    public void setUpdate(HashMap<String, Object> update) {
+        if (type != Type.recovery)
+            throw new IllegalArgumentException("type must " + Type.recovery);
+        this.update = update;
+    }
+
+    /**
+     * 添加要更新的字段
+     *
+     * @param column 列名
+     * @param value  值
+     * @author jiangzeyin
+     */
+    public void putUpdate(String column, Object value) {
+        if (type != Type.recovery)
+            throw new IllegalArgumentException("type must " + Type.recovery);
+        // 判断对应字段是否可以被修改
+        if (SystemColumn.notCanUpdate(column))
+            throw new IllegalArgumentException(column + " not update");
+        if (update == null)
+            update = new HashMap<>();
+        update.put(column, value);
+    }
+
+    public void setCallback(WriteBase.Callback callback) {
+        this.callback = callback;
+    }
 
     public Type getType() {
         return type;
@@ -77,6 +111,12 @@ public class Remove<T> extends Base<T> {
         this.parameters = parameters;
     }
 
+    public void setParameters(Object... parameters) {
+        if (this.parameters == null)
+            this.parameters = new LinkedList<>();
+        Collections.addAll(this.parameters, parameters);
+    }
+
     public String getIds() {
         return ids;
     }
@@ -111,13 +151,19 @@ public class Remove<T> extends Base<T> {
      * @author jiangzeyin
      */
     public int syncRun() {
+        if (type == null)
+            throw new IllegalArgumentException("type null");
         try {
             String tag = DbWriteService.getDatabaseName(getTclass());
             String sql = SqlUtil.getRemoveSql(this);
             DbLog.getInstance().info(getTransferLog() + sql);
             setRunSql(sql);
             DataSource dataSource = DatabaseContextHolder.getWriteDataSource(tag);
-            return JdbcUtils.executeUpdate(dataSource, sql, getParameters());
+            int up = JdbcUtils.executeUpdate(dataSource, sql, getParameters());
+            if (up > 0 && callback != null) {
+                callback.success(up);
+            }
+            return up;
         } catch (Exception e) {
             // TODO: handle exception
             isThrows(e);

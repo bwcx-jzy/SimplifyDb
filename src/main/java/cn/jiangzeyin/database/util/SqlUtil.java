@@ -201,7 +201,7 @@ public final class SqlUtil {
      */
     public static SqlAndParameters getUpdateSql(Update<?> update) throws Exception {
         SqlAndParameters sqlAndParameters;
-        StringBuffer sbSql;
+        StringBuilder sbSql;
         Class<?> class1 = update.getTclass();
         EntityConfig entityConfig = class1.getAnnotation(EntityConfig.class);
         boolean isLogUpdate = true;
@@ -211,12 +211,12 @@ public final class SqlUtil {
         if (update.getUpdate() != null) {
             sqlAndParameters = new SqlAndParameters();
             String sql = makeUpdateToTableSql(getTableName(update, class1), update.getUpdate(), isLogUpdate);
-            sbSql = new StringBuffer(sql);
+            sbSql = new StringBuilder(sql);
         } else {
             // 按照实体更新
             sqlAndParameters = getWriteSql(update);
             String sql = makeUpdateToTableSql(getTableName(update, class1), sqlAndParameters.getColumns(), sqlAndParameters.getSystemMap(), isLogUpdate);
-            sbSql = new StringBuffer(sql);
+            sbSql = new StringBuilder(sql);
         }
         // 获取修改数据的操作人
         loadModifyUser(update, sbSql);
@@ -364,7 +364,7 @@ public final class SqlUtil {
         Class<?> cls = remove.getTclass();
         Remove.Type type = remove.getType();
         String ids = remove.getIds();
-        StringBuffer sql = new StringBuffer();
+        StringBuilder sql = new StringBuilder();
         if (type == Remove.Type.delete) {
             sql.append("delete from ")//
                     .append(getTableName(remove, cls));
@@ -380,7 +380,10 @@ public final class SqlUtil {
             if (isLogUpdate && SystemColumn.Modify.isStatus()) {
                 sql.append(",").append(SystemColumn.Modify.getColumn()).append("=").append(SystemColumn.Modify.getTime());
             }
-
+            // 还原的时候可以更新部分字段
+            if (type == Remove.Type.recovery) {
+                makeUpdateColumns(sql, remove.getUpdate());
+            }
             loadModifyUser(remove, sql);
         }
         boolean isWhere = false;
@@ -400,7 +403,7 @@ public final class SqlUtil {
      * @param base         base
      * @param stringBuffer sql 对象
      */
-    private static void loadModifyUser(Base<?> base, StringBuffer stringBuffer) {
+    private static void loadModifyUser(Base<?> base, StringBuilder stringBuffer) {
         int optUserId = base.getOptUserId();
         if (optUserId < 1)
             return;
@@ -683,7 +686,14 @@ public final class SqlUtil {
                 .append("update ") //
                 .append(tableName) //
                 .append(" set "); //
+        makeUpdateColumns(sql, columns);
+        if (isLogUpdate && SystemColumn.Modify.isStatus()) {
+            sql.append(",").append(SystemColumn.Modify.getColumn()).append("=").append(SystemColumn.Modify.getTime());
+        }
+        return sql.toString();
+    }
 
+    private static void makeUpdateColumns(StringBuilder sql, HashMap<String, Object> columns) {
         int nameCount = 0;
         Iterator<Map.Entry<String, Object>> iterator = columns.entrySet().iterator();
         while (iterator.hasNext()) {
@@ -717,9 +727,5 @@ public final class SqlUtil {
             }
             nameCount++;
         }
-        if (isLogUpdate && SystemColumn.Modify.isStatus()) {
-            sql.append(",").append(SystemColumn.Modify.getColumn()).append("=").append(SystemColumn.Modify.getTime());
-        }
-        return sql.toString();
     }
 }
