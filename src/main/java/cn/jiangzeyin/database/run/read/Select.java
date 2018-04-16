@@ -112,7 +112,7 @@ public class Select<T> extends ReadBase<T> {
         try {
             if (getResultType() == Result.JsonObject)
                 setLimitCount(1);
-            String tag = getTag() == null ? DbWriteService.getDatabaseName(getTclass()) : getTag();
+            String tag = getTag() == null ? DbWriteService.getInstance().getDatabaseName(getTclass()) : getTag();
             setTag(tag);
             DataSource dataSource = DatabaseContextHolder.getReadDataSource(tag);
             String runSql = getSql();

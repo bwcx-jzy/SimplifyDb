@@ -154,7 +154,7 @@ public class Remove<T> extends Base<T> {
         if (type == null)
             throw new IllegalArgumentException("type null");
         try {
-            String tag = DbWriteService.getDatabaseName(getTclass());
+            String tag = DbWriteService.getInstance().getDatabaseName(getTclass());
             String sql = SqlUtil.getRemoveSql(this);
             DbLog.getInstance().info(getTransferLog() + sql);
             setRunSql(sql);

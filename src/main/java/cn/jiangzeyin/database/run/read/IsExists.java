@@ -105,7 +105,7 @@ public class IsExists<T> extends ReadBase<T> {
                 throw new IllegalArgumentException(" keyColumn 不能为null");
             String tag = getTag();
             if (StringUtils.isEmpty(tag))
-                tag = DbWriteService.getDatabaseName(runClass);
+                tag = DbWriteService.getInstance().getDatabaseName(runClass);
             String sql = SqlUtil.getIsExistsSql(this, runClass, getKeyColumn(), getWhere());
             setRunSql(sql);
             DbLog.getInstance().info(getTransferLog() + sql);

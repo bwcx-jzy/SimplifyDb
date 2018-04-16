@@ -43,6 +43,8 @@ cn.jiangzeyin.database.run.write.Remove 删除数据
 
 cn.jiangzeyin.database.run.write.Update 修改数据
 
+cn.jiangzeyin.database.run.write.Transaction 事物操作
+
 示例配置：(db.properties)
 
 ```
@@ -78,7 +80,7 @@ systemColumn.defaultRefKeyName=id
 systemColumn.defaultKeyName=id
 ```
 
-sourceTag,configPath 为必需字段
+**sourceTag,configPath 为必需字段**
 
 其他字段均根据自己实际情况配置
 
@@ -108,17 +110,23 @@ core.logAbandoned=true
  
 配置字段具体含义请 查看[https://github.com/alibaba/druid/wiki/DruidDataSource%E9%85%8D%E7%BD%AE%E5%B1%9E%E6%80%A7%E5%88%97%E8%A1%A8](https://github.com/alibaba/druid/wiki/DruidDataSource%E9%85%8D%E7%BD%AE%E5%B1%9E%E6%80%A7%E5%88%97%E8%A1%A8)
 
-**初始化**：
+#**初始化**：
 
-1.先设置日志接口
+`**1.先设置日志接口**`
 
 cn.jiangzeyin.system.DbLog.setDbLogInterface()
 
-2.开始初始化数据库连接
+方法传入cn.jiangzeyin.system.DbLog.DbLogInterface 接口主要负责记录util 执行日志
+
+**`2.开始初始化数据库连接`**
 
 cn.jiangzeyin.database.config.DataSourceConfig.init()  参数为配置文件的路径
 
-3.设置实体转换数据库接口（根据class 获取该实体存在的数据源中）
+支持file: 、classpath:  
+
+**`3.设置实体转换数据库接口（根据class 获取该实体存在的数据源中）`**
 
 cn.jiangzeyin.database.DbWriteService.setWriteInterface()
+
+方法传入cn.jiangzeyin.database.DbWriteService.WriteInterface 接口主要负责处理实体对应的数据源标记和实体数据库表名
 

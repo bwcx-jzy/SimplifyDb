@@ -64,7 +64,7 @@ public class SelectPage<T> extends ReadBase<T> {
         try {
             String tag = getTag();
             if (StringUtils.isEmpty(tag)) {
-                tag = DbWriteService.getDatabaseName(getTclass());
+                tag = DbWriteService.getInstance().getDatabaseName(getTclass());
                 setTag(tag);
             }
             String[] pageSql;

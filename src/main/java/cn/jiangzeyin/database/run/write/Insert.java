@@ -124,7 +124,7 @@ public class Insert<T> extends WriteBase<T> {
                         return beforeCode.getResultCode();
                     }
                 }
-                String tag = DbWriteService.getDatabaseName(data);
+                String tag = DbWriteService.getInstance().getDatabaseName(data.getClass());
                 SqlAndParameters sqlAndParameters = SqlUtil.getInsertSql(this);
                 setRunSql(sqlAndParameters.getSql());
                 DbLog.getInstance().info(getTransferLog() + sqlAndParameters.getSql());
@@ -150,7 +150,7 @@ public class Insert<T> extends WriteBase<T> {
             if (this.list != null && this.list.size() > 0) {
                 Connection connection = null;
                 try {
-                    String tag = DbWriteService.getDatabaseName(list.get(0));
+                    String tag = DbWriteService.getInstance().getDatabaseName(list.get(0).getClass());
                     SqlAndParameters[] sqlAndParameters = SqlUtil.getInsertSqls(this);
                     connection = DatabaseContextHolder.getWriteConnection(tag);
                     setRunSql("more:" + sqlAndParameters[0].getSql());

@@ -190,12 +190,12 @@ public class Update<T> extends WriteBase<T> {
             String tag;
             if (data == null) {
                 Class<?> tClass = getTclass();
-                tag = DbWriteService.getDatabaseName(tClass);
+                tag = DbWriteService.getInstance().getDatabaseName(tClass);
                 if (UpdateEvent.class.isAssignableFrom(tClass)) {
                     event = (UpdateEvent) tClass.newInstance();
                 }
             } else {
-                tag = DbWriteService.getDatabaseName(data);
+                tag = DbWriteService.getInstance().getDatabaseName(data.getClass());
                 event = getEvent(data);
             }
             if (event != null) {

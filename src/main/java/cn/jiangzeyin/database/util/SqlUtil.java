@@ -554,9 +554,9 @@ public final class SqlUtil {
                 index = readBase.getIndex();
                 isIndex = readBase.isUseIndex();
             }
-            return DbWriteService.getTableName(base.getTclass(), isIndex, index, base.isUseDataBaseName());
+            return DbWriteService.getInstance().getTableName(base.getTclass(), isIndex, index, base.isUseDataBaseName());
         }
-        return DbWriteService.getTableName(cls, false, null, false);
+        return DbWriteService.getInstance().getTableName(cls, false, null, false);
     }
 
     /**
