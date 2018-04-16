@@ -382,6 +382,7 @@ public final class SqlUtil {
             }
             // 还原的时候可以更新部分字段
             if (type == Remove.Type.recovery) {
+                sql.append(",");
                 makeUpdateColumns(sql, remove.getUpdate());
             }
             loadModifyUser(remove, sql);
