@@ -382,8 +382,11 @@ public final class SqlUtil {
             }
             // 还原的时候可以更新部分字段
             if (type == Remove.Type.recovery) {
-                sql.append(",");
-                makeUpdateColumns(sql, remove.getUpdate());
+                HashMap<String, Object> columns = remove.getUpdate();
+                if (columns != null) {
+                    sql.append(",");
+                    makeUpdateColumns(sql, columns);
+                }
             }
             loadModifyUser(remove, sql);
         }
@@ -695,6 +698,8 @@ public final class SqlUtil {
     }
 
     private static void makeUpdateColumns(StringBuilder sql, HashMap<String, Object> columns) {
+        if (columns == null)
+            return;
         int nameCount = 0;
         Iterator<Map.Entry<String, Object>> iterator = columns.entrySet().iterator();
         while (iterator.hasNext()) {

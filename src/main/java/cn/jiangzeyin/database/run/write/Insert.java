@@ -150,12 +150,12 @@ public class Insert<T> extends WriteBase<T> {
             if (this.list != null && this.list.size() > 0) {
                 Connection connection = null;
                 try {
-                    String tag = DbWriteService.getInstance().getDatabaseName(list.get(0).getClass());
                     SqlAndParameters[] sqlAndParameters = SqlUtil.getInsertSqls(this);
-                    connection = DatabaseContextHolder.getWriteConnection(tag);
                     setRunSql("more:" + sqlAndParameters[0].getSql());
                     for (int i = 0; i < sqlAndParameters.length; i++) {
                         data = this.list.get(i);
+                        String tag = DbWriteService.getInstance().getDatabaseName(data.getClass());
+                        connection = DatabaseContextHolder.getWriteConnection(tag);
                         if (data == null)
                             continue;
                         event = getEvent(data);
