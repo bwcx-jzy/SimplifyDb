@@ -386,6 +386,11 @@ public final class SqlUtil {
                 if (columns != null) {
                     sql.append(",");
                     makeUpdateColumns(sql, columns);
+                    List<Object> list = new LinkedList<>(columns.values());
+                    List<Object> oldList = remove.getParameters();
+                    remove.setParameters(list);
+                    if (oldList != null)
+                        remove.setParameters(oldList.toArray());
                 }
             }
             loadModifyUser(remove, sql);
