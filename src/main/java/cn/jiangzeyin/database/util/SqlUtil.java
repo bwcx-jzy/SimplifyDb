@@ -402,6 +402,10 @@ public final class SqlUtil {
         }
         if (!StringUtils.isEmpty(where)) {
             sql.append(isWhere ? " and " : " where ").append(where);
+            isWhere = true;
+        }
+        if (!isWhere) {
+            throw new IllegalArgumentException("remove must have where");
         }
         return sql.toString();
     }
