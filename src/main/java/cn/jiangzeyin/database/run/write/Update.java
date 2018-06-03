@@ -181,7 +181,7 @@ public class Update<T> extends WriteBase<T> {
      * @return 影响行数
      * @author jiangzeyin
      */
-    public long syncRun() {
+    public int syncRun() {
         // TODO Auto-generated method stub
         UpdateEvent event = null;
         try {
@@ -239,6 +239,6 @@ public class Update<T> extends WriteBase<T> {
             this.update = null;
             this.whereParameters = null;
         }
-        return 0L;
+        return -1;
     }
 }

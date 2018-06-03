@@ -37,7 +37,9 @@ public abstract class Base<T> {
      * 表名
      */
     private String tableName;
-
+    /**
+     * 是否使用数据库名
+     */
     private boolean useDataBaseName;
 
 

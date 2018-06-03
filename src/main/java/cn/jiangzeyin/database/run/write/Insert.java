@@ -154,10 +154,10 @@ public class Insert<T> extends WriteBase<T> {
                     setRunSql("more:" + sqlAndParameters[0].getSql());
                     for (int i = 0; i < sqlAndParameters.length; i++) {
                         data = this.list.get(i);
-                        String tag = DbWriteService.getInstance().getDatabaseName(data.getClass());
-                        connection = DatabaseContextHolder.getWriteConnection(tag);
                         if (data == null)
                             continue;
+                        String tag = DbWriteService.getInstance().getDatabaseName(data.getClass());
+                        connection = DatabaseContextHolder.getWriteConnection(tag);
                         event = getEvent(data);
                         if (event != null) {
                             Event.BeforeCode beforeCode = event.beforeInsert(this, data);

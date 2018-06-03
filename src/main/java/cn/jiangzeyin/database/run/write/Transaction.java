@@ -89,10 +89,25 @@ public class Transaction {
             return new Update(transaction.connection);
         }
 
+        /**
+         * 获取事务的remove 操作对象
+         *
+         * @return remove
+         */
+        public Remove getRemove() {
+            return new Remove(transaction.connection);
+        }
+
+        /**
+         * 提交事务
+         */
         public void commit() {
             transaction.commit();
         }
 
+        /**
+         * 回滚事务
+         */
         public void rollback() {
             transaction.rollback();
         }

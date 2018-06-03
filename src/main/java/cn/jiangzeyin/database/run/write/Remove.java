@@ -1,7 +1,6 @@
 package cn.jiangzeyin.database.run.write;
 
 import cn.jiangzeyin.database.DbWriteService;
-import cn.jiangzeyin.database.base.Base;
 import cn.jiangzeyin.database.base.WriteBase;
 import cn.jiangzeyin.database.config.DatabaseContextHolder;
 import cn.jiangzeyin.database.config.SystemColumn;
@@ -11,6 +10,7 @@ import cn.jiangzeyin.system.DbLog;
 import com.alibaba.druid.util.JdbcUtils;
 
 import javax.sql.DataSource;
+import java.sql.Connection;
 import java.util.*;
 
 /**
@@ -18,9 +18,8 @@ import java.util.*;
  *
  * @author jiangzeyin
  */
-public class Remove<T> extends Base<T> {
+public class Remove<T> extends WriteBase<T> {
 
-    private WriteBase.Callback callback;
 
     public enum Type {
         /**
@@ -42,6 +41,11 @@ public class Remove<T> extends Base<T> {
     private List<Object> parameters;
     private Type type;
     private HashMap<String, Object> update;
+
+
+    public Remove(Connection transactionConnection) {
+        super(transactionConnection);
+    }
 
     public HashMap<String, Object> getUpdate() {
         return update;
@@ -71,10 +75,6 @@ public class Remove<T> extends Base<T> {
         update.put(column, value);
     }
 
-    public void setCallback(WriteBase.Callback callback) {
-        this.callback = callback;
-    }
-
     public Type getType() {
         return type;
     }
@@ -97,7 +97,7 @@ public class Remove<T> extends Base<T> {
         setThrows(isThrows);
         if (SystemColumn.Active.NO_ACTIVE == SystemColumn.Active.getActiveValue()) {
             if (type != Type.delete)
-                throw new IllegalArgumentException("plase set systemColumn.active");
+                throw new IllegalArgumentException("please set systemColumn.active");
         }
     }
 
@@ -142,7 +142,11 @@ public class Remove<T> extends Base<T> {
      */
     public void run() {
         // TODO Auto-generated method stub
+        if (transactionConnection != null)
+            throw new RuntimeException("Transaction must sync");
+        setAsync();
         getAsyncLog();
+        setThrowable(new Throwable());
         DBExecutorService.execute(this::syncRun);
     }
 
@@ -154,12 +158,18 @@ public class Remove<T> extends Base<T> {
         if (type == null)
             throw new IllegalArgumentException("type null");
         try {
+            WriteBase.Callback callback = getCallback();
             String tag = DbWriteService.getInstance().getDatabaseName(getTclass());
             String sql = SqlUtil.getRemoveSql(this);
             DbLog.getInstance().info(getTransferLog() + sql);
             setRunSql(sql);
-            DataSource dataSource = DatabaseContextHolder.getWriteDataSource(tag);
-            int up = JdbcUtils.executeUpdate(dataSource, sql, getParameters());
+            int up;
+            if (transactionConnection != null) {
+                up = JdbcUtils.executeUpdate(transactionConnection, sql, getParameters());
+            } else {
+                DataSource dataSource = DatabaseContextHolder.getWriteDataSource(tag);
+                up = JdbcUtils.executeUpdate(dataSource, sql, getParameters());
+            }
             if (up > 0 && callback != null) {
                 callback.success(up);
             }
