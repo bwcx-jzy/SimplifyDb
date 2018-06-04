@@ -17,6 +17,7 @@
         <druid.version>1.1.10</druid.version>
         <fastjson.version>1.2.47</fastjson.version>
         <simple-util>1.0.7</simple-util>
+        <simple-des.vesion>1.0.0</simple-des.vesion>
     </properties>
 
     <dependencies>
@@ -42,6 +43,12 @@
             <groupId>cn.jiangzeyin</groupId>
             <artifactId>simple-util</artifactId>
             <version>${simple-util}</version>
+        </dependency>
+        <!-- 加密工具类-->
+        <dependency>
+            <groupId>cn.jiangzeyin.security</groupId>
+            <artifactId>simple-des</artifactId>
+            <version>${simple-des.vesion}</version>
         </dependency>
     </dependencies>
 

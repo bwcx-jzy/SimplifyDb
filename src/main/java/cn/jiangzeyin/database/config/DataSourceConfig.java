@@ -2,8 +2,8 @@ package cn.jiangzeyin.database.config;
 
 
 import cn.jiangzeyin.StringUtil;
+import cn.jiangzeyin.des.SystemKey;
 import cn.jiangzeyin.system.DbLog;
-import cn.jiangzeyin.system.SystemKey;
 import cn.jiangzeyin.util.Assert;
 import cn.jiangzeyin.util.PropertiesParser;
 import cn.jiangzeyin.util.ResourceUtil;
