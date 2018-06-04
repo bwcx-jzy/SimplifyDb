@@ -3,3 +3,4 @@ src/main/resources/
 src/test/
 target/
 .idea/workspace.xml
+.idea/libraries/
