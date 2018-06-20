@@ -181,7 +181,6 @@ public abstract class ReadBase<T> extends Base<T> {
             Collections.addAll(this.parameters, parameters);
     }
 
-
     public void setParameters(List<Object> whereParameters) {
         this.parameters = whereParameters;
     }
@@ -203,6 +202,7 @@ public abstract class ReadBase<T> extends Base<T> {
      * <p>
      * 默认所有 （*）
      *
+     * @param columns 查询列
      * @author jiangzeyin
      */
     public void setColumns(String columns) {

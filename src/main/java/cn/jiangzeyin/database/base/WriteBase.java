@@ -1,9 +1,12 @@
 package cn.jiangzeyin.database.base;
 
 
+import cn.jiangzeyin.database.config.SystemColumn;
 import cn.jiangzeyin.system.DbLog;
 
 import java.sql.Connection;
+import java.util.HashMap;
+import java.util.Set;
 
 /**
  * 写入数据
@@ -131,6 +134,24 @@ public abstract class WriteBase<T> extends Base<T> {
 
             public String getDesc() {
                 return desc;
+            }
+        }
+    }
+
+    /**
+     * 效验update 是否合法
+     *
+     * @param cls    cls
+     * @param update map
+     */
+    protected static void checkUpdate(Class cls, HashMap<String, Object> update) {
+        if (update != null) {
+            Set<String> set = update.keySet();
+            for (String item : set) {
+                if (SystemColumn.notCanUpdate(item))
+                    throw new IllegalArgumentException(item + " not update");
+                if (SystemColumn.isSequence(cls, item))
+                    throw new IllegalArgumentException(item + " not update sequence");
             }
         }
     }

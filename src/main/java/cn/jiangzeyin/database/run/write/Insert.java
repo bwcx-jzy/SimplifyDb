@@ -51,7 +51,7 @@ public class Insert<T> extends WriteBase<T> {
     }
 
     /**
-     *
+     * @param data 数据对象
      */
     public Insert(T data) {
         // TODO Auto-generated constructor stub

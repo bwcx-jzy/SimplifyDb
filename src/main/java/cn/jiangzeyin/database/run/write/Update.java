@@ -33,7 +33,7 @@ public class Update<T> extends WriteBase<T> {
     private HashMap<String, Object> update;
 
     /**
-     *
+     * @param data 数据对象
      */
     public Update(T data) {
         super(data);
@@ -67,6 +67,7 @@ public class Update<T> extends WriteBase<T> {
     }
 
     public void setUpdate(HashMap<String, Object> update) {
+        checkUpdate(getTclass(), update);
         this.update = update;
     }
 
@@ -81,6 +82,8 @@ public class Update<T> extends WriteBase<T> {
         // 判断对应字段是否可以被修改
         if (SystemColumn.notCanUpdate(column))
             throw new IllegalArgumentException(column + " not update");
+        if (SystemColumn.isSequence(getTclass(), column))
+            throw new IllegalArgumentException(column + " not update sequence");
         if (update == null)
             update = new HashMap<>();
         update.put(column, value);

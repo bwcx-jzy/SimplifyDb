@@ -25,6 +25,7 @@ public class Util {
      *
      * @param reBase base
      * @param list   list
+     * @param <T>    泛型
      * @return 结果
      * @throws Exception 异常
      * @author jiangzeyin

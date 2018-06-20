@@ -11,7 +11,7 @@ import java.util.Map;
 /**
  * 对分页的基本数据进行一个简单的封装
  *
- * @param <T>
+ * @param <T> 泛型
  * @author jiangzeyin
  */
 public class Page<T> {

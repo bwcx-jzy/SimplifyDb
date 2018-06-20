@@ -64,7 +64,7 @@ public final class SqlUtil {
         HashMap<String, Class<?>> refMap = write.getRefMap();
         boolean isInsert = write instanceof Insert;
         Class classT = data.getClass();
-        List fieldList = DbReflectUtil.getDeclaredFields(classT);
+        List<?> fieldList = DbReflectUtil.getDeclaredFields(classT);
         for (Object object : fieldList) {
             Field field = (Field) object;
             if (!isWrite(field))
@@ -100,7 +100,8 @@ public final class SqlUtil {
                         columns.add(name);
                         String val = sequence.nextId();
                         systemMap.put(name, val);
-                        DbReflectUtil.setFieldValue(data, name, val);
+                        field.set(data, val);
+//                        DbReflectUtil.setFieldValue(data, name, val);
                         continue;
                     }
                 }
@@ -109,7 +110,7 @@ public final class SqlUtil {
             // 判断是否为系统字段
             String value1 = SystemColumn.getDefaultValue(name);
             if (value1 == null) {
-                Object va = DbReflectUtil.getFieldValue(data, name);
+                Object va = field.get(data);// DbReflectUtil.getFieldValue(data, name);
                 // 密码字段
                 if (SystemColumn.getPwdColumn().equalsIgnoreCase(name)) {
                     systemMap.put(name, "PASSWORD(?)");
@@ -117,10 +118,10 @@ public final class SqlUtil {
                 } else {
                     // 读取外键
                     if (refMap != null && refMap.containsKey(name.toLowerCase())) {
-                        Object refData = DbReflectUtil.getFieldValue(data, field.getName());
-                        if (refData == null)
-                            throw new RuntimeException(name + " 为null");
-                        va = DbReflectUtil.getFieldValue(refData, write.getRefKey());
+                        //Object refData = DbReflectUtil.getFieldValue(data, field.getName());
+                        //if (refData == null)
+                        //  throw new RuntimeException(name + " 为null");
+                        va = DbReflectUtil.getFieldValue(va, write.getRefKey());
                     }
                     values.add(va);
                 }
@@ -335,6 +336,7 @@ public final class SqlUtil {
      * @param clas      类
      * @param keyColumn 列
      * @param where     条件
+     * @param isExists  isExists
      * @return sql
      * @author jiangzeyin
      */

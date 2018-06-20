@@ -4,10 +4,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -26,7 +23,7 @@ public class DbReflectUtil {
      * @throws IllegalAccessException   一些
      * @throws IllegalArgumentException 异常
      */
-    public static Object getFieldValue(Object obj, String fieldName) throws NoSuchFieldException, IllegalAccessException {
+    public static Object getFieldValue(Object obj, String fieldName) throws IllegalAccessException {
         Objects.requireNonNull(obj);
         Field field = getField(obj.getClass(), fieldName);
         return field.get(obj);
@@ -44,12 +41,29 @@ public class DbReflectUtil {
         Object object = ReflectCache.get(key);
         if (object instanceof List)
             return (List<Field>) object;
-        List<Field> fieldList = new ArrayList<>();
-        for (Class<?> clazz = cls; clazz != Object.class; clazz = clazz.getSuperclass()) {
-            fieldList.addAll(Arrays.asList(clazz.getDeclaredFields()));
-        }
+        Map<String, Field> map = getFieldMap(cls);
+        List<Field> fieldList = new ArrayList<>(map.values());
         ReflectCache.put(key, fieldList);
         return fieldList;
+    }
+
+    private static Map<String, Field> getFieldMap(Class<?> cls) {
+        String key = cls.getName() + "_DeclaredFields_Map";
+        Object object = ReflectCache.get(key);
+        if (object instanceof List)
+            return (Map<String, Field>) object;
+        Map<String, Field> map = new HashMap<>();
+        for (Class<?> clazz = cls; clazz != Object.class; clazz = clazz.getSuperclass()) {
+            for (Field item : clazz.getDeclaredFields()) {
+                String name = item.getName().toLowerCase();
+                if (map.containsKey(name))
+                    continue;
+                item.setAccessible(true);
+                map.put(name, item);
+            }
+        }
+        ReflectCache.put(key, map);
+        return map;
     }
 
     /**
@@ -59,28 +73,10 @@ public class DbReflectUtil {
      * @param fieldName 目标属性
      * @return 目标字段
      */
-    private static Field getField(Class<?> cls, String fieldName) throws NoSuchFieldException {
-        String key = cls.getName() + "_" + fieldName;
-        Object object = ReflectCache.get(key);
-        if (object instanceof Field)
-            return (Field) object;
-        Field field = null;
-        NoSuchFieldException noSuchFieldException = null;
-        for (Class<?> clazz = cls; clazz != Object.class; clazz = clazz.getSuperclass()) {
-            try {
-                field = clazz.getDeclaredField(fieldName);
-                field.setAccessible(true);
-                break;
-            } catch (NoSuchFieldException ignored) {
-                noSuchFieldException = ignored;
-            }
-        }
-        if (field == null) {
-            assert noSuchFieldException != null;
-            throw noSuchFieldException;
-        }
-        ReflectCache.put(key, field);
-        return field;
+    public static Field getField(Class<?> cls, String fieldName) {
+        Objects.requireNonNull(fieldName);
+        Map<String, Field> map = getFieldMap(cls);
+        return map.get(fieldName.toLowerCase());
     }
 
     /**
@@ -89,23 +85,20 @@ public class DbReflectUtil {
      * @param obj        目标对象
      * @param fieldName  目标属性
      * @param fieldValue 目标值
+     * @throws IllegalAccessException 权限
      */
-    public static void setFieldValue(Object obj, String fieldName, Object fieldValue) throws IllegalAccessException, NoSuchFieldException {
+    public static void setFieldValue(Object obj, String fieldName, Object fieldValue) throws IllegalAccessException {
         Field field = getField(obj.getClass(), fieldName);
         Class type = field.getType();
         if (fieldValue == null) {
             field.set(obj, null);
             return;
         }
-        if (type == int.class) {
+        if (type == int.class || type == Integer.class) {
             field.set(obj, Integer.parseInt(fieldValue.toString()));
             return;
         }
-        if (type == Integer.class) {
-            field.set(obj, Integer.valueOf(fieldValue.toString()));
-            return;
-        }
-        if (type == double.class) {
+        if (type == double.class || type == Double.class) {
             field.set(obj, Double.parseDouble(fieldValue.toString()));
             return;
         }
@@ -113,7 +106,7 @@ public class DbReflectUtil {
             field.set(obj, fieldValue.toString());
             return;
         }
-        if (type == long.class) {
+        if (type == long.class || type == Long.class) {
             field.set(obj, Long.parseLong(fieldValue.toString()));
             return;
         }
@@ -123,6 +116,7 @@ public class DbReflectUtil {
     /**
      * 获取对象的泛型
      *
+     * @param cls class
      * @return 结果
      * @author jiangzeyin
      */
@@ -135,16 +129,16 @@ public class DbReflectUtil {
         return null;
     }
 
-    public static List getAllSetMethods(Class cls) {
+    public static List<Method> getAllSetMethods(Class cls) {
         return getAllMethods(cls, "set");
     }
 
-    private static List getAllMethods(Class cls, String prefix) {
+    private static List<Method> getAllMethods(Class cls, String prefix) {
         Objects.requireNonNull(cls);
         String key = cls.getName() + "_" + prefix;
         Object object = ReflectCache.get(key);
         if (object instanceof List)
-            return (List) object;
+            return (List<Method>) object;
         List<Method> list = new ArrayList<>();
         for (Class<?> clazz = cls; clazz != Object.class; clazz = clazz.getSuperclass()) {
             Method[] methods = clazz.getDeclaredMethods();

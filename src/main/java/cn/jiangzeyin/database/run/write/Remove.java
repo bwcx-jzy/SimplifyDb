@@ -54,6 +54,7 @@ public class Remove<T> extends WriteBase<T> {
     public void setUpdate(HashMap<String, Object> update) {
         if (type != Type.recovery)
             throw new IllegalArgumentException("type must " + Type.recovery);
+        checkUpdate(getTclass(), update);
         this.update = update;
     }
 
@@ -70,6 +71,8 @@ public class Remove<T> extends WriteBase<T> {
         // 判断对应字段是否可以被修改
         if (SystemColumn.notCanUpdate(column))
             throw new IllegalArgumentException(column + " not update");
+        if (SystemColumn.isSequence(getTclass(), column))
+            throw new IllegalArgumentException(column + " not update sequence");
         if (update == null)
             update = new HashMap<>();
         update.put(column, value);
@@ -84,7 +87,7 @@ public class Remove<T> extends WriteBase<T> {
     }
 
     /**
-     *
+     * @param type 操作类型
      */
     public Remove(Type type) {
         // TODO Auto-generated constructor stub

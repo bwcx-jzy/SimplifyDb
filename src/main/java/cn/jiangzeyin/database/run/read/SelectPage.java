@@ -29,6 +29,8 @@ public class SelectPage<T> extends ReadBase<T> {
 
     /**
      * 分页基本使用
+     *
+     * @param page 分页对象
      */
     public SelectPage(Page<T> page) {
         // TODO Auto-generated constructor stub

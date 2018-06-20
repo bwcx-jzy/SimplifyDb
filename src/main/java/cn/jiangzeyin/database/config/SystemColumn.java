@@ -1,8 +1,12 @@
 package cn.jiangzeyin.database.config;
 
 import cn.jiangzeyin.StringUtil;
+import cn.jiangzeyin.database.annotation.FieldConfig;
+import cn.jiangzeyin.sequence.ISequence;
+import cn.jiangzeyin.util.DbReflectUtil;
 import com.alibaba.druid.util.StringUtils;
 
+import java.lang.reflect.Field;
 import java.util.*;
 
 /**
@@ -55,6 +59,24 @@ public class SystemColumn {
         if (StringUtils.isEmpty(name))
             return null;
         return COLUMN_DEFAULT_VALUE.get(name.toLowerCase());
+    }
+
+    /**
+     * 判断是否为sequence 字段
+     *
+     * @param cls  cls
+     * @param name 字段名称
+     * @return true 需要生成主键
+     */
+    public static boolean isSequence(Class<?> cls, String name) {
+        Field field = DbReflectUtil.getField(cls, name);
+        if (field == null)
+            return false;
+        FieldConfig fieldConfig = field.getAnnotation(FieldConfig.class);
+        if (fieldConfig == null)
+            return false;
+        Class<? extends ISequence> sequenceCls = fieldConfig.sequence();
+        return sequenceCls != ISequence.class;
     }
 
     /**
