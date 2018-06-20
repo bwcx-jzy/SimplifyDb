@@ -16,7 +16,7 @@
         <mysql.version>6.0.6</mysql.version>
         <druid.version>1.1.10</druid.version>
         <fastjson.version>1.2.47</fastjson.version>
-        <simple-util>1.0.7</simple-util>
+        <simple-util>1.0.8</simple-util>
         <simple-des.vesion>1.0.0</simple-des.vesion>
     </properties>
 
@@ -49,6 +49,12 @@
             <groupId>cn.jiangzeyin.security</groupId>
             <artifactId>simple-des</artifactId>
             <version>${simple-des.vesion}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>cn.izern</groupId>
+            <artifactId>sequence</artifactId>
+            <version>1.0.0</version>
         </dependency>
     </dependencies>
 
