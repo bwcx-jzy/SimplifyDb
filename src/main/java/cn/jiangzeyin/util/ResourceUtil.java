@@ -7,6 +7,7 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.Objects;
 
 /**
  * Created by jiangzeyin on 2017/8/14.
@@ -17,7 +18,7 @@ public class ResourceUtil {
     }
 
     public static InputStream getResource(String location) throws IOException {
-        Assert.notNull(location, "location is null");
+        Objects.requireNonNull(location, "location is null");
         if (location.startsWith("/")) {
             return getInputStream(location);
         }

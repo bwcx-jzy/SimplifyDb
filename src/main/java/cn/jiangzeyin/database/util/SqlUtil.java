@@ -16,7 +16,8 @@ import cn.jiangzeyin.database.run.read.SelectPage;
 import cn.jiangzeyin.database.run.write.Insert;
 import cn.jiangzeyin.database.run.write.Remove;
 import cn.jiangzeyin.database.run.write.Update;
-import cn.jiangzeyin.util.Assert;
+import cn.jiangzeyin.sequence.ISequence;
+import cn.jiangzeyin.sequence.SequenceConfig;
 import cn.jiangzeyin.util.DbReflectUtil;
 import com.alibaba.druid.util.StringUtils;
 
@@ -53,7 +54,7 @@ public final class SqlUtil {
     private static SqlAndParameters getWriteSql(WriteBase<?> write, Object data) throws Exception {
         if (data == null)
             data = write.getData();
-        Assert.notNull(data, String.format("%s", write.getTclass(false)));
+        Objects.requireNonNull(data, String.format("%s", write.getTclass(false)));
 
         List<String> columns = new ArrayList<>();
         List<Object> values = new ArrayList<>();
@@ -91,6 +92,15 @@ public final class SqlUtil {
                     if (!StringUtil.isEmpty(insertDelValue)) {
                         columns.add(name);
                         systemMap.put(name, insertDelValue);
+                        continue;
+                    }
+                    Class<? extends ISequence> sequenceCls = fieldConfig.sequence();
+                    ISequence sequence = SequenceConfig.parseSequence(sequenceCls);
+                    if (sequence != null) {
+                        columns.add(name);
+                        String val = sequence.nextId();
+                        systemMap.put(name, val);
+                        DbReflectUtil.setFieldValue(data, name, val);
                         continue;
                     }
                 }
@@ -244,7 +254,7 @@ public final class SqlUtil {
         if (!isWhere) {
             if (update.getData() != null) {
                 Object objId = DbReflectUtil.getFieldValue(update.getData(), SystemColumn.getDefaultKeyName());
-                Assert.notNull(objId, "没有找到任何更新条件");
+                Objects.requireNonNull(objId, "没有找到任何更新条件");
                 sbSql.append(" where id=");
                 sbSql.append(Long.parseLong(objId.toString()));
             } else {
@@ -423,7 +433,7 @@ public final class SqlUtil {
         Class cls = base.getTclass();
         if (ModifyUser.Modify.isModifyClass(cls)) {
             stringBuffer.append(",").append(ModifyUser.Modify.getColumnUser()).append("=").append(optUserId);
-            stringBuffer.append(",").append(ModifyUser.Modify.getColumnTime()).append("=").append(ModifyUser.Modify.getModifyTime()).append("");
+            stringBuffer.append(",").append(ModifyUser.Modify.getColumnTime()).append("=").append(ModifyUser.Modify.getModifyTime());
         }
     }
 

@@ -1,12 +1,12 @@
 package cn.jiangzeyin.database.base;
 
 
+import cn.jiangzeyin.StringUtil;
 import cn.jiangzeyin.database.config.DataSourceConfig;
 import cn.jiangzeyin.database.config.DatabaseContextHolder;
 import cn.jiangzeyin.database.config.SystemColumn;
 import cn.jiangzeyin.system.DbLog;
 import cn.jiangzeyin.system.SystemSessionInfo;
-import cn.jiangzeyin.util.Assert;
 import cn.jiangzeyin.util.DbReflectUtil;
 import com.alibaba.druid.util.StringUtils;
 
@@ -251,7 +251,7 @@ public abstract class Base<T> {
 
     private String getLine() {
         StackTraceElement stackTraceElement = Thread.currentThread().getStackTrace()[4];
-        return String.format("[%s-%s-%s]", Assert.simplifyClassName(stackTraceElement.getClassName()), stackTraceElement.getMethodName(), stackTraceElement.getLineNumber());
+        return String.format("[%s-%s-%s]", StringUtil.simplifyClassName(stackTraceElement.getClassName()), stackTraceElement.getMethodName(), stackTraceElement.getLineNumber());
     }
 
     protected void getAsyncLog() {

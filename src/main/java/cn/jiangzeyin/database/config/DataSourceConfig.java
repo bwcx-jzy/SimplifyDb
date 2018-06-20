@@ -4,7 +4,6 @@ package cn.jiangzeyin.database.config;
 import cn.jiangzeyin.StringUtil;
 import cn.jiangzeyin.des.SystemKey;
 import cn.jiangzeyin.system.DbLog;
-import cn.jiangzeyin.util.Assert;
 import cn.jiangzeyin.util.PropertiesParser;
 import cn.jiangzeyin.util.ResourceUtil;
 import com.alibaba.druid.pool.DruidDataSourceFactory;
@@ -41,12 +40,12 @@ public final class DataSourceConfig {
         String active = systemPropertiesParser.getStringProperty(ConfigProperties.ACTIVE, "dev");
         DataSourceConfig.active = "prod".equals(active);
         String[] sourceTags = systemPropertiesParser.getStringArrayProperty(ConfigProperties.PROP_SOURCE_TAG);
-        Assert.notNull(sourceTags, "sourceTag is blank");
+        Objects.requireNonNull(sourceTags, "sourceTag is blank");
         if (sourceTags.length < 1) {
             throw new IllegalArgumentException("sourceTag is blank");
         }
         String[] configPaths = systemPropertiesParser.getStringArrayProperty(ConfigProperties.PROP_CONFIG_PATH);
-        Assert.notNull(configPaths, "configPath is blank");
+        Objects.requireNonNull(configPaths, "configPath is blank");
         if (configPaths.length < 1) {
             throw new IllegalArgumentException("configPath is blank");
         }

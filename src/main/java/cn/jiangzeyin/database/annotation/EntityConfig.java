@@ -27,7 +27,7 @@ public @interface EntityConfig {
     /**
      * baseEntity mark 字段
      *
-     * @return
+     * @return 是否存在mark 字段
      */
     boolean baseMark() default true;
 }

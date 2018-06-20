@@ -11,7 +11,7 @@ public class PropertiesParser {
     private Properties props;
 
     public PropertiesParser(InputStream inputStream) throws IOException {
-        Assert.notNull(inputStream, "inputStream is null");
+        Objects.requireNonNull(inputStream, "inputStream is null");
         Properties properties = new Properties();
         properties.load(inputStream);
         inputStream.close();

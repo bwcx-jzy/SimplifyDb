@@ -2,11 +2,11 @@ package cn.jiangzeyin.database.config;
 
 import cn.jiangzeyin.StringUtil;
 import cn.jiangzeyin.system.DbLog;
-import cn.jiangzeyin.util.Assert;
 import com.alibaba.druid.util.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Properties;
 
 /**
@@ -64,7 +64,7 @@ public class ModifyUser {
     }
 
     static void initCreate(Properties properties) {
-        Assert.notNull(properties);
+        Objects.requireNonNull(properties);
         String createClass = properties.getProperty(ConfigProperties.PROP_CREATE_CLASS);
         if (StringUtils.isEmpty(createClass))
             return;
@@ -91,7 +91,7 @@ public class ModifyUser {
     }
 
     static void initModify(Properties properties) {
-        Assert.notNull(properties);
+        Objects.requireNonNull(properties);
         String modifyClass = properties.getProperty(ConfigProperties.PROP_LAST_MODIFY_CLASS);
         if (!StringUtils.isEmpty(modifyClass)) {
             String[] modifyClass_s = StringUtil.stringToArray(modifyClass);

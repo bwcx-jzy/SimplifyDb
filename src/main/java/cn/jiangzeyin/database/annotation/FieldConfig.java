@@ -1,10 +1,12 @@
 package cn.jiangzeyin.database.annotation;
 
+import cn.jiangzeyin.sequence.ISequence;
+
 import java.lang.annotation.*;
 
 /**
- * Created by jiangzeyin on 2017/12/9.
  * 实体属性配置
+ * Created by jiangzeyin on 2017/12/9.
  */
 @Documented
 @Target(ElementType.FIELD)
@@ -17,4 +19,11 @@ public @interface FieldConfig {
      * @return str
      */
     String insertDefValue() default "";
+
+    /**
+     * 主键生成器
+     *
+     * @return class
+     */
+    Class<? extends ISequence> sequence() default ISequence.class;
 }

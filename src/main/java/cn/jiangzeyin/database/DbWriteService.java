@@ -1,6 +1,6 @@
 package cn.jiangzeyin.database;
 
-import cn.jiangzeyin.util.Assert;
+import java.util.Objects;
 
 /**
  * @author jiangzeyin
@@ -20,7 +20,7 @@ public final class DbWriteService {
     }
 
     public static WriteInterface getInstance() {
-        Assert.notNull(writeInterface, "please set writeInterface");
+        Objects.requireNonNull(writeInterface, "please set writeInterface");
         return writeInterface;
     }
 

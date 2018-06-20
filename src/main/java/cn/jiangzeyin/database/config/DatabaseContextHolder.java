@@ -1,12 +1,12 @@
 package cn.jiangzeyin.database.config;
 
 import cn.jiangzeyin.system.DbLog;
-import cn.jiangzeyin.util.Assert;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Random;
 
 /**
@@ -34,7 +34,7 @@ public final class DatabaseContextHolder {
 
 
     static void init(Map<String, DataSource>[] maps, String[] tagName) {
-        Assert.notNull(maps);
+        Objects.requireNonNull(maps);
         if (maps.length == 0)
             throw new IllegalArgumentException("数据库连接信息不能为空");
         DatabaseContextHolder.MAPS = maps;
@@ -50,7 +50,7 @@ public final class DatabaseContextHolder {
     }
 
     static void init(Map<String, DataSource> map, String tagName) {
-        Assert.notNull(map);
+        Objects.requireNonNull(map);
         if (map.size() < 1)
             throw new RuntimeException("数据库连接加载为空");
         DatabaseContextHolder.targetDataSourcesMap = map;
@@ -74,7 +74,7 @@ public final class DatabaseContextHolder {
             threadLocal.set(tagNames[1]);
         } else if (databaseOptType == DatabaseOptType.More)
             dataSource = randMap().get(tag);
-        Assert.notNull(dataSource, "没有找到对应数据源：" + tag);
+        Objects.requireNonNull(dataSource, "没有找到对应数据源：" + tag);
         return dataSource;
     }
 
@@ -105,7 +105,7 @@ public final class DatabaseContextHolder {
             threadLocal.set(tagNames[0]);
         } else if (databaseOptType == DatabaseOptType.More)
             dataSource = randMap().get(tag);
-        Assert.notNull(dataSource, "没有找到对应数据源：" + tag);
+        Objects.requireNonNull(dataSource, "没有找到对应数据源：" + tag);
         return dataSource;
     }
 

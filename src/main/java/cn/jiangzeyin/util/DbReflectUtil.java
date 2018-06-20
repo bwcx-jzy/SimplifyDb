@@ -7,6 +7,7 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -26,7 +27,7 @@ public class DbReflectUtil {
      * @throws IllegalArgumentException 异常
      */
     public static Object getFieldValue(Object obj, String fieldName) throws NoSuchFieldException, IllegalAccessException {
-        Assert.notNull(obj);
+        Objects.requireNonNull(obj);
         Field field = getField(obj.getClass(), fieldName);
         return field.get(obj);
     }
@@ -139,7 +140,7 @@ public class DbReflectUtil {
     }
 
     private static List getAllMethods(Class cls, String prefix) {
-        Assert.notNull(cls);
+        Objects.requireNonNull(cls);
         String key = cls.getName() + "_" + prefix;
         Object object = ReflectCache.get(key);
         if (object instanceof List)

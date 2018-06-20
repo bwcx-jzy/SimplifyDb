@@ -7,7 +7,6 @@ import cn.jiangzeyin.database.config.DatabaseContextHolder;
 import cn.jiangzeyin.database.util.SqlUtil;
 import cn.jiangzeyin.database.util.Util;
 import cn.jiangzeyin.system.DbLog;
-import cn.jiangzeyin.util.Assert;
 import com.alibaba.druid.util.JdbcUtils;
 import com.alibaba.druid.util.StringUtils;
 import com.alibaba.fastjson.JSON;
@@ -16,6 +15,7 @@ import com.alibaba.fastjson.JSONObject;
 import javax.sql.DataSource;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * 分页查询
@@ -60,7 +60,7 @@ public class SelectPage<T> extends ReadBase<T> {
     @Override
     public <T> T run() {
         // TODO Auto-generated method stub
-        Assert.notNull(page, "page");
+        Objects.requireNonNull(page, "page");
         try {
             String tag = getTag();
             if (StringUtils.isEmpty(tag)) {

@@ -4,17 +4,13 @@ import cn.jiangzeyin.database.base.ReadBase;
 import cn.jiangzeyin.database.config.DatabaseContextHolder;
 import cn.jiangzeyin.database.config.SystemColumn;
 import cn.jiangzeyin.system.DbLog;
-import cn.jiangzeyin.util.Assert;
 import cn.jiangzeyin.util.DbReflectUtil;
 import cn.jiangzeyin.util.KeyMap;
 import com.alibaba.druid.util.JdbcUtils;
 
 import javax.sql.DataSource;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * 工具类
@@ -34,8 +30,8 @@ public class Util {
      * @author jiangzeyin
      */
     public static <T> List<T> convertList(ReadBase<T> reBase, List<Map<String, Object>> list) throws Exception {
-        Assert.notNull(list, "list map");
-        Assert.notNull(reBase, "reBase");
+        Objects.requireNonNull(list, "list map");
+        Objects.requireNonNull(reBase, "reBase");
         List<T> list_r = new ArrayList<>();
         for (Map<String, Object> t : list) {
             list_r.add(convertMap(reBase, t, null));
