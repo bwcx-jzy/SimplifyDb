@@ -50,12 +50,6 @@
             <artifactId>simple-des</artifactId>
             <version>${simple-des.vesion}</version>
         </dependency>
-
-        <dependency>
-            <groupId>cn.izern</groupId>
-            <artifactId>sequence</artifactId>
-            <version>1.0.0</version>
-        </dependency>
     </dependencies>
 
     <build>
