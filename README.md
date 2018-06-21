@@ -5,6 +5,8 @@
 
 博客专栏：[http://blog.csdn.net/column/details/17021.html](http://blog.csdn.net/column/details/17021.html)
 
+javadoc：[https://apidoc.gitee.com/jiangzeyin/dbutil/](https://apidoc.gitee.com/jiangzeyin/dbutil/)
+
 项目特点：(使用druid 连接池)
 
 1.支持多数据源
