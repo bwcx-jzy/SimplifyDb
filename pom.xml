@@ -16,7 +16,7 @@
         <mysql.version>6.0.6</mysql.version>
         <druid.version>1.1.10</druid.version>
         <fastjson.version>1.2.47</fastjson.version>
-        <simple-util>1.0.8</simple-util>
+        <simple-util.version>1.0.10</simple-util.version>
         <simple-des.vesion>1.0.0</simple-des.vesion>
     </properties>
 
@@ -42,7 +42,7 @@
         <dependency>
             <groupId>cn.jiangzeyin</groupId>
             <artifactId>simple-util</artifactId>
-            <version>${simple-util}</version>
+            <version>${simple-util.version}</version>
         </dependency>
         <!-- 加密工具类-->
         <dependency>

@@ -63,7 +63,23 @@ public final class SqlUtil {
         List<String> remove = write.getRemove();
         HashMap<String, Class<?>> refMap = write.getRefMap();
         boolean isInsert = write instanceof Insert;
+
         Class classT = data.getClass();
+        EntityConfig entityConfig = null;
+        List<String> insertColumns = null;
+        if (isInsert) {
+            entityConfig = (EntityConfig) classT.getAnnotation(EntityConfig.class);
+            if (entityConfig != null) {
+                String insertColumns_ = entityConfig.insertColumns();
+                String[] columns_ = StringUtil.stringToArray(insertColumns_, ",");
+                if (columns_ != null) {
+                    insertColumns = new ArrayList<>();
+                    for (String column_item : columns_) {
+                        insertColumns.add(column_item.toLowerCase());
+                    }
+                }
+            }
+        }
         List<?> fieldList = DbReflectUtil.getDeclaredFields(classT);
         for (Object object : fieldList) {
             Field field = (Field) object;
@@ -75,16 +91,24 @@ public final class SqlUtil {
                 continue;
             }
             // 系统默认不可以操作
-            if (SystemColumn.isWriteRemove(name))
-                continue;
-            // 判断insert 注解
-            if (isInsert) {
-                // 去掉mark 字段
-                EntityConfig entityConfig = (EntityConfig) classT.getAnnotation(EntityConfig.class);
-                if (entityConfig != null && !entityConfig.baseMark()) {
+            if (SystemColumn.isWriteRemove(name)) {
+                if (insertColumns == null)
+                    continue;
+                if (!insertColumns.contains(name.toLowerCase()))
+                    continue;
+            }
+            // 去掉mark 字段
+            if (entityConfig != null) {
+                if (!entityConfig.baseMark()) {
                     if ("mark".equals(name))
                         continue;
                 }
+                if (!entityConfig.update() && name.equalsIgnoreCase(SystemColumn.Modify.getColumn())) {
+                    continue;
+                }
+            }
+            // 判断insert 注解
+            if (isInsert) {
                 // 获取字段属性
                 FieldConfig fieldConfig = field.getAnnotation(FieldConfig.class);
                 if (fieldConfig != null) {
@@ -100,7 +124,8 @@ public final class SqlUtil {
                         columns.add(name);
                         String val = sequence.nextId();
                         systemMap.put(name, val);
-                        field.set(data, val);
+                        DbReflectUtil.setFieldValue(data, name, val);
+                        // field.set(data, val);
 //                        DbReflectUtil.setFieldValue(data, name, val);
                         continue;
                     }

@@ -1,6 +1,7 @@
 package cn.jiangzeyin.system;
 
 /**
+ * 日志
  * Created by jiangzeyin on 2017/8/14.
  */
 public final class DbLog {
@@ -23,6 +24,9 @@ public final class DbLog {
         return dbLogInterface;
     }
 
+    /**
+     * 日志回调接口
+     */
     public interface DbLogInterface {
         void info(Object object);
 

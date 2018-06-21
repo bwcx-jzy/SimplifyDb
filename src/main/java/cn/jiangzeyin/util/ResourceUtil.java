@@ -10,6 +10,7 @@ import java.net.URLConnection;
 import java.util.Objects;
 
 /**
+ * 加载资源util
  * Created by jiangzeyin on 2017/8/14.
  */
 public class ResourceUtil {

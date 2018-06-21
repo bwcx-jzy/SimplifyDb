@@ -135,8 +135,12 @@ public class Insert<T> extends WriteBase<T> {
                 } else {
                     key = JdbcUtil.executeInsert(transactionConnection, sqlAndParameters.getSql(), sqlAndParameters.getParameters());
                 }
+                if (key == null)
+                    key = DbReflectUtil.getFieldValue(data, SystemColumn.getDefaultKeyName());
+                else
+                    DbReflectUtil.setFieldValue(data, SystemColumn.getDefaultKeyName(), key);
                 //T data = getData();
-                DbReflectUtil.setFieldValue(data, SystemColumn.getDefaultKeyName(), key);
+
                 // 实体事件
                 if (event != null)
                     event.completeInsert(key);
@@ -168,9 +172,12 @@ public class Insert<T> extends WriteBase<T> {
                         }
                         DbLog.getInstance().info(sqlAndParameters[i].getSql());
                         Object key = JdbcUtil.executeInsert(connection, sqlAndParameters[i].getSql(), sqlAndParameters[i].getParameters());
-                        if (key == null)
-                            return null;
-                        DbReflectUtil.setFieldValue(data, SystemColumn.getDefaultKeyName(), key);
+                        if (key == null) {
+                            key = DbReflectUtil.getFieldValue(data, SystemColumn.getDefaultKeyName());
+                            if (key == null)
+                                return null;
+                        } else
+                            DbReflectUtil.setFieldValue(data, SystemColumn.getDefaultKeyName(), key);
                         if (event != null)
                             event.completeInsert(key);
                         if (callback != null) {

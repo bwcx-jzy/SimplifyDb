@@ -64,6 +64,9 @@ public class Transaction {
         void start(Operate operate);
     }
 
+    /**
+     * 事物操作对象
+     */
     public class Operate {
         private Transaction transaction;
 

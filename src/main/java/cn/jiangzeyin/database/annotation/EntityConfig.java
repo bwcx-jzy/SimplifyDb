@@ -30,4 +30,6 @@ public @interface EntityConfig {
      * @return 是否存在mark 字段
      */
     boolean baseMark() default true;
+
+    String insertColumns() default "";
 }
