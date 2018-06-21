@@ -46,7 +46,7 @@ public class IdSequence extends BaseSequence {
     static {
         long startTime1;
         try {
-            startTime1 = DateUtil.parseTime("1970-01-01", "yyyy-MM-dd").getTime();
+            startTime1 = DateUtil.parseTime("2018-01-01", "yyyy-MM-dd").getTime();
         } catch (ParseException e) {
             e.printStackTrace();
             startTime1 = 0L;
