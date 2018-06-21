@@ -46,6 +46,7 @@ public class Update<T> extends WriteBase<T> {
      */
     Update(Connection connection) {
         super(connection);
+        setThrows(true);
     }
 
     public Update(T data, boolean isThrows) {

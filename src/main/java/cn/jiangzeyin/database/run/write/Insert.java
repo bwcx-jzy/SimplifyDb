@@ -48,6 +48,7 @@ public class Insert<T> extends WriteBase<T> {
 
     Insert(Connection connection) {
         super(connection);
+        setThrows(true);
     }
 
     /**

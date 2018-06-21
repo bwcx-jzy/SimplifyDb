@@ -45,6 +45,7 @@ public class Remove<T> extends WriteBase<T> {
 
     public Remove(Connection transactionConnection) {
         super(transactionConnection);
+        setThrows(true);
     }
 
     public HashMap<String, Object> getUpdate() {

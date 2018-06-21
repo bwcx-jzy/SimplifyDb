@@ -90,12 +90,18 @@ public final class SqlUtil {
             if (remove != null && remove.contains(name.toLowerCase())) {
                 continue;
             }
+            FieldConfig fieldConfig = null;
             // 系统默认不可以操作
             if (SystemColumn.isWriteRemove(name)) {
-                if (insertColumns == null)
-                    continue;
-                if (!insertColumns.contains(name.toLowerCase()))
-                    continue;
+                if (insertColumns == null || !insertColumns.contains(name.toLowerCase())) {
+                    fieldConfig = field.getAnnotation(FieldConfig.class);
+                    if (fieldConfig == null)
+                        continue;
+                    Class<? extends ISequence> sequenceCls = fieldConfig.sequence();
+                    ISequence sequence = SequenceConfig.parseSequence(sequenceCls);
+                    if (sequence == null)
+                        continue;
+                }
             }
             // 去掉mark 字段
             if (entityConfig != null) {
@@ -109,8 +115,9 @@ public final class SqlUtil {
             }
             // 判断insert 注解
             if (isInsert) {
+                if (fieldConfig == null)
+                    fieldConfig = field.getAnnotation(FieldConfig.class);
                 // 获取字段属性
-                FieldConfig fieldConfig = field.getAnnotation(FieldConfig.class);
                 if (fieldConfig != null) {
                     String insertDelValue = fieldConfig.insertDefValue();
                     if (!StringUtil.isEmpty(insertDelValue)) {

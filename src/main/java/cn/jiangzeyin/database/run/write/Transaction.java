@@ -1,24 +1,44 @@
 package cn.jiangzeyin.database.run.write;
 
+import cn.jiangzeyin.database.DbWriteService;
+import cn.jiangzeyin.database.TransactionError;
 import cn.jiangzeyin.database.config.DatabaseContextHolder;
 import cn.jiangzeyin.system.DbLog;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.Objects;
 
 /**
  * 事务操作
  * Created by jiangzeyin on 2018/4/4.
  */
 public class Transaction {
-
+    /**
+     * 事务数据库连接
+     */
     private Connection connection;
 
-    public Transaction(String tag, Callback callback) throws SQLException {
-        connection = DatabaseContextHolder.getWriteConnection(tag);
-        connection.setAutoCommit(false);
+    public Transaction(Class cls, Callback callback) {
+        this(DbWriteService.getInstance().getDatabaseName(cls), callback);
+    }
+
+    public Transaction(String tag, Callback callback) {
+        Objects.requireNonNull(callback);
+        try {
+            connection = DatabaseContextHolder.getWriteConnection(tag);
+            connection.setAutoCommit(false);
+        } catch (SQLException e) {
+            callback.error(e);
+            throw new TransactionError("Transaction init error:" + e.getMessage());
+        }
         Operate operate = new Operate(this);
-        callback.start(operate);
+        try {
+            callback.start(operate);
+        } catch (Exception e) {
+            callback.error(e);
+            throw new TransactionError("Transaction error:" + e.getMessage());
+        }
     }
 
     /**
@@ -60,8 +80,13 @@ public class Transaction {
         }
     }
 
+    /**
+     * 事物接口
+     */
     public interface Callback {
         void start(Operate operate);
+
+        void error(Exception e);
     }
 
     /**
@@ -71,6 +96,7 @@ public class Transaction {
         private Transaction transaction;
 
         Operate(Transaction transaction) {
+            Objects.requireNonNull(transaction);
             this.transaction = transaction;
         }
 
@@ -112,7 +138,8 @@ public class Transaction {
          * 回滚事务
          */
         public void rollback() {
-            transaction.rollback();
+            if (transaction != null)
+                transaction.rollback();
         }
     }
 }
