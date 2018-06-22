@@ -137,6 +137,10 @@ public final class SqlUtil {
                         continue;
                     }
                 }
+            } else {
+                // 修改
+                if (SystemColumn.notCanUpdate(name))
+                    continue;
             }
             columns.add(name);
             // 判断是否为系统字段
