@@ -4,6 +4,7 @@ import cn.jiangzeyin.database.DbWriteService;
 import cn.jiangzeyin.database.TransactionError;
 import cn.jiangzeyin.database.config.DatabaseContextHolder;
 import cn.jiangzeyin.system.DbLog;
+import com.alibaba.druid.util.JdbcUtils;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -55,11 +56,7 @@ public class Transaction {
                 DbLog.getInstance().error("rollback", e1);
             }
         } finally {
-            try {
-                connection.close();
-            } catch (SQLException e) {
-                DbLog.getInstance().error("finally close", e);
-            }
+            JdbcUtils.close(connection);
         }
     }
 
@@ -72,11 +69,7 @@ public class Transaction {
         } catch (SQLException e) {
             DbLog.getInstance().error("rollback", e);
         } finally {
-            try {
-                connection.close();
-            } catch (SQLException e) {
-                DbLog.getInstance().error("finally close", e);
-            }
+            JdbcUtils.close(connection);
         }
     }
 

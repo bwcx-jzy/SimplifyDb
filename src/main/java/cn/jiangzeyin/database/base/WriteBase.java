@@ -3,7 +3,6 @@ package cn.jiangzeyin.database.base;
 
 import cn.jiangzeyin.database.config.SystemColumn;
 import cn.jiangzeyin.system.DbLog;
-import com.alibaba.druid.util.JdbcUtils;
 
 import java.sql.Connection;
 import java.util.HashMap;
@@ -109,7 +108,6 @@ public abstract class WriteBase<T> extends Base<T> {
         super.recycling();
         data = null;
         throwable = null;
-        JdbcUtils.close(transactionConnection);
         transactionConnection = null;
     }
 
