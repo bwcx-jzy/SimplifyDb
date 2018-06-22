@@ -19,6 +19,7 @@ public class Transaction {
      * 事务数据库连接
      */
     private Connection connection;
+    private Callback callback;
 
     public Transaction(Class cls, Callback callback) {
         this(DbWriteService.getInstance().getDatabaseName(cls), callback);
@@ -26,8 +27,11 @@ public class Transaction {
 
     public Transaction(String tag, Callback callback) {
         Objects.requireNonNull(callback);
+        this.callback = callback;
         try {
             connection = DatabaseContextHolder.getWriteConnection(tag);
+            if (connection == null)
+                throw new TransactionError("Transaction init getConnection error");
             connection.setAutoCommit(false);
         } catch (SQLException e) {
             callback.error(e);
@@ -37,6 +41,7 @@ public class Transaction {
         try {
             callback.start(operate);
         } catch (Exception e) {
+            rollback();
             callback.error(e);
             throw new TransactionError("Transaction error:" + e.getMessage());
         }
@@ -49,12 +54,8 @@ public class Transaction {
         try {
             connection.commit();
         } catch (SQLException e) {
-            DbLog.getInstance().error("commit", e);
-            try {
-                connection.rollback();
-            } catch (SQLException e1) {
-                DbLog.getInstance().error("rollback", e1);
-            }
+            DbLog.getInstance().error("commit error", e);
+            callback.error(e);
         } finally {
             JdbcUtils.close(connection);
         }
@@ -67,7 +68,8 @@ public class Transaction {
         try {
             connection.rollback();
         } catch (SQLException e) {
-            DbLog.getInstance().error("rollback", e);
+            DbLog.getInstance().error("rollback error", e);
+            callback.error(e);
         } finally {
             JdbcUtils.close(connection);
         }
@@ -88,7 +90,7 @@ public class Transaction {
     public class Operate {
         private Transaction transaction;
 
-        Operate(Transaction transaction) {
+        private Operate(Transaction transaction) {
             Objects.requireNonNull(transaction);
             this.transaction = transaction;
         }

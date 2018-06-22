@@ -63,6 +63,7 @@ public class SelectPage<T> extends ReadBase<T> {
     public <T> T run() {
         // TODO Auto-generated method stub
         Objects.requireNonNull(page, "page");
+        String errorSql = null;
         try {
             String tag = getTag();
             if (StringUtils.isEmpty(tag)) {
@@ -77,18 +78,24 @@ public class SelectPage<T> extends ReadBase<T> {
             DataSource dataSource = DatabaseContextHolder.getReadDataSource(tag);
             List<Map<String, Object>> list;
             { // 查询数据总数
+                errorSql = pageSql[0];
                 list = JdbcUtils.executeQuery(dataSource, pageSql[0], getParameters());
-                if (list == null || list.size() < 1)
+                if (list == null || list.size() < 1) {
+                    DbLog.getInstance().info(getTransferLog() + pageSql[1]);
                     return null;
+                }
                 Map<String, Object> count_map = list.get(0);
-                if (count_map == null)
+                if (count_map == null) {
+                    DbLog.getInstance().info(getTransferLog() + pageSql[1]);
                     return null;
+                }
                 long count = (Long) count_map.values().toArray()[0];
                 page.setTotalRecord(count);
             }
             { // 查询数据
                 setRunSql(pageSql[1]);
                 DbLog.getInstance().info(getTransferLog() + pageSql[1]);
+                errorSql = null;
                 list = JdbcUtils.executeQuery(dataSource, pageSql[1], getParameters());
                 page.setMapList(list);
                 if (getResultType() == Result.JsonArray) {
@@ -110,6 +117,9 @@ public class SelectPage<T> extends ReadBase<T> {
             }
         } catch (Exception e) {
             // TODO: handle exception
+            if (errorSql != null) {
+                DbLog.getInstance().info(getTransferLog() + errorSql);
+            }
             isThrows(e);
         } finally {
             runEnd();
