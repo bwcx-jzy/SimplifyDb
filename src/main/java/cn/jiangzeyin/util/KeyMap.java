@@ -19,10 +19,8 @@ public class KeyMap<K, V> {
             Map.Entry<K, V> entry = iterator.next();
             String key = entry.getKey().toString();
             String newKey = key.toLowerCase();
-            if (!key.equals(newKey)) {
-                temp.put((K) newKey, entry.getValue());
-                iterator.remove();
-            }
+            temp.put((K) newKey, entry.getValue());
+            iterator.remove();
         }
         this.map.clear();
         this.map.putAll(temp);

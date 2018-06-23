@@ -3,6 +3,7 @@ package cn.jiangzeyin.database.annotation;
 import java.lang.annotation.*;
 
 /**
+ * 实体配置
  * Created by jiangzeyin on 2017/10/24.
  */
 @Documented

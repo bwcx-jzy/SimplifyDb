@@ -10,6 +10,7 @@ import java.lang.reflect.Field;
 import java.util.*;
 
 /**
+ * 系统字段
  * Created by jiangzeyin on 2017/8/15.
  */
 public class SystemColumn {

@@ -10,6 +10,7 @@ import java.util.Objects;
 import java.util.Random;
 
 /**
+ * 链接池管理
  * Created by jiangzeyin on 2017/1/6.
  */
 public final class DatabaseContextHolder {

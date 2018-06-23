@@ -172,6 +172,9 @@ public class DbReflectUtil {
         return list;
     }
 
+    /**
+     * 缓存反射获取到的结果
+     */
     private static final class ReflectCache {
         private final static ConcurrentHashMap<String, Object> CACHE = new ConcurrentHashMap<>();
 
