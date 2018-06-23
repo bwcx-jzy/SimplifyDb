@@ -132,10 +132,10 @@ public final class SqlUtil {
                     if (sequence != null) {
                         columns.add(name);
                         String val;
-                        if (sequenceCls.isAssignableFrom(IQuietSequence.class)) {
+                        if (IQuietSequence.class.isAssignableFrom(sequenceCls)) {
                             IQuietSequence iQuietSequence = (IQuietSequence) sequence;
                             val = iQuietSequence.nextId();
-                        } else if (sequenceCls.isAssignableFrom(ICallbackSequence.class)) {
+                        } else if (ICallbackSequence.class.isAssignableFrom(sequenceCls)) {
                             ICallbackSequence iCallbackSequence = (ICallbackSequence) sequence;
                             val = iCallbackSequence.nextId(classT, name);
                         } else {
