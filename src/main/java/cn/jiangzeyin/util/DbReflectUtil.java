@@ -4,6 +4,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.math.BigDecimal;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -94,23 +95,42 @@ public class DbReflectUtil {
             field.set(obj, null);
             return;
         }
-        if (type == int.class || type == Integer.class) {
-            field.set(obj, Integer.parseInt(fieldValue.toString()));
-            return;
-        }
-        if (type == double.class || type == Double.class) {
-            field.set(obj, Double.parseDouble(fieldValue.toString()));
-            return;
-        }
-        if (type == String.class) {
-            field.set(obj, fieldValue.toString());
-            return;
-        }
-        if (type == long.class || type == Long.class) {
-            field.set(obj, Long.parseLong(fieldValue.toString()));
-            return;
-        }
+        fieldValue = convertType(fieldValue, type);
         field.set(obj, fieldValue);
+    }
+
+    /**
+     * @param object   object
+     * @param needType 需要的类型
+     * @return 转换后
+     * @see com.mysql.cj.jdbc.PreparedStatement#setObject(int, java.lang.Object)
+     * 转换数据类型
+     */
+    public static Object convertType(Object object, Class needType) {
+        if (object == null)
+            return null;
+        if (object.getClass() == needType)
+            return object;
+        if (needType == int.class || needType == Integer.class) {
+            return Integer.valueOf(String.valueOf(object));
+        }
+        if (needType == long.class || needType == Long.class) {
+            return Long.valueOf(String.valueOf(object));
+        }
+        if (needType == double.class || needType == Double.class) {
+            return Double.valueOf(String.valueOf(object));
+        }
+        if (needType == float.class || needType == Float.class) {
+            return Float.valueOf(String.valueOf(object));
+        }
+        if (needType == BigDecimal.class) {
+            return BigDecimal.valueOf(Long.valueOf(String.valueOf(object)));
+        }
+        if (needType == Short.class || short.class == needType)
+            return Short.valueOf(String.valueOf(object));
+        if (needType == boolean.class || Boolean.class == needType)
+            return Boolean.valueOf(String.valueOf(object));
+        return object;
     }
 
     /**

@@ -96,21 +96,16 @@ public class Util {
                 continue;
             }
             // 正常的字段
+            Class<?>[] classes = method.getParameterTypes();
+            if (classes == null || classes.length != 1) {
+                throw new IllegalArgumentException(method + " 不符合规范");
+            }
+            Class pClass = classes[0];
+            value = DbReflectUtil.convertType(value, pClass);
             try {
                 method.invoke(obj, value);
-            } catch (IllegalArgumentException ie) {
-                // 判断关系没有配置
-                Class<?>[] classes = method.getParameterTypes();
-                Class pClass = classes[0];
-                if (pClass == String.class) {
-                    method.invoke(obj, String.valueOf(value.toString()));
-                } else if (pClass == Integer.class || pClass == int.class) {
-                    method.invoke(obj, (Integer) value);
-                } else {
-                    DbLog.getInstance().error(String.format(obj.getClass() + " map转实体%s字段类型错误：%s -> %s", name, value.getClass(), value), ie);
-                }
             } catch (Exception e) {
-                DbLog.getInstance().error(String.format(obj.getClass() + " map转实体%s字段错误：%s -> %s", name, value.getClass(), value), e);
+                DbLog.getInstance().error(String.format(obj.getClass() + " map转实体%s字段错误：%s -> %s  %s", name, value.getClass(), value, pClass), e);
             }
         }
         return obj;

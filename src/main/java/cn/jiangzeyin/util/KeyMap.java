@@ -3,6 +3,7 @@ package cn.jiangzeyin.util;
 import java.util.*;
 
 /**
+ * 不区分大小写
  * Created by jiangzeyin on 2017/8/15.
  */
 public class KeyMap<K, V> {
@@ -23,7 +24,8 @@ public class KeyMap<K, V> {
                 iterator.remove();
             }
         }
-        map.putAll(temp);
+        this.map.clear();
+        this.map.putAll(temp);
     }
 
     public V get(K k) {

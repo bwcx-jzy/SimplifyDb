@@ -152,6 +152,14 @@ public final class SqlUtil {
                 // 修改
                 if (SystemColumn.notCanUpdate(name))
                     continue;
+                if (fieldConfig == null)
+                    fieldConfig = field.getAnnotation(FieldConfig.class);
+                if (fieldConfig != null) {
+                    Class<? extends ISequence> sequenceCls = fieldConfig.sequence();
+                    ISequence sequence = SequenceConfig.parseSequence(sequenceCls);
+                    if (sequence != null)
+                        continue;
+                }
             }
             columns.add(name);
             // 判断是否为系统字段
