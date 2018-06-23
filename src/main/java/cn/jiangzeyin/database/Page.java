@@ -22,7 +22,7 @@ public class Page<T> {
     private long totalPage;// 总页数
     private List<T> results;// 对应的当前页记录
     /**
-     * sql 后面wher条件 需要自己设定
+     * sql 后面where条件 需要自己设定
      */
     private String whereWord;
     private String orderBy;// 排序字段

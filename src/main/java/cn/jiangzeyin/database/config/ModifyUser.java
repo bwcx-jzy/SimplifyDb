@@ -10,6 +10,7 @@ import java.util.Objects;
 import java.util.Properties;
 
 /**
+ * 记录最后修改人
  * Created by jiangzeyin on 2017/8/14.
  */
 public class ModifyUser {
@@ -44,6 +45,9 @@ public class ModifyUser {
         }
     }
 
+    /**
+     * 记录数据创建者
+     */
     public static class Create {
         private static List<Class<?>> create_class = new ArrayList<>();
         private static String columnUser;

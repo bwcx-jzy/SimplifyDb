@@ -16,6 +16,8 @@ import cn.jiangzeyin.database.run.read.SelectPage;
 import cn.jiangzeyin.database.run.write.Insert;
 import cn.jiangzeyin.database.run.write.Remove;
 import cn.jiangzeyin.database.run.write.Update;
+import cn.jiangzeyin.sequence.ICallbackSequence;
+import cn.jiangzeyin.sequence.IQuietSequence;
 import cn.jiangzeyin.sequence.ISequence;
 import cn.jiangzeyin.sequence.SequenceConfig;
 import cn.jiangzeyin.util.DbReflectUtil;
@@ -129,8 +131,17 @@ public final class SqlUtil {
                     ISequence sequence = SequenceConfig.parseSequence(sequenceCls);
                     if (sequence != null) {
                         columns.add(name);
-                        String val = sequence.nextId();
-                        systemMap.put(name, val);
+                        String val;
+                        if (sequenceCls.isAssignableFrom(IQuietSequence.class)) {
+                            IQuietSequence iQuietSequence = (IQuietSequence) sequence;
+                            val = iQuietSequence.nextId();
+                        } else if (sequenceCls.isAssignableFrom(ICallbackSequence.class)) {
+                            ICallbackSequence iCallbackSequence = (ICallbackSequence) sequence;
+                            val = iCallbackSequence.nextId(classT, name);
+                        } else {
+                            throw new IllegalArgumentException("not find AssignableFrom");
+                        }
+                        values.add(val);
                         DbReflectUtil.setFieldValue(data, name, val);
                         // field.set(data, val);
 //                        DbReflectUtil.setFieldValue(data, name, val);

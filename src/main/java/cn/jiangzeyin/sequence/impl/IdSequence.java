@@ -1,6 +1,9 @@
-package cn.jiangzeyin.sequence;
+package cn.jiangzeyin.sequence.impl;
 
 import cn.jiangzeyin.DateUtil;
+import cn.jiangzeyin.sequence.BaseSequence;
+import cn.jiangzeyin.sequence.ISequence;
+import cn.jiangzeyin.sequence.SequenceConfig;
 import com.alibaba.fastjson.JSONObject;
 
 import java.text.ParseException;

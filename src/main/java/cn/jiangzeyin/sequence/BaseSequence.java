@@ -11,7 +11,7 @@ import java.net.NetworkInterface;
  * 公共的
  * Created by jiangzeyin on 2018/6/20.
  */
-public abstract class BaseSequence implements ISequence {
+public abstract class BaseSequence implements IQuietSequence {
     /**
      * 机器编号
      */
@@ -130,7 +130,7 @@ public abstract class BaseSequence implements ISequence {
                 }
             }
         } catch (Exception e) {
-            System.err.println(" getDatacenterId: " + e.getMessage());
+            System.err.println(" getDataCenterId: " + e.getMessage());
         }
         return id;
     }
