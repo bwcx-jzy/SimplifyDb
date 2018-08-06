@@ -1,5 +1,7 @@
 package cn.jiangzeyin.util;
 
+import cn.jiangzeyin.StringUtil;
+
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
@@ -111,6 +113,9 @@ public class DbReflectUtil {
             return null;
         if (object.getClass() == needType)
             return object;
+        if (needType == String.class) {
+            return StringUtil.convertNULL(object);
+        }
         if (needType == int.class || needType == Integer.class) {
             return Integer.valueOf(String.valueOf(object));
         }
