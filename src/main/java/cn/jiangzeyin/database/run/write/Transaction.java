@@ -13,7 +13,8 @@ import java.util.Objects;
 
 /**
  * 事务操作
- * Created by jiangzeyin on 2018/4/4.
+ *
+ * @author jiangzeyin
  */
 public class Transaction {
     /**
@@ -76,8 +77,9 @@ public class Transaction {
     private void init() {
         try {
             connection = DatabaseContextHolder.getWriteConnection(tag);
-            if (connection == null)
+            if (connection == null) {
                 throw new TransactionError("Transaction init getConnection error");
+            }
             // 检查
             checkTransactionSupported(connection);
             // 设置事务级别
@@ -149,15 +151,25 @@ public class Transaction {
      * 事物接口
      */
     public interface Callback {
+        /**
+         * 事物已经准备好啦
+         *
+         * @param operate 可以操作的事物对象
+         */
         void start(Operate operate);
 
+        /**
+         * 事物异常
+         *
+         * @param e 异常
+         */
         void error(Exception e);
     }
 
     /**
      * 事物操作对象
      */
-    public class Operate {
+    public static class Operate {
         private Transaction transaction;
 
         private Operate(Transaction transaction) {
@@ -203,8 +215,9 @@ public class Transaction {
          * 回滚事务
          */
         public void rollback() {
-            if (transaction != null)
+            if (transaction != null) {
                 transaction.rollback();
+            }
         }
     }
 }

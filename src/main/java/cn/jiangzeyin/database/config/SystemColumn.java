@@ -13,7 +13,6 @@ import java.util.*;
  * 系统字段
  *
  * @author jiangzeyin
- * @date 2017/8/15
  */
 public class SystemColumn {
     private static String pwdColumn = "";

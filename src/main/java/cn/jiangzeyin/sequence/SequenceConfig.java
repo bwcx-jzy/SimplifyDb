@@ -12,7 +12,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * 主键配置
  *
  * @author jiangzeyin
- * @date 2018/6/20
+ * date 2018/6/20
  */
 public class SequenceConfig {
     private volatile static int workerId = -1;

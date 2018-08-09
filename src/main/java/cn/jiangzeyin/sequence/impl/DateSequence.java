@@ -11,7 +11,7 @@ import com.alibaba.fastjson.JSONObject;
  * 与snowflake算法区别,返回字符串id,占用更多字节,但直观从id中看出生成时间
  *
  * @author jiangzeyin
- * @date 2018/6/20
+ * date 2018/6/20
  */
 public class DateSequence extends BaseSequence {
 

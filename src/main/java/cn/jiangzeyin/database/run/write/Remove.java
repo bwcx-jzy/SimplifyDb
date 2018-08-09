@@ -64,17 +64,21 @@ public class Remove<T> extends WriteBase<T> {
      *
      * @param column 列名
      * @param value  值
+     * @return this
      * @author jiangzeyin
      */
     public Remove putUpdate(String column, Object value) {
         checkUpdate();
         // 判断对应字段是否可以被修改
-        if (SystemColumn.notCanUpdate(column))
+        if (SystemColumn.notCanUpdate(column)) {
             throw new IllegalArgumentException(column + " not update");
-        if (SystemColumn.isSequence(getTclass(), column))
+        }
+        if (SystemColumn.isSequence(getTclass(), column)) {
             throw new IllegalArgumentException(column + " not update sequence");
-        if (update == null)
+        }
+        if (update == null) {
             update = new HashMap<>();
+        }
         update.put(column, value);
         return this;
     }
@@ -83,8 +87,9 @@ public class Remove<T> extends WriteBase<T> {
      * 验证update 的类型是否正确
      */
     private void checkUpdate() {
-        if (type == Type.delete)
+        if (type == Type.delete) {
             throw new IllegalArgumentException("type error " + Type.delete);
+        }
     }
 
     public Remove setType(Type type) {
@@ -113,14 +118,16 @@ public class Remove<T> extends WriteBase<T> {
         this.type = type;
         setThrows(isThrows);
         if (SystemColumn.Active.NO_ACTIVE == SystemColumn.Active.getActiveValue()) {
-            if (type != Type.delete)
+            if (type != Type.delete) {
                 throw new IllegalArgumentException("please set systemColumn.active");
+            }
         }
     }
 
     public List<Object> getParameters() {
-        if (parameters == null)
+        if (parameters == null) {
             return new ArrayList<>();
+        }
         return parameters;
     }
 
@@ -130,8 +137,9 @@ public class Remove<T> extends WriteBase<T> {
     }
 
     public Remove setParameters(Object... parameters) {
-        if (this.parameters == null)
+        if (this.parameters == null) {
             this.parameters = new LinkedList<>();
+        }
         Collections.addAll(this.parameters, parameters);
         return this;
     }
@@ -163,8 +171,9 @@ public class Remove<T> extends WriteBase<T> {
     @Override
     public void run() {
         // TODO Auto-generated method stub
-        if (transactionConnection != null)
+        if (transactionConnection != null) {
             throw new RuntimeException("Transaction must sync");
+        }
         setAsync();
         getAsyncLog();
         setThrowable(new Throwable());
@@ -176,8 +185,9 @@ public class Remove<T> extends WriteBase<T> {
      * @author jiangzeyin
      */
     public int syncRun() {
-        if (type == null)
+        if (type == null) {
             throw new IllegalArgumentException("type null");
+        }
         try {
             WriteBase.Callback callback = getCallback();
             String tag = DbWriteService.getInstance().getDatabaseName(getTclass());

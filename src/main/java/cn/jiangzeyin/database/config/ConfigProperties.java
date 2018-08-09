@@ -4,7 +4,6 @@ package cn.jiangzeyin.database.config;
  * 配置属性字段
  *
  * @author jiangzeyin
- * @date 2017/8/14
  */
 public class ConfigProperties {
     /**

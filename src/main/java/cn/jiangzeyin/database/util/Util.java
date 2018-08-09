@@ -54,9 +54,6 @@ public class Util {
         }
         // 创建 JavaBean 对象
         T obj = (T) refClass.newInstance();
-        if (obj == null) {
-            return null;
-        }
         KeyMap<String, Object> keyMap = new KeyMap<>(map);
         HashMap<String, Class<?>> refMap = read.getRefMap();
         HashMap<String, String> refWhere = read.getRefWhere();

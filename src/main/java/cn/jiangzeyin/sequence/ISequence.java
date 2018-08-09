@@ -8,7 +8,7 @@ package cn.jiangzeyin.sequence;
  * <p>
  *
  * @author jiangzeyin
- * @date 2018/6/20
+ * date 2018/6/20
  */
 public interface ISequence {
 }

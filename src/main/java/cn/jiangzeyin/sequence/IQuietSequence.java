@@ -6,7 +6,7 @@ import com.alibaba.fastjson.JSONObject;
  * 静默不回调生成主键
  *
  * @author jiangzeyin
- * @date 2018/6/23
+ * date 2018/6/23
  */
 public interface IQuietSequence extends ISequence {
     /**

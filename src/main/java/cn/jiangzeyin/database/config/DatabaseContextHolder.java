@@ -13,7 +13,6 @@ import java.util.Objects;
  * 链接池管理
  *
  * @author jiangzeyin
- * @date 2017/1/6
  */
 public final class DatabaseContextHolder {
     private DatabaseContextHolder() {

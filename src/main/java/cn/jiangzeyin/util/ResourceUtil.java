@@ -13,7 +13,7 @@ import java.util.Objects;
  * 加载资源util
  *
  * @author jiangzeyin
- * @date 2017/8/14
+ * date 2017/8/14
  */
 public class ResourceUtil {
 

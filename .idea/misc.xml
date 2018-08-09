@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="JavadocGenerationManager">
+    <option name="OUTPUT_DIRECTORY" value="D:/SystemDocument/Desktop" />
+    <option name="OTHER_OPTIONS" value="-tag date:a:”date”  -encoding utf-8 -charset utf-8" />
+  </component>
   <component name="MavenProjectsManager">
     <option name="originalFiles">
       <list>

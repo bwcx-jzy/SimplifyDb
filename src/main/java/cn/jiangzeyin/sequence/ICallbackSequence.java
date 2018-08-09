@@ -4,7 +4,7 @@ package cn.jiangzeyin.sequence;
  * 回调cls 和name 生成主键
  *
  * @author jiangzeyin
- * @date 2018/6/22
+ * date 2018/6/22
  */
 public interface ICallbackSequence extends ISequence {
     /**

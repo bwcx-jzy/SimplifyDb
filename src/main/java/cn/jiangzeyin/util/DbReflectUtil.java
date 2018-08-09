@@ -43,8 +43,9 @@ public class DbReflectUtil {
     public static List<Field> getDeclaredFields(Class<?> cls) {
         String key = cls.getName() + "_DeclaredFields";
         Object object = ReflectCache.get(key);
-        if (object instanceof List)
+        if (object instanceof List) {
             return (List<Field>) object;
+        }
         Map<String, Field> map = getFieldMap(cls);
         List<Field> fieldList = new ArrayList<>(map.values());
         ReflectCache.put(key, fieldList);
@@ -134,7 +135,7 @@ public class DbReflectUtil {
             return Float.valueOf(String.valueOf(object));
         }
         if (needType == BigDecimal.class) {
-            return BigDecimal.valueOf(Long.valueOf(String.valueOf(object)));
+            return BigDecimal.valueOf(Long.parseLong(String.valueOf(object)));
         }
         if (needType == Short.class || short.class == needType) {
             return Short.valueOf(String.valueOf(object));

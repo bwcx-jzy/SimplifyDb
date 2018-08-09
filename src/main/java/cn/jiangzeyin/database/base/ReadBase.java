@@ -143,6 +143,7 @@ public abstract class ReadBase<T> extends Base<T> {
      * 默认为 id
      *
      * @param keyColumn 名称
+     * @return this
      * @author jiangzeyin
      */
     public ReadBase setKeyColumn(String keyColumn) {
@@ -164,6 +165,7 @@ public abstract class ReadBase<T> extends Base<T> {
      * 设置查询主键值
      *
      * @param keyValue 键值
+     * @return this
      * @author jiangzeyin
      */
     public ReadBase setKeyValue(Object keyValue) {
@@ -198,6 +200,7 @@ public abstract class ReadBase<T> extends Base<T> {
 
     /**
      * @param parameters 参数
+     * @return this
      * @author jiangzeyin
      */
     public ReadBase setParameters(Object... parameters) {
@@ -234,6 +237,7 @@ public abstract class ReadBase<T> extends Base<T> {
      * 默认所有 （*）
      *
      * @param columns 查询列
+     * @return this
      * @author jiangzeyin
      */
     public ReadBase setColumns(String columns) {
@@ -249,6 +253,7 @@ public abstract class ReadBase<T> extends Base<T> {
      * 查询使用索引
      *
      * @param index 索引
+     * @return this
      * @author jiangzeyin
      */
     public ReadBase setIndex(String index) {

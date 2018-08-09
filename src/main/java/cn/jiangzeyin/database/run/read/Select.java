@@ -27,10 +27,13 @@ public class Select<T> extends ReadBase<T> {
 
     private String orderBy;
     private String sql;
-
-    // 查询数据重多少开始
+    /**
+     * 查询数据重多少开始
+     */
     private int limitStart;
-    // 查询数据个数
+    /**
+     * 查询数据个数
+     */
     private int limitCount;
 
 
@@ -42,6 +45,7 @@ public class Select<T> extends ReadBase<T> {
      * 设置查询开始位置
      *
      * @param limitStart 开始行
+     * @return this
      * @author jiangzeyin
      */
     public Select setLimitStart(int limitStart) {
@@ -57,6 +61,7 @@ public class Select<T> extends ReadBase<T> {
      * 设置查询数量
      *
      * @param limitCount 共几行
+     * @return this
      * @author jiangzeyin
      */
     public Select setLimitCount(int limitCount) {
@@ -113,8 +118,9 @@ public class Select<T> extends ReadBase<T> {
     @Override
     public <t> t run() {
         try {
-            if (getResultType() == Result.JsonObject)
+            if (getResultType() == Result.JsonObject) {
                 setLimitCount(1);
+            }
             String tag = getTag() == null ? DbWriteService.getInstance().getDatabaseName(getTclass()) : getTag();
             setTag(tag);
             DataSource dataSource = DatabaseContextHolder.getReadDataSource(tag);
@@ -129,8 +135,9 @@ public class Select<T> extends ReadBase<T> {
                 case JsonArray:
                     return (t) JSON.toJSON(result);
                 case JsonObject: {
-                    if (result == null || result.size() < 1)
+                    if (result == null || result.size() < 1) {
                         return null;
+                    }
                     Map<String, Object> map = result.get(0);
                     return (t) new JSONObject(map);
                 }
@@ -140,11 +147,13 @@ public class Select<T> extends ReadBase<T> {
                     return (t) result;
                 case String:
                 case Integer: {
-                    if (result == null || result.size() < 1)
+                    if (result == null || result.size() < 1) {
                         return null;
+                    }
                     Map<String, Object> map = result.get(0);
-                    if (map == null)
+                    if (map == null) {
                         return null;
+                    }
                     //Object object = null;
                     String column = getColumns();
                     if (SystemColumn.getDefaultSelectColumns().equals(column)) {
@@ -180,10 +189,12 @@ public class Select<T> extends ReadBase<T> {
     public T runOne() {
         setLimitCount(1);
         List<T> list = run();
-        if (list == null)
+        if (list == null) {
             return null;
-        if (list.size() > 0)
+        }
+        if (list.size() > 0) {
             return list.get(0);
+        }
         return null;
     }
 }

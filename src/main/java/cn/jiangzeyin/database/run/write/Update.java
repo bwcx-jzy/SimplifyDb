@@ -82,12 +82,15 @@ public class Update<T> extends WriteBase<T> {
      */
     public void putUpdate(String column, Object value) {
         // 判断对应字段是否可以被修改
-        if (SystemColumn.notCanUpdate(column))
+        if (SystemColumn.notCanUpdate(column)) {
             throw new IllegalArgumentException(column + " not update");
-        if (SystemColumn.isSequence(getTclass(), column))
+        }
+        if (SystemColumn.isSequence(getTclass(), column)) {
             throw new IllegalArgumentException(column + " not update sequence");
-        if (update == null)
+        }
+        if (update == null) {
             update = new HashMap<>();
+        }
         update.put(column, value);
     }
 
@@ -106,8 +109,9 @@ public class Update<T> extends WriteBase<T> {
     }
 
     public String getKeyColumn() {
-        if (StringUtils.isEmpty(keyColumn))
+        if (StringUtils.isEmpty(keyColumn)) {
             return SystemColumn.getDefaultKeyName();
+        }
         return keyColumn;
     }
 
@@ -131,11 +135,12 @@ public class Update<T> extends WriteBase<T> {
         this.where = where;
     }
 
-    public void AppendWhere(String where) {
-        if (StringUtils.isEmpty(this.where))
+    public void appendWhere(String where) {
+        if (StringUtils.isEmpty(this.where)) {
             this.where = where;
-        else
+        } else {
             this.where += " and " + where;
+        }
     }
 
     public List<Object> getWhereParameters() {
@@ -147,15 +152,17 @@ public class Update<T> extends WriteBase<T> {
     }
 
     public void setWhereParameters(Object... whereParameters) {
-        if (this.whereParameters == null)
+        if (this.whereParameters == null) {
             this.whereParameters = new LinkedList<>();
+        }
         Collections.addAll(this.whereParameters, whereParameters);
     }
 
     @Override
     public void run() {
-        if (transactionConnection != null)
+        if (transactionConnection != null) {
             throw new RuntimeException("Transaction must sync");
+        }
         setAsync();
         setThrowable(new Throwable());
         getAsyncLog();
@@ -166,8 +173,9 @@ public class Update<T> extends WriteBase<T> {
     @Override
     public Class<?> getTclass() {
         T t = getData();
-        if (t != null)
+        if (t != null) {
             return t.getClass();
+        }
         return super.getTclass();
     }
 
@@ -177,8 +185,9 @@ public class Update<T> extends WriteBase<T> {
      * @return 事件接口
      */
     private UpdateEvent getEvent(Object data) {
-        if (data != null && UpdateEvent.class.isAssignableFrom(data.getClass()))
+        if (data != null && UpdateEvent.class.isAssignableFrom(data.getClass())) {
             return (UpdateEvent) data;
+        }
         return null;
     }
 
@@ -236,8 +245,9 @@ public class Update<T> extends WriteBase<T> {
         } catch (Exception e) {
             // TODO: handle exception
             isThrows(e);
-            if (event != null)
+            if (event != null) {
                 event.errorUpdate(e);
+            }
         } finally {
             runEnd();
             recycling();

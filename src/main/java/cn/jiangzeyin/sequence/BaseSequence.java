@@ -9,7 +9,9 @@ import java.net.NetworkInterface;
 
 /**
  * 公共的
- * Created by jiangzeyin on 2018/6/20.
+ *
+ * @author jiangzeyin
+ * date 2018/6/20
  */
 public abstract class BaseSequence implements IQuietSequence {
     /**

@@ -1,6 +1,5 @@
 package cn.jiangzeyin.database.config;
 
-
 import cn.jiangzeyin.StringUtil;
 import cn.jiangzeyin.des.SystemKey;
 import cn.jiangzeyin.system.DbLog;
@@ -19,7 +18,6 @@ import java.util.*;
  * 数据源配置信息
  *
  * @author jiangzeyin
- * @date 2017/1/6
  */
 public final class DataSourceConfig {
     private static boolean active;
@@ -131,11 +129,13 @@ public final class DataSourceConfig {
     }
 
     private static boolean arrayContainValue(String[] array, String value) {
-        if (array == null)
+        if (array == null) {
             return false;
+        }
         for (String item : array) {
-            if (value.equals(item))
+            if (value.equals(item)) {
                 return true;
+            }
         }
         return false;
     }
