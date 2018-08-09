@@ -67,9 +67,10 @@ public class Update<T> extends WriteBase<T> {
         return update;
     }
 
-    public void setUpdate(HashMap<String, Object> update) {
+    public Update setUpdate(HashMap<String, Object> update) {
         checkUpdate(getTclass(), update);
         this.update = update;
+        return this;
     }
 
     /**

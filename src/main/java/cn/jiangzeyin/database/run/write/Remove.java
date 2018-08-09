@@ -42,21 +42,21 @@ public class Remove<T> extends WriteBase<T> {
     private Type type;
     private HashMap<String, Object> update;
 
-
+    /**
+     * 事物模式
+     *
+     * @param transactionConnection connection
+     */
     public Remove(Connection transactionConnection) {
         super(transactionConnection);
         setThrows(true);
     }
 
-    public HashMap<String, Object> getUpdate() {
-        return update;
-    }
-
-    public void setUpdate(HashMap<String, Object> update) {
-        if (type != Type.recovery)
-            throw new IllegalArgumentException("type must " + Type.recovery);
+    public Remove setUpdate(HashMap<String, Object> update) {
+        checkUpdate();
         checkUpdate(getTclass(), update);
         this.update = update;
+        return this;
     }
 
     /**
@@ -66,9 +66,8 @@ public class Remove<T> extends WriteBase<T> {
      * @param value  值
      * @author jiangzeyin
      */
-    public void putUpdate(String column, Object value) {
-        if (type != Type.recovery)
-            throw new IllegalArgumentException("type must " + Type.recovery);
+    public Remove putUpdate(String column, Object value) {
+        checkUpdate();
         // 判断对应字段是否可以被修改
         if (SystemColumn.notCanUpdate(column))
             throw new IllegalArgumentException(column + " not update");
@@ -77,14 +76,28 @@ public class Remove<T> extends WriteBase<T> {
         if (update == null)
             update = new HashMap<>();
         update.put(column, value);
+        return this;
+    }
+
+    /**
+     * 验证update 的类型是否正确
+     */
+    private void checkUpdate() {
+        if (type == Type.delete)
+            throw new IllegalArgumentException("type error " + Type.delete);
+    }
+
+    public Remove setType(Type type) {
+        this.type = type;
+        return this;
+    }
+
+    public HashMap<String, Object> getUpdate() {
+        return update;
     }
 
     public Type getType() {
         return type;
-    }
-
-    public void setType(Type type) {
-        this.type = type;
     }
 
     /**
@@ -111,14 +124,16 @@ public class Remove<T> extends WriteBase<T> {
         return parameters;
     }
 
-    public void setParameters(List<Object> parameters) {
+    public Remove setParameters(List<Object> parameters) {
         this.parameters = parameters;
+        return this;
     }
 
-    public void setParameters(Object... parameters) {
+    public Remove setParameters(Object... parameters) {
         if (this.parameters == null)
             this.parameters = new LinkedList<>();
         Collections.addAll(this.parameters, parameters);
+        return this;
     }
 
     public String getIds() {
@@ -137,13 +152,15 @@ public class Remove<T> extends WriteBase<T> {
         return where;
     }
 
-    public void setWhere(String where) {
+    public Remove setWhere(String where) {
         this.where = where;
+        return this;
     }
 
     /**
      * @author jiangzeyin
      */
+    @Override
     public void run() {
         // TODO Auto-generated method stub
         if (transactionConnection != null)

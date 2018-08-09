@@ -11,7 +11,9 @@ import java.util.Objects;
 
 /**
  * 加载资源util
- * Created by jiangzeyin on 2017/8/14.
+ *
+ * @author jiangzeyin
+ * @date 2017/8/14
  */
 public class ResourceUtil {
 
@@ -37,8 +39,9 @@ public class ResourceUtil {
 
     private static InputStream getInputStream(String classLocation) throws IOException {
         InputStream is = ResourceUtil.class.getResourceAsStream(classLocation);
-        if (is == null)
+        if (is == null) {
             is = ClassLoader.getSystemResourceAsStream(classLocation);
+        }
         if (is == null) {
             throw new FileNotFoundException(classLocation + " cannot be opened because it does not exist");
         }
@@ -48,8 +51,9 @@ public class ResourceUtil {
     private static InputStream getInputStream(URL url) throws IOException {
         URLConnection con = url.openConnection();
         boolean connected = con.getClass().getSimpleName().startsWith("JNLP");
-        if (connected)
+        if (connected) {
             throw new IllegalStateException("Already connected");
+        }
         try {
             return con.getInputStream();
         } catch (IOException var3) {

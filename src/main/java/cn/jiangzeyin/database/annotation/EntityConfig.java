@@ -32,5 +32,10 @@ public @interface EntityConfig {
      */
     boolean baseMark() default true;
 
+    /**
+     * 插入的默认值
+     *
+     * @return String
+     */
     String insertColumns() default "";
 }

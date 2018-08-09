@@ -2,7 +2,9 @@ package cn.jiangzeyin.database.config;
 
 /**
  * 配置属性字段
- * Created by jiangzeyin on 2017/8/14.
+ *
+ * @author jiangzeyin
+ * @date 2017/8/14
  */
 public class ConfigProperties {
     /**

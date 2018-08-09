@@ -76,8 +76,8 @@ public final class SqlUtil {
                 String[] columns_ = StringUtil.stringToArray(insertColumns_, ",");
                 if (columns_ != null) {
                     insertColumns = new ArrayList<>();
-                    for (String column_item : columns_) {
-                        insertColumns.add(column_item.toLowerCase());
+                    for (String columnItem : columns_) {
+                        insertColumns.add(columnItem.toLowerCase());
                     }
                 }
             }

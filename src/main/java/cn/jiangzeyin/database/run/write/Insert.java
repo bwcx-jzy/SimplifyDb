@@ -30,8 +30,9 @@ public class Insert<T> extends WriteBase<T> {
         return list;
     }
 
-    public void setList(List<T> list) {
+    public Insert setList(List<T> list) {
         this.list = list;
+        return this;
     }
 
 
@@ -46,7 +47,7 @@ public class Insert<T> extends WriteBase<T> {
         return null;
     }
 
-    Insert(Connection connection) {
+    public Insert(Connection connection) {
         super(connection);
         setThrows(true);
     }

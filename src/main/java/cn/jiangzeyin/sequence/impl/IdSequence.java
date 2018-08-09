@@ -80,6 +80,7 @@ public class IdSequence extends BaseSequence {
      *
      * @return id
      */
+    @Override
     public synchronized String nextId() {
         long timestamp = this.timeGen();
 

@@ -11,8 +11,9 @@ public final class DbLog {
     private volatile static DbLogInterface dbLogInterface;
 
     public static void setDbLogInterface(DbLogInterface dbLogInterface) {
-        if (DbLog.dbLogInterface != null)
+        if (DbLog.dbLogInterface != null) {
             throw new IllegalArgumentException("duplicate set");
+        }
         DbLog.dbLogInterface = dbLogInterface;
     }
 

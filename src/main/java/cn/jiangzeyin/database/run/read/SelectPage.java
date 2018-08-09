@@ -13,6 +13,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 
 import javax.sql.DataSource;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -71,33 +72,36 @@ public class SelectPage<T> extends ReadBase<T> {
                 setTag(tag);
             }
             String[] pageSql;
-            if (StringUtils.isEmpty(page.getSql()))
+            if (StringUtils.isEmpty(page.getSql())) {
                 pageSql = SqlUtil.getSelectPageSql(this);
-            else
+            } else {
                 pageSql = SqlUtil.getSelectPageSql(page);
+            }
             DataSource dataSource = DatabaseContextHolder.getReadDataSource(tag);
             List<Map<String, Object>> list;
+            long count = 0;
             { // 查询数据总数
                 errorSql = pageSql[0];
                 list = JdbcUtils.executeQuery(dataSource, pageSql[0], getParameters());
-                if (list == null || list.size() < 1) {
-                    DbLog.getInstance().info(getTransferLog() + pageSql[1]);
-                    return null;
+                if (list.size() > 0) {
+                    Map<String, Object> countMap = list.get(0);
+                    if (countMap != null) {
+                        count = (Long) countMap.values().toArray()[0];
+                    }
                 }
-                Map<String, Object> count_map = list.get(0);
-                if (count_map == null) {
-                    DbLog.getInstance().info(getTransferLog() + pageSql[1]);
-                    return null;
-                }
-                long count = (Long) count_map.values().toArray()[0];
                 page.setTotalRecord(count);
             }
-            { // 查询数据
+            if (count > 0) {
+                // 查询数据
                 setRunSql(pageSql[1]);
                 DbLog.getInstance().info(getTransferLog() + pageSql[1]);
                 errorSql = null;
                 list = JdbcUtils.executeQuery(dataSource, pageSql[1], getParameters());
-                page.setMapList(list);
+            } else {
+                list = new ArrayList<>();
+            }
+            page.setMapList(list);
+            {
                 if (getResultType() == Result.JsonArray) {
                     return (T) JSON.toJSON(list);
                 }
@@ -111,9 +115,9 @@ public class SelectPage<T> extends ReadBase<T> {
                     data.put("totalRecord", page.getTotalRecord());
                     return (T) data;
                 }
-                List<?> result_list = Util.convertList(this, list);
-                page.setResultsT(result_list);
-                return (T) result_list;
+                List<?> resultList = Util.convertList(this, list);
+                page.setResultsT(resultList);
+                return (T) resultList;
             }
         } catch (Exception e) {
             // TODO: handle exception

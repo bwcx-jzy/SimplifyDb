@@ -20,18 +20,41 @@ import java.util.List;
  * @author jiangzeyin
  */
 public abstract class Base<T> {
-    private boolean isThrows; // 异常是否抛出
-    private HashMap<String, Class<?>> refMap; // 外键表
+    /**
+     * 异常是否抛出
+     */
+    private boolean isThrows;
+    /**
+     * 外键表
+     */
+    private HashMap<String, Class<?>> refMap;
     private HashMap<String, String> refWhere;
-    private String refKey; // 外键列名
-    private List<String> remove; // 排除不操作字段
-    private String tag; // 数据库标示
-    private Class<?> tclass; // 数据库对应class
-    private int optUserId; // 操作人
+    /**
+     * 外键列名
+     */
+    private String refKey;
+    /**
+     * 排除不操作字段
+     */
+    private List<String> remove;
+    /**
+     * 数据库标示
+     */
+    private String tag;
+    /**
+     * 数据库对应class
+     */
+    private Class<?> tclass;
+    /**
+     * 操作人
+     */
+    private int optUserId;
     private long runTime;
     private String runSql;
     private String tempTransferLog;
-    // 操作的对应tag
+    /**
+     * 操作的对应tag
+     */
     private String tagName;
     /**
      * 表名
@@ -59,9 +82,10 @@ public abstract class Base<T> {
         this.tableName = tableName;
     }
 
-    public String getTagName() {
-        if (tagName == null)
+    private String getTagName() {
+        if (tagName == null) {
             return DatabaseContextHolder.getConnectionTagName();
+        }
         return tagName;
     }
 
@@ -77,7 +101,7 @@ public abstract class Base<T> {
     /**
      * 创建时就获取操作人
      */
-    public Base() {
+    Base() {
         // TODO Auto-generated constructor stub
         setOptUserId(SystemSessionInfo.getUserId());
         runTime = System.currentTimeMillis();
@@ -90,7 +114,8 @@ public abstract class Base<T> {
     protected void runEnd() {
         long time = System.currentTimeMillis() - runTime;
         if (time > 2 * 1000L) {
-            String tagName = getTagName();// DatabaseContextHolder.getConnectionTagName();
+            // DatabaseContextHolder.getConnectionTagName();
+            String tagName = getTagName();
             DbLog.getInstance().warn(tagName + "执行时间过长：" + time + "  " + runSql);
         }
     }
@@ -148,23 +173,25 @@ public abstract class Base<T> {
      * @author jiangzeyin
      */
     public void setRemove(String... remove) {
-        if (remove == null)
+        if (remove == null) {
             return;
-        List<String> remove_ = this.remove;
+        }
+//        List<String> remove = this.remove;
         //getRemove();
-        if (remove_ == null) {
-            remove_ = new LinkedList<>();
-            this.remove = remove_;
+        if (this.remove == null) {
+            this.remove = new LinkedList<>();
         }
         for (String item : remove) {
-            if (!remove_.contains(item))
-                remove_.add(item.toLowerCase());
+            if (!this.remove.contains(item)) {
+                this.remove.add(item.toLowerCase());
+            }
         }
     }
 
     public String getRefKey() {
-        if (StringUtils.isEmpty(refKey))
+        if (StringUtils.isEmpty(refKey)) {
             return SystemColumn.getDefaultRefKeyName();
+        }
         return refKey;
     }
 
@@ -191,16 +218,19 @@ public abstract class Base<T> {
      * @author jiangzeyin
      */
     public void putRefClass(String name, Class<?> refClass) {
-        if (refMap == null)
+        if (refMap == null) {
             refMap = new HashMap<>();
+        }
         refMap.put(name.toLowerCase(), refClass);
     }
 
     public void putRefClass(String name, Class<?> refClass, String where) {
-        if (refMap == null)
+        if (refMap == null) {
             refMap = new HashMap<>();
-        if (refWhere == null)
+        }
+        if (refWhere == null) {
             refWhere = new HashMap<>();
+        }
         refMap.put(name, refClass);
         refWhere.put(name, where);
     }
@@ -220,8 +250,9 @@ public abstract class Base<T> {
      * @author jiangzeyin
      */
     public void isThrows(Throwable t) {
-        if (isThrows)
+        if (isThrows) {
             throw new RuntimeException(t);
+        }
         DbLog.getInstance().error("执行数据库操作", t);
     }
 
@@ -241,11 +272,14 @@ public abstract class Base<T> {
         runSql = null;
         runTime = 0L;
         tagName = null;
+        // tag 标记
+        DatabaseContextHolder.recycling();
     }
 
     protected String getTransferLog() {
-        if (tempTransferLog != null)
+        if (tempTransferLog != null) {
             return tempTransferLog;
+        }
         return DataSourceConfig.isActive() ? "" : getLine();
     }
 

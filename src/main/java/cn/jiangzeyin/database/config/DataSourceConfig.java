@@ -17,7 +17,9 @@ import java.util.*;
 
 /**
  * 数据源配置信息
- * Created by jiangzeyin on 2017/1/6.
+ *
+ * @author jiangzeyin
+ * @date 2017/1/6
  */
 public final class DataSourceConfig {
     private static boolean active;
@@ -33,8 +35,9 @@ public final class DataSourceConfig {
     private static PropertiesParser systemPropertiesParser;
 
     public static void init(String propertyPath) throws Exception {
-        if (StringUtil.isEmpty(propertyPath))
+        if (StringUtil.isEmpty(propertyPath)) {
             throw new IllegalArgumentException("propertyPath is null ");
+        }
         InputStream inputStream = ResourceUtil.getResource(propertyPath);
         systemPropertiesParser = new PropertiesParser(inputStream);
         String active = systemPropertiesParser.getStringProperty(ConfigProperties.ACTIVE, "dev");
@@ -68,8 +71,9 @@ public final class DataSourceConfig {
             List<String> configList = new ArrayList<>();
             for (String configPath : configPaths) {
                 Map<String, DataSource> map = initConfigPath(sourceTags, configPath);
-                if (map == null || map.size() < 1)
+                if (map == null || map.size() < 1) {
                     continue;
+                }
                 mapList.add(map);
                 configList.add(configPath);
             }
@@ -91,14 +95,15 @@ public final class DataSourceConfig {
             DbLog.getInstance().warn(" use systemKeyColumn moust systemKey");
         }
         for (String tag : sourceTags) {
-            Properties properties_tag = propertiesParser.getPropertyGroup(tag, true);
-            if (properties_tag.isEmpty()) {
+            Properties propertiesTag = propertiesParser.getPropertyGroup(tag, true);
+            if (propertiesTag.isEmpty()) {
                 DbLog.getInstance().warn(tag + "is blank");
                 continue;
             }
-            String url = properties_tag.getProperty(DruidDataSourceFactory.PROP_URL);
-            if (systemKey1 != null && arrayContainValue(systemKeyColumn, DruidDataSourceFactory.PROP_URL))
+            String url = propertiesTag.getProperty(DruidDataSourceFactory.PROP_URL);
+            if (systemKey1 != null && arrayContainValue(systemKeyColumn, DruidDataSourceFactory.PROP_URL)) {
                 url = systemKey1.decrypt(url);
+            }
             String ip = url.substring(url.indexOf("://") + 3, url.lastIndexOf("/"));
             String[] ipInfo = ip.split(":");
             int port = Integer.parseInt(ipInfo[1]);
@@ -108,18 +113,18 @@ public final class DataSourceConfig {
                 DbLog.getInstance().warn(ip + "not Connect continue   " + tag);
                 continue;
             }
-            properties_tag.setProperty(DruidDataSourceFactory.PROP_URL, url);
-            String userName = properties_tag.getProperty(DruidDataSourceFactory.PROP_USERNAME);
+            propertiesTag.setProperty(DruidDataSourceFactory.PROP_URL, url);
+            String userName = propertiesTag.getProperty(DruidDataSourceFactory.PROP_USERNAME);
             if (systemKey1 != null && arrayContainValue(systemKeyColumn, DruidDataSourceFactory.PROP_USERNAME)) {
                 userName = systemKey1.decrypt(userName);
-                properties_tag.setProperty(DruidDataSourceFactory.PROP_USERNAME, userName);
+                propertiesTag.setProperty(DruidDataSourceFactory.PROP_USERNAME, userName);
             }
-            String pwd = properties_tag.getProperty(DruidDataSourceFactory.PROP_PASSWORD);
+            String pwd = propertiesTag.getProperty(DruidDataSourceFactory.PROP_PASSWORD);
             if (systemKey1 != null && arrayContainValue(systemKeyColumn, DruidDataSourceFactory.PROP_PASSWORD)) {
                 pwd = systemKey1.decrypt(pwd);
-                properties_tag.setProperty(DruidDataSourceFactory.PROP_PASSWORD, pwd);
+                propertiesTag.setProperty(DruidDataSourceFactory.PROP_PASSWORD, pwd);
             }
-            DataSource dataSource = DruidDataSourceFactory.createDataSource(properties_tag);
+            DataSource dataSource = DruidDataSourceFactory.createDataSource(propertiesTag);
             hashMap.put(tag, dataSource);
         }
         return hashMap;

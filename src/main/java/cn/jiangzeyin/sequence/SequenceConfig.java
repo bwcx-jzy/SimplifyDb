@@ -10,7 +10,9 @@ import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * 主键配置
- * Created by jiangzeyin on 2018/6/20.
+ *
+ * @author jiangzeyin
+ * @date 2018/6/20
  */
 public class SequenceConfig {
     private volatile static int workerId = -1;
@@ -51,8 +53,9 @@ public class SequenceConfig {
      * @see cn.jiangzeyin.sequence.ISequence
      */
     public static ISequence parseSequence(Class<? extends ISequence> sequence) {
-        if (sequence == null || sequence == ISequence.class)
+        if (sequence == null || sequence == ISequence.class) {
             return null;
+        }
         int modifier = sequence.getModifiers();
         if (Modifier.isInterface(modifier)) {
             DbLog.getInstance().warn(sequence + " 生成主键class 不能是接口");

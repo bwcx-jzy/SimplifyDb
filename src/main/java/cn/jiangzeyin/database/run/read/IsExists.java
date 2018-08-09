@@ -19,6 +19,7 @@ import java.util.Map;
  *
  * @author jiangzeyin
  */
+@SuppressWarnings("unchecked")
 public class IsExists<T> extends ReadBase<T> {
     private int limit;
 
@@ -30,7 +31,7 @@ public class IsExists<T> extends ReadBase<T> {
         this.limit = limit;
     }
 
-
+    @Override
     public List<Object> getParameters() {
         List<Object> paList = super.getParameters();
         paList.add(0, getKeyValue());
@@ -72,12 +73,14 @@ public class IsExists<T> extends ReadBase<T> {
     public boolean runBoolean() {
         try {
             List<Map<String, Object>> list = doData();
-            if (list == null || list.size() < 1)
+            if (list == null || list.size() < 1) {
                 return false;
+            }
             Map<String, Object> map = list.get(0);
             Object object = map.get("countSum");
-            if (object == null)
+            if (object == null) {
                 throw new RuntimeException("查询结果没有countSum");
+            }
             if (object instanceof Long) {
                 Long count = (Long) object;
                 return count > 0L;
@@ -101,11 +104,13 @@ public class IsExists<T> extends ReadBase<T> {
     private List<Map<String, Object>> doData() throws SQLException {
         Class runClass = getTclass();
         synchronized (runClass.getName()) {
-            if (StringUtils.isEmpty(getKeyColumn()))
+            if (StringUtils.isEmpty(getKeyColumn())) {
                 throw new IllegalArgumentException(" keyColumn 不能为null");
+            }
             String tag = getTag();
-            if (StringUtils.isEmpty(tag))
+            if (StringUtils.isEmpty(tag)) {
                 tag = DbWriteService.getInstance().getDatabaseName(runClass);
+            }
             String sql = SqlUtil.getIsExistsSql(this, runClass, getKeyColumn(), getWhere());
             setRunSql(sql);
             DbLog.getInstance().info(getTransferLog() + sql);
@@ -125,11 +130,13 @@ public class IsExists<T> extends ReadBase<T> {
      * @return 结果
      * @author jiangzeyin
      */
+    @Override
     public <T> T run() {
         try {
             List<Map<String, Object>> list = doData();
-            if (list == null || list.size() < 1)
+            if (list == null || list.size() < 1) {
                 return null;
+            }
             Map<String, Object> map = list.get(0);
             String[] keys = StringUtil.stringToArray(getColumns(), ",");
             if (keys == null || keys.length <= 0) {

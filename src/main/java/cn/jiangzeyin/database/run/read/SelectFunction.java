@@ -16,6 +16,7 @@ import java.util.Map;
  *
  * @author jiangzeyin
  */
+@SuppressWarnings("unchecked")
 public class SelectFunction<T> extends ReadBase<T> {
 
     private String name;
@@ -30,11 +31,12 @@ public class SelectFunction<T> extends ReadBase<T> {
         return name;
     }
 
-    public void setName(String name) {
+    public SelectFunction setName(String name) {
         this.name = name;
+        return this;
     }
 
-    @SuppressWarnings("unchecked")
+
     @Override
     public T run() {
         try {

@@ -3,6 +3,7 @@ package cn.jiangzeyin.database.run.write;
 import cn.jiangzeyin.database.DbWriteService;
 import cn.jiangzeyin.database.TransactionError;
 import cn.jiangzeyin.database.config.DatabaseContextHolder;
+import cn.jiangzeyin.database.run.TransactionLevel;
 import cn.jiangzeyin.system.DbLog;
 import com.alibaba.druid.util.JdbcUtils;
 
@@ -19,19 +20,73 @@ public class Transaction {
      * 事务数据库连接
      */
     private Connection connection;
+    /**
+     *
+     */
     private Callback callback;
+    /**
+     * 事物级别
+     */
+    private TransactionLevel transactionLevel;
+    /**
+     *
+     */
+    private String tag;
+    /**
+     * 是否支持事务
+     */
+    private Boolean isSupportTransaction = null;
 
-    public Transaction(Class cls, Callback callback) {
-        this(DbWriteService.getInstance().getDatabaseName(cls), callback);
+    public Transaction(String tag, Callback callback, TransactionLevel transactionLevel) {
+        Objects.requireNonNull(tag);
+        Objects.requireNonNull(callback);
+        this.tag = tag;
+        this.callback = callback;
+        this.transactionLevel = transactionLevel;
+        init();
     }
 
+    public Transaction(Class cls, Callback callback, TransactionLevel transactionLevel) {
+        this(DbWriteService.getInstance().getDatabaseName(cls), callback, transactionLevel);
+    }
+
+    /**
+     * 创建事物对象
+     *
+     * @param cls      操作class
+     * @param callback 回调
+     */
+    public Transaction(Class cls, Callback callback) {
+        this(cls, callback, null);
+    }
+
+    /**
+     * 创建事物对象
+     *
+     * @param tag      数据源标记
+     * @param callback 回调
+     */
     public Transaction(String tag, Callback callback) {
-        Objects.requireNonNull(callback);
-        this.callback = callback;
+        this(tag, callback, null);
+    }
+
+    /**
+     * 初始化
+     */
+    private void init() {
         try {
             connection = DatabaseContextHolder.getWriteConnection(tag);
             if (connection == null)
                 throw new TransactionError("Transaction init getConnection error");
+            // 检查
+            checkTransactionSupported(connection);
+            // 设置事务级别
+            if (null != transactionLevel) {
+                int level = transactionLevel.getLevel();
+                //用户定义的事务级别
+                connection.setTransactionIsolation(level);
+            }
+            // 开始事物
             connection.setAutoCommit(false);
         } catch (SQLException e) {
             callback.error(e);
@@ -44,6 +99,21 @@ public class Transaction {
             rollback();
             callback.error(e);
             throw new TransactionError("Transaction error:" + e.getMessage());
+        }
+    }
+
+    /**
+     * 检查数据库是否支持事务
+     *
+     * @param conn Connection
+     * @throws SQLException 获取元数据信息失败
+     */
+    private void checkTransactionSupported(Connection conn) throws SQLException {
+        if (null == isSupportTransaction) {
+            isSupportTransaction = conn.getMetaData().supportsTransactions();
+        }
+        if (!isSupportTransaction) {
+            throw new TransactionError("Transaction not supported for current database!");
         }
     }
 

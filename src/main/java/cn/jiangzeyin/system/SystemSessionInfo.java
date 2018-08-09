@@ -5,11 +5,11 @@ package cn.jiangzeyin.system;
  *
  * @author jiangzeyin
  */
-public class SystemSessionInfo {
-    private static SessionUser sessionUser;
+public final class SystemSessionInfo {
+    private volatile static SessionUser sessionUser;
 
     private SystemSessionInfo() {
-
+        throw new AssertionError("No SystemSessionInfo instances for you!");
     }
 
     /**

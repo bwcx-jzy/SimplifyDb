@@ -11,7 +11,9 @@ import java.util.*;
 
 /**
  * 系统字段
- * Created by jiangzeyin on 2017/8/15.
+ *
+ * @author jiangzeyin
+ * @date 2017/8/15
  */
 public class SystemColumn {
     private static String pwdColumn = "";
@@ -57,8 +59,9 @@ public class SystemColumn {
      * @return 默认值
      */
     public static String getDefaultValue(String name) {
-        if (StringUtils.isEmpty(name))
+        if (StringUtils.isEmpty(name)) {
             return null;
+        }
         return COLUMN_DEFAULT_VALUE.get(name.toLowerCase());
     }
 
@@ -71,11 +74,13 @@ public class SystemColumn {
      */
     public static boolean isSequence(Class<?> cls, String name) {
         Field field = DbReflectUtil.getField(cls, name);
-        if (field == null)
+        if (field == null) {
             return false;
+        }
         FieldConfig fieldConfig = field.getAnnotation(FieldConfig.class);
-        if (fieldConfig == null)
+        if (fieldConfig == null) {
             return false;
+        }
         Class<? extends ISequence> sequenceCls = fieldConfig.sequence();
         return sequenceCls != ISequence.class;
     }
@@ -149,14 +154,16 @@ public class SystemColumn {
         String status = properties.getProperty(ConfigProperties.PROP_SYSTEM_COLUMN_MODIFY_STATUS);
         if (Boolean.valueOf(status)) {
             Modify.status = true;
-            String column_ = properties.getProperty(ConfigProperties.PROP_SYSTEM_COLUMN_MODIFY_COLUMN);
-            if (StringUtils.isEmpty(column_))
+            String userColumn = properties.getProperty(ConfigProperties.PROP_SYSTEM_COLUMN_MODIFY_COLUMN);
+            if (StringUtils.isEmpty(userColumn)) {
                 throw new IllegalArgumentException(ConfigProperties.PROP_SYSTEM_COLUMN_MODIFY_COLUMN + " is null");
-            Modify.column = column_;
-            String time_ = properties.getProperty(ConfigProperties.PROP_SYSTEM_COLUMN_MODIFY_TIME);
-            if (StringUtils.isEmpty(time_))
+            }
+            Modify.column = userColumn;
+            String userTime = properties.getProperty(ConfigProperties.PROP_SYSTEM_COLUMN_MODIFY_TIME);
+            if (StringUtils.isEmpty(userTime)) {
                 throw new IllegalArgumentException(ConfigProperties.PROP_SYSTEM_COLUMN_MODIFY_TIME + " is null");
-            Modify.time = time_;
+            }
+            Modify.time = userTime;
         }
         // 不允许修改的字段
         String notPutUpdate = properties.getProperty(ConfigProperties.PROP_SYSTEM_COLUMN_NOT_PUT_UPDATE);
@@ -167,9 +174,9 @@ public class SystemColumn {
             }
         }
         // 默认值
-        String default_value = properties.getProperty(ConfigProperties.PROP_SYSTEM_COLUMN_COLUMN_DEFAULT_VALUE);
-        if (!StringUtils.isEmpty(default_value)) {
-            String[] array = StringUtil.stringToArray(default_value, ",");
+        String defaultValue = properties.getProperty(ConfigProperties.PROP_SYSTEM_COLUMN_COLUMN_DEFAULT_VALUE);
+        if (!StringUtils.isEmpty(defaultValue)) {
+            String[] array = StringUtil.stringToArray(defaultValue, ",");
             if (array != null) {
                 for (String item : array) {
                     String[] value = item.split(":");

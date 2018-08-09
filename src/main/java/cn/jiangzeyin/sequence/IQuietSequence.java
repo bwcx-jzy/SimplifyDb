@@ -4,7 +4,9 @@ import com.alibaba.fastjson.JSONObject;
 
 /**
  * 静默不回调生成主键
- * Created by jiangzeyin on 2018/6/23.
+ *
+ * @author jiangzeyin
+ * @date 2018/6/23
  */
 public interface IQuietSequence extends ISequence {
     /**

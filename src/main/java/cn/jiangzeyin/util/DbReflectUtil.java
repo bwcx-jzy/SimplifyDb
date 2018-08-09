@@ -15,6 +15,7 @@ import java.util.concurrent.ConcurrentHashMap;
  *
  * @author jiangzeyin
  */
+@SuppressWarnings("unchecked")
 public class DbReflectUtil {
 
     /**
@@ -53,14 +54,16 @@ public class DbReflectUtil {
     private static Map<String, Field> getFieldMap(Class<?> cls) {
         String key = cls.getName() + "_DeclaredFields_Map";
         Object object = ReflectCache.get(key);
-        if (object instanceof List)
+        if (object instanceof List) {
             return (Map<String, Field>) object;
+        }
         Map<String, Field> map = new HashMap<>();
         for (Class<?> clazz = cls; clazz != Object.class; clazz = clazz.getSuperclass()) {
             for (Field item : clazz.getDeclaredFields()) {
                 String name = item.getName().toLowerCase();
-                if (map.containsKey(name))
+                if (map.containsKey(name)) {
                     continue;
+                }
                 item.setAccessible(true);
                 map.put(name, item);
             }
@@ -109,10 +112,12 @@ public class DbReflectUtil {
      * 转换数据类型
      */
     public static Object convertType(Object object, Class needType) {
-        if (object == null)
+        if (object == null) {
             return null;
-        if (object.getClass() == needType)
+        }
+        if (object.getClass() == needType) {
             return object;
+        }
         if (needType == String.class) {
             return StringUtil.convertNULL(object);
         }
@@ -131,10 +136,12 @@ public class DbReflectUtil {
         if (needType == BigDecimal.class) {
             return BigDecimal.valueOf(Long.valueOf(String.valueOf(object)));
         }
-        if (needType == Short.class || short.class == needType)
+        if (needType == Short.class || short.class == needType) {
             return Short.valueOf(String.valueOf(object));
-        if (needType == boolean.class || Boolean.class == needType)
+        }
+        if (needType == boolean.class || Boolean.class == needType) {
             return Boolean.valueOf(String.valueOf(object));
+        }
         return object;
     }
 
@@ -162,8 +169,9 @@ public class DbReflectUtil {
         Objects.requireNonNull(cls);
         String key = cls.getName() + "_" + prefix;
         Object object = ReflectCache.get(key);
-        if (object instanceof List)
+        if (object instanceof List) {
             return (List<Method>) object;
+        }
         List<Method> list = new ArrayList<>();
         for (Class<?> clazz = cls; clazz != Object.class; clazz = clazz.getSuperclass()) {
             Method[] methods = clazz.getDeclaredMethods();

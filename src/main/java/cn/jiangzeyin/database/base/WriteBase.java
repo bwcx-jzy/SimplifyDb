@@ -13,6 +13,7 @@ import java.util.Set;
  *
  * @author jiangzeyin
  */
+@SuppressWarnings("unchecked")
 public abstract class WriteBase<T> extends Base<T> {
     private Callback callback;
     private T data;
@@ -23,9 +24,15 @@ public abstract class WriteBase<T> extends Base<T> {
      */
     protected Connection transactionConnection;
 
-
-    public void setCallback(Callback callback) {
+    /**
+     * 设置回调事件监听
+     *
+     * @param callback 事件
+     * @return WriteBase
+     */
+    public WriteBase setCallback(Callback callback) {
         this.callback = callback;
+        return this;
     }
 
     public Callback getCallback() {
@@ -63,7 +70,6 @@ public abstract class WriteBase<T> extends Base<T> {
      */
     public abstract void run();
 
-
     /**
      * @param data 对应实体
      */
@@ -76,8 +82,9 @@ public abstract class WriteBase<T> extends Base<T> {
         return data;
     }
 
-    public void setData(T data) {
+    public WriteBase setData(T data) {
         this.data = data;
+        return this;
     }
 
     /**

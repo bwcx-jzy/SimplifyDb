@@ -22,6 +22,7 @@ import java.util.Map;
  *
  * @author jiangzeyin
  */
+@SuppressWarnings("unchecked")
 public class Select<T> extends ReadBase<T> {
 
     private String orderBy;
@@ -31,7 +32,6 @@ public class Select<T> extends ReadBase<T> {
     private int limitStart;
     // 查询数据个数
     private int limitCount;
-
 
 
     public int getLimitStart() {
@@ -44,8 +44,9 @@ public class Select<T> extends ReadBase<T> {
      * @param limitStart 开始行
      * @author jiangzeyin
      */
-    public void setLimitStart(int limitStart) {
+    public Select setLimitStart(int limitStart) {
         this.limitStart = limitStart;
+        return this;
     }
 
     public int getLimitCount() {
@@ -58,8 +59,9 @@ public class Select<T> extends ReadBase<T> {
      * @param limitCount 共几行
      * @author jiangzeyin
      */
-    public void setLimitCount(int limitCount) {
+    public Select setLimitCount(int limitCount) {
         this.limitCount = limitCount;
+        return this;
     }
 
     public Select() {
@@ -75,13 +77,13 @@ public class Select<T> extends ReadBase<T> {
     }
 
 
-
     public String getOrderBy() {
         return orderBy;
     }
 
-    public void setOrderBy(String orderBy) {
+    public Select setOrderBy(String orderBy) {
         this.orderBy = orderBy;
+        return this;
     }
 
     public String getSql() {
@@ -108,7 +110,8 @@ public class Select<T> extends ReadBase<T> {
      * @return 结果
      * @author jiangzeyin
      */
-    public <T> T run() {
+    @Override
+    public <t> t run() {
         try {
             if (getResultType() == Result.JsonObject)
                 setLimitCount(1);
@@ -124,17 +127,17 @@ public class Select<T> extends ReadBase<T> {
             List<Map<String, Object>> result = JdbcUtils.executeQuery(dataSource, runSql, getParameters());
             switch (getResultType()) {
                 case JsonArray:
-                    return (T) JSON.toJSON(result);
+                    return (t) JSON.toJSON(result);
                 case JsonObject: {
                     if (result == null || result.size() < 1)
                         return null;
                     Map<String, Object> map = result.get(0);
-                    return (T) new JSONObject(map);
+                    return (t) new JSONObject(map);
                 }
                 case Entity:
-                    return (T) Util.convertList(this, result);
+                    return (t) Util.convertList(this, result);
                 case ListMap:
-                    return (T) result;
+                    return (t) result;
                 case String:
                 case Integer: {
                     if (result == null || result.size() < 1)
@@ -146,14 +149,14 @@ public class Select<T> extends ReadBase<T> {
                     String column = getColumns();
                     if (SystemColumn.getDefaultSelectColumns().equals(column)) {
                         // 默认取第一行一列数据
-                        return (T) map.values().toArray()[0];
+                        return (t) map.values().toArray()[0];
                     }
                     // 取指定列
                     String[] columns = StringUtil.stringToArray(column);
                     if (columns.length == 1) {
-                        return (T) map.get(columns[0]);
+                        return (t) map.get(columns[0]);
                     }
-                    return (T) map;
+                    return (t) map;
                 }
                 default:
                     break;

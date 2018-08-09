@@ -36,16 +36,26 @@ public class DBExecutorService {
     public static JSONObject getPoolRunInfo() {
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("name", "dbutil");
-        jsonObject.put("corePoolSize", THREAD_POOL_EXECUTOR.getCorePoolSize()); // 核心数
-        jsonObject.put("poolSize", THREAD_POOL_EXECUTOR.getPoolSize()); // 当前工作集数
-        jsonObject.put("activeCount", THREAD_POOL_EXECUTOR.getActiveCount()); // 活跃线程数
-        jsonObject.put("largestPoolSize", THREAD_POOL_EXECUTOR.getLargestPoolSize()); // 曾经最大线程数
-        jsonObject.put("completedTaskCount", THREAD_POOL_EXECUTOR.getCompletedTaskCount()); // 已完成数
-        jsonObject.put("taskCount", THREAD_POOL_EXECUTOR.getTaskCount()); // 当前任务数
-        jsonObject.put("queueSize", BLOCKING_QUEUE.size()); // 任务队列数
-        jsonObject.put("rejectedExecutionCount", PROXY_HEADER.rejectedExecutionCount.get()); // 拒绝任务数
-        jsonObject.put("maxThreadNumber", SYSTEM_THREAD_FACTORY.threadNumber.get()); // 最大线程编号
-        jsonObject.put("maximumPoolSize", THREAD_POOL_EXECUTOR.getMaximumPoolSize());// 最大线程数
+        // 核心数
+        jsonObject.put("corePoolSize", THREAD_POOL_EXECUTOR.getCorePoolSize());
+        // 当前工作集数
+        jsonObject.put("poolSize", THREAD_POOL_EXECUTOR.getPoolSize());
+        // 活跃线程数
+        jsonObject.put("activeCount", THREAD_POOL_EXECUTOR.getActiveCount());
+        // 曾经最大线程数
+        jsonObject.put("largestPoolSize", THREAD_POOL_EXECUTOR.getLargestPoolSize());
+        // 已完成数
+        jsonObject.put("completedTaskCount", THREAD_POOL_EXECUTOR.getCompletedTaskCount());
+        // 当前任务数
+        jsonObject.put("taskCount", THREAD_POOL_EXECUTOR.getTaskCount());
+        // 任务队列数
+        jsonObject.put("queueSize", BLOCKING_QUEUE.size());
+        // 拒绝任务数
+        jsonObject.put("rejectedExecutionCount", PROXY_HEADER.rejectedExecutionCount.get());
+        // 最大线程编号
+        jsonObject.put("maxThreadNumber", SYSTEM_THREAD_FACTORY.threadNumber.get());
+        // 最大线程数
+        jsonObject.put("maximumPoolSize", THREAD_POOL_EXECUTOR.getMaximumPoolSize());
         return jsonObject;
     }
 
@@ -74,8 +84,9 @@ public class DBExecutorService {
         private final String namePrefix;
 
         SystemThreadFactory(String poolName) {
-            if (poolName == null || poolName.isEmpty())
+            if (poolName == null || poolName.isEmpty()) {
                 poolName = "pool";
+            }
             SecurityManager s = System.getSecurityManager();
             group = (s != null) ? s.getThreadGroup() : Thread.currentThread().getThreadGroup();
             namePrefix = poolName + "-thread-";
@@ -84,10 +95,12 @@ public class DBExecutorService {
         @Override
         public Thread newThread(Runnable r) {
             Thread t = new Thread(group, r, namePrefix + threadNumber.getAndIncrement(), 0);
-            if (t.isDaemon())
+            if (t.isDaemon()) {
                 t.setDaemon(false);
-            if (t.getPriority() != Thread.MAX_PRIORITY)
+            }
+            if (t.getPriority() != Thread.MAX_PRIORITY) {
                 t.setPriority(Thread.MAX_PRIORITY);
+            }
             return t;
         }
     }

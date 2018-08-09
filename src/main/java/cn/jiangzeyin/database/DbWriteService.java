@@ -14,8 +14,9 @@ public final class DbWriteService {
     }
 
     public static void setWriteInterface(WriteInterface writeInterface) {
-        if (DbWriteService.writeInterface != null)
+        if (DbWriteService.writeInterface != null) {
             throw new IllegalArgumentException("duplicate set");
+        }
         DbWriteService.writeInterface = writeInterface;
     }
 

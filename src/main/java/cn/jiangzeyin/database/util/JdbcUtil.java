@@ -56,7 +56,6 @@ public class JdbcUtil {
                 rs = stmt.getGeneratedKeys();
                 if (rs.next()) {
                     return rs.getObject(1);
-//                    return rs.getLong(1);
                 }
             }
         } finally {

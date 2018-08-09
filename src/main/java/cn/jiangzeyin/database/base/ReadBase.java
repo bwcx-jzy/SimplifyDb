@@ -14,6 +14,7 @@ import java.util.List;
  *
  * @author jiangzeyin
  */
+@SuppressWarnings("unchecked")
 public abstract class ReadBase<T> extends Base<T> {
 
     /**
@@ -22,6 +23,9 @@ public abstract class ReadBase<T> extends Base<T> {
      * @author jiangzeyin
      */
     public enum Result {
+        /**
+         * 数组
+         */
         JsonArray,
         /**
          * 返回单个实体 json 一行
@@ -61,17 +65,30 @@ public abstract class ReadBase<T> extends Base<T> {
         setThrows(true);
     }
 
-    protected String columns; // 查询哪些列
-    private String index; // 查询索引
-    private List<Object> parameters; // 参数
+    /**
+     * 查询哪些列
+     */
+    protected String columns;
+    /**
+     * 查询索引
+     */
+    private String index;
+    /**
+     * 参数
+     */
+    private List<Object> parameters;
     /**
      * 返回值类型
      */
     private Result resultType = Result.Entity;
     private int isDelete = SystemColumn.Active.NO_ACTIVE;
-    // 主键值
+    /**
+     * 主键值
+     */
     private Object keyValue;
-    // 主键列
+    /**
+     * 主键列
+     */
     private String keyColumn;
     /**
      * 条件
@@ -86,22 +103,25 @@ public abstract class ReadBase<T> extends Base<T> {
         return useIndex;
     }
 
-    public void setUseIndex(boolean useIndex) {
+    public ReadBase setUseIndex(boolean useIndex) {
         this.useIndex = useIndex;
+        return this;
     }
 
     public String getWhere() {
         return where;
     }
 
-    public void setWhere(String where) {
+    public ReadBase setWhere(String where) {
         this.where = where;
+        return this;
     }
 
-    public void appendWhere(String where) {
+    public ReadBase appendWhere(String where) {
         String temp = StringUtil.convertNULL(this.where);
         where = StringUtil.convertNULL(where);
         this.where = String.format("%s %s", temp, where);
+        return this;
     }
 
     /**
@@ -111,8 +131,9 @@ public abstract class ReadBase<T> extends Base<T> {
      * @author jiangzeyin
      */
     public String getKeyColumn() {
-        if (StringUtils.isEmpty(keyColumn))
+        if (StringUtils.isEmpty(keyColumn)) {
             return SystemColumn.getDefaultKeyName();
+        }
         return keyColumn;
     }
 
@@ -124,8 +145,9 @@ public abstract class ReadBase<T> extends Base<T> {
      * @param keyColumn 名称
      * @author jiangzeyin
      */
-    public void setKeyColumn(String keyColumn) {
+    public ReadBase setKeyColumn(String keyColumn) {
         this.keyColumn = keyColumn;
+        return this;
     }
 
     /**
@@ -144,29 +166,33 @@ public abstract class ReadBase<T> extends Base<T> {
      * @param keyValue 键值
      * @author jiangzeyin
      */
-    public void setKeyValue(Object keyValue) {
+    public ReadBase setKeyValue(Object keyValue) {
         this.keyValue = keyValue;
+        return this;
     }
 
     public int getIsDelete() {
         return isDelete;
     }
 
-    public void setIsDelete(int isDelete) {
+    public ReadBase setIsDelete(int isDelete) {
         this.isDelete = isDelete;
+        return this;
     }
 
     protected Result getResultType() {
         return resultType;
     }
 
-    public void setResultType(Result resultType) {
+    public ReadBase setResultType(Result resultType) {
         this.resultType = resultType;
+        return this;
     }
 
     public List<Object> getParameters() {
-        if (parameters == null)
+        if (parameters == null) {
             return new ArrayList<>();
+        }
         return parameters;
     }
 
@@ -174,15 +200,19 @@ public abstract class ReadBase<T> extends Base<T> {
      * @param parameters 参数
      * @author jiangzeyin
      */
-    public void setParameters(Object... parameters) {
-        if (this.parameters == null)
+    public ReadBase setParameters(Object... parameters) {
+        if (this.parameters == null) {
             this.parameters = new LinkedList<>();
-        if (parameters != null)
+        }
+        if (parameters != null) {
             Collections.addAll(this.parameters, parameters);
+        }
+        return this;
     }
 
-    public void setParameters(List<Object> whereParameters) {
+    public ReadBase setParameters(List<Object> whereParameters) {
         this.parameters = whereParameters;
+        return this;
     }
 
     /**
@@ -192,8 +222,9 @@ public abstract class ReadBase<T> extends Base<T> {
      * @author jiangzeyin
      */
     public String getColumns() {
-        if (StringUtils.isEmpty(columns))
+        if (StringUtils.isEmpty(columns)) {
             return SystemColumn.getDefaultSelectColumns();
+        }
         return columns;
     }
 
@@ -205,8 +236,9 @@ public abstract class ReadBase<T> extends Base<T> {
      * @param columns 查询列
      * @author jiangzeyin
      */
-    public void setColumns(String columns) {
+    public ReadBase setColumns(String columns) {
         this.columns = columns;
+        return this;
     }
 
     public String getIndex() {
@@ -219,12 +251,13 @@ public abstract class ReadBase<T> extends Base<T> {
      * @param index 索引
      * @author jiangzeyin
      */
-    public void setIndex(String index) {
+    public ReadBase setIndex(String index) {
         this.index = index;
+        return this;
     }
 
-    @SuppressWarnings("hiding")
-    public abstract <T> T run();
+    @SuppressWarnings("unchecked")
+    public abstract <t> t run();
 
     /**
      * @author jiangzeyin

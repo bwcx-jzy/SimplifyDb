@@ -9,7 +9,9 @@ import com.alibaba.fastjson.JSONObject;
 
 /**
  * 与snowflake算法区别,返回字符串id,占用更多字节,但直观从id中看出生成时间
- * Created by jiangzeyin on 2018/6/20.
+ *
+ * @author jiangzeyin
+ * @date 2018/6/20
  */
 public class DateSequence extends BaseSequence {
 
@@ -27,7 +29,8 @@ public class DateSequence extends BaseSequence {
 
     @Override
     public synchronized String nextId() {
-        long timestamp = timeGen(); //获取当前毫秒数
+        //获取当前毫秒数
+        long timestamp = timeGen();
         //如果服务器时间有问题(时钟后退) 报错。
         if (timestamp < lastTimestamp) {
             throw new RuntimeException(String.format(
@@ -39,10 +42,12 @@ public class DateSequence extends BaseSequence {
             sequence = (sequence + 1) & sequenceMask;
             //判断是否溢出,也就是每毫秒内超过4095，当为4096时，与sequenceMask相与，sequence就等于0
             if (sequence == 0) {
-                timestamp = tilNextMillis(lastTimestamp); //自旋等待到下一毫秒
+                //自旋等待到下一毫秒
+                timestamp = tilNextMillis(lastTimestamp);
             }
         } else {
-            sequence = 0L; //如果和上次生成时间不同,重置sequence，就是下一毫秒开始，sequence计数重新从0开始累加
+            //如果和上次生成时间不同,重置sequence，就是下一毫秒开始，sequence计数重新从0开始累加
+            sequence = 0L;
         }
         lastTimestamp = timestamp;
         long suffix = (dataCenterId << dataCenterIdShift) | (workerId << workerIdShift) | sequence;

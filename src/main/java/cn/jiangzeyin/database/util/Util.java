@@ -33,11 +33,11 @@ public class Util {
     public static <T> List<T> convertList(ReadBase<T> reBase, List<Map<String, Object>> list) throws Exception {
         Objects.requireNonNull(list, "list map");
         Objects.requireNonNull(reBase, "reBase");
-        List<T> list_r = new ArrayList<>();
+        List<T> listR = new ArrayList<>();
         for (Map<String, Object> t : list) {
-            list_r.add(convertMap(reBase, t, null));
+            listR.add(convertMap(reBase, t, null));
         }
-        return list_r;
+        return listR;
     }
 
     /**
@@ -49,11 +49,14 @@ public class Util {
      * @throws Exception 异常
      */
     private static <T> T convertMap(ReadBase<T> read, Map<String, Object> map, Class<?> refClass) throws Exception {
-        if (refClass == null)
+        if (refClass == null) {
             refClass = read.getTclass();
-        T obj = (T) refClass.newInstance();// 创建 JavaBean 对象
-        if (obj == null)
+        }
+        // 创建 JavaBean 对象
+        T obj = (T) refClass.newInstance();
+        if (obj == null) {
             return null;
+        }
         KeyMap<String, Object> keyMap = new KeyMap<>(map);
         HashMap<String, Class<?>> refMap = read.getRefMap();
         HashMap<String, String> refWhere = read.getRefWhere();
@@ -63,14 +66,17 @@ public class Util {
         DataSource dataSource = DatabaseContextHolder.getReadDataSource(read.getTag());
         for (Method method : methods) {
             String name = method.getName();
-            if (!name.startsWith("set"))
+            if (!name.startsWith("set")) {
                 continue;
+            }
             name = name.substring(3).toLowerCase();
             // 移除字段比较
-            if (remove != null && remove.contains(name))
+            if (remove != null && remove.contains(name)) {
                 continue;
-            if (SystemColumn.isReadRemove(name))
+            }
+            if (SystemColumn.isReadRemove(name)) {
                 continue;
+            }
             Object value = keyMap.get(name);
             if (value == null) {
                 continue;

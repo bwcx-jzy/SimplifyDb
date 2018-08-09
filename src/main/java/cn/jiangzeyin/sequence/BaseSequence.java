@@ -41,11 +41,13 @@ public abstract class BaseSequence implements IQuietSequence {
 
     public BaseSequence(int workerId, int dataCenterId, int workerIdBits, int dataCenterIdBits, int sequenceBits) {
         // 判断位移量是否合法
-        if (workerIdBits <= 0)
+        if (workerIdBits <= 0) {
             throw new IllegalArgumentException("workerIdBits");
+        }
         this.workerIdBits = workerIdBits;
-        if (dataCenterIdBits <= 0)
+        if (dataCenterIdBits <= 0) {
             throw new IllegalArgumentException("dataCenterIdBits");
+        }
         this.dataCenterIdBits = dataCenterIdBits;
 
         // 计算最大的值
@@ -66,8 +68,9 @@ public abstract class BaseSequence implements IQuietSequence {
         }
         this.dataCenterId = dataCenterId;
         this.workerId = workerId;
-        if (sequenceBits <= 0)
+        if (sequenceBits <= 0) {
             throw new IllegalArgumentException("sequenceBits");
+        }
         this.sequenceBits = sequenceBits;
         // 计算偏移量
         this.workerIdShift = sequenceBits;

@@ -14,6 +14,7 @@ import java.util.Map;
  * @param <T> 泛型
  * @author jiangzeyin
  */
+@SuppressWarnings("unchecked")
 public class Page<T> {
 
     private long pageNo;// 页码，默认是第一页
@@ -33,8 +34,9 @@ public class Page<T> {
         return mapList;
     }
 
-    public void setMapList(List<Map<String, Object>> mapList) {
+    public Page setMapList(List<Map<String, Object>> mapList) {
         this.mapList = mapList;
+        return this;
     }
 
     /**
@@ -52,20 +54,22 @@ public class Page<T> {
         return sql;
     }
 
-    public void setSql(String sql) {
+    public Page setSql(String sql) {
         this.sql = sql;
+        return this;
     }
 
     public String getWhereWord() {
         return whereWord;
     }
 
-    public void setWhereWord(String whereWord) {
+    public Page setWhereWord(String whereWord) {
         if (StringUtil.isEmpty(this.whereWord)) {
             this.whereWord = whereWord;
         } else {
             this.whereWord += " and " + whereWord;
         }
+        return this;
     }
 
     /**
@@ -74,44 +78,49 @@ public class Page<T> {
      * @param pageNo   当前页码
      * @param pageSize 每页记录
      */
-    public void setPageNoAndSize(long pageNo, long pageSize) {
+    public Page setPageNoAndSize(long pageNo, long pageSize) {
         this.pageNo = pageNo;
         this.pageSize = pageSize;
+        return this;
     }
 
     public String getOrderBy() {
         return orderBy;
     }
 
-    public void setOrderBy(String orderBy) {
+    public Page setOrderBy(String orderBy) {
         this.orderBy = orderBy;
+        return this;
     }
 
     public long getPageNo() {
         return pageNo;
     }
 
-    public void setPageNo(int pageNo) {
+    public Page setPageNo(int pageNo) {
         this.pageNo = pageNo;
+        return this;
     }
 
     public long getPageSize() {
         return pageSize;
     }
 
-    public void setPageSize(int pageSize) {
+    public Page setPageSize(int pageSize) {
         this.pageSize = pageSize;
+        return this;
     }
 
     public long getTotalRecord() {
         return totalRecord;
     }
 
-    public void setTotalRecord(long totalRecord) {
+    public Page setTotalRecord(long totalRecord) {
         this.totalRecord = totalRecord;
         // 在设置总页数的时候计算出对应的总页数，在下面的三目运算中加法拥有更高的优先级，所以最后可以不加括号。
         long totalPage = totalRecord % pageSize == 0 ? totalRecord / pageSize : totalRecord / pageSize + 1;
         this.setTotalPage(totalPage);
+        return this;
     }
 
     // public void setTotalRecord(long totalRecord) {
@@ -126,30 +135,33 @@ public class Page<T> {
         return totalPage;
     }
 
-    public void setTotalPage(long totalPage) {
+    public Page setTotalPage(long totalPage) {
         this.totalPage = totalPage;
+        return this;
     }
 
     public List<T> getResults() {
         return results;
     }
 
-    public void setResults(List<T> list) {
+    public Page setResults(List<T> list) {
         this.results = list;
+        return this;
     }
 
-    @SuppressWarnings("unchecked")
-    public void setResultsT(List<?> list) {
+    public Page setResultsT(List<?> list) {
         this.results = (List<T>) list;
+        return this;
     }
 
-    public void setDisplayPage(int start, int lenght) {
+    public Page setDisplayPage(int start, int lenght) {
         int pageNo = 1;
         if (start >= lenght) {
             pageNo += start / lenght;
         }
         this.setPageNo(pageNo);
         this.setPageSize(lenght);
+        return this;
     }
 
     @Override

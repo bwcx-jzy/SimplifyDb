@@ -10,6 +10,8 @@ import java.util.Properties;
 
 /**
  * key-value
+ *
+ * @author jiangzeyin
  */
 public class PropertiesParser {
     private Properties props;
