@@ -1,13 +1,39 @@
 # dbutil
-在java 中我们有多种方式操作数据库，但是如果只是为了简单处理使用一些框架，在使用中还是显得麻烦。这里就整理一个简单快速操作数据库的一种方案
+>在java 中我们有多种方式操作数据库，但是如果只是为了简单处理使用一些框架，在使用中还是显得麻烦。这里就整理一个简单快速操作数据库的一种方案
 
-并且也上maven 库了：[https://mvnrepository.com/artifact/cn.jiangzeyin/dbutil](https://mvnrepository.com/artifact/cn.jiangzeyin/dbutil)
 
-博客专栏：[http://blog.csdn.net/column/details/17021.html](http://blog.csdn.net/column/details/17021.html)
+[![Maven metadata URI](https://img.shields.io/maven-metadata/v/http/central.maven.org/maven2/cn/jiangzeyin/dbutil/maven-metadata.xml.svg)](https://mvnrepository.com/artifact/cn.jiangzeyin/dbutil)
+![Hex.pm](https://img.shields.io/hexpm/l/plug.svg)
+![jdk](https://img.shields.io/badge/JDK-1.8+-green.svg)
 
-javadoc：[https://apidoc.gitee.com/jiangzeyin/dbutil/](https://apidoc.gitee.com/jiangzeyin/dbutil/)
+## 文档 
 
-项目特点：(使用druid 连接池)
+[参考API](https://apidoc.gitee.com/jiangzeyin/dbutil/)
+
+[博客专栏](http://blog.csdn.net/column/details/17021.html)
+
+
+## 安装
+
+### Maven
+在项目的pom.xml的dependencies中加入以下内容:
+
+```xml
+<dependency>
+    <groupId>cn.jiangzeyin</groupId>
+    <artifactId>dbutil</artifactId>
+    <version>version</version>
+</dependency>
+```
+注：VERSION 请更换为公共maven库最新的版本号
+
+### 提供bug反馈或建议
+
+- [码云](https://gitee.com/iangzeyin/dbutil/issues)
+- [Gtihub](https://github.com/jiangzeyin/dbutil/issues)
+
+
+## 项目特点：(使用druid 连接池)
 
 1.支持多数据源
 
