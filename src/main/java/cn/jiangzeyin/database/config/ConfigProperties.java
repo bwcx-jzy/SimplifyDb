@@ -26,33 +26,57 @@ public class ConfigProperties {
      * 参与加密的字段
      */
     public static final String PROP_SYSTEM_KEY_COLUMN = "systemKeyColumn";
-    // 修改
+    /**
+     * 修改
+     */
     public static final String PROP_LAST_MODIFY = "lastModify";
-    // 标记修改时间表达式
+    /**
+     * 标记修改时间表达式
+     */
     public static final String PROP_LAST_MODIFY_TIME = PROP_LAST_MODIFY + ".time";
-    // 有修改者实体类
+    /**
+     * 有修改者实体类
+     */
     public static final String PROP_LAST_MODIFY_CLASS = PROP_LAST_MODIFY + ".class";
-    // 实体对应修改者id 字段
+    /**
+     * 实体对应修改者id 字段
+     */
     public static final String PROP_LAST_MODIFY_COLUMN_USER = PROP_LAST_MODIFY + ".column.user";
-    // 实体修改时间字段
+    /**
+     * 实体修改时间字段
+     */
     public static final String PROP_LAST_MODIFY_COLUMN_TIME = PROP_LAST_MODIFY + ".column.time";
-    // 创建
+    /**
+     * 创建
+     */
     public static final String PROP_CREATE = "create";
     /**
      * 有创建者实体类
      */
     public static final String PROP_CREATE_CLASS = PROP_CREATE + ".class";
-    // 实体对应创建者id 字段
+    /**
+     * 实体对应创建者id 字段
+     */
     public static final String PROP_CREATE_COLUMN_USER = PROP_CREATE + ".column.user";
-    // 系统字段
+    /**
+     * 系统字段
+     */
     public static final String PROP_SYSTEM_COLUMN = "systemColumn";
-    // 系统数据库密码字段（使用mysql password 函数）
+    /**
+     * 系统数据库密码字段（使用mysql password 函数）
+     */
     public static final String PROP_SYSTEM_COLUMN_PWD = PROP_SYSTEM_COLUMN + ".pwd";
-    // 活跃字段
+    /**
+     * 活跃字段
+     */
     public static final String PROP_SYSTEM_COLUMN_ACTIVE = PROP_SYSTEM_COLUMN + ".active";
-    //
+    /**
+     * 活跃字段值
+     */
     public static final String PROP_SYSTEM_COLUMN_UN_ACTIVE = PROP_SYSTEM_COLUMN + ".inActive.value";
-    // 活跃字段值
+    /**
+     * 活跃字段值
+     */
     public static final String PROP_SYSTEM_COLUMN_ACTIVE_VALUE = PROP_SYSTEM_COLUMN_ACTIVE + ".value";
 
     public static final String PROP_SYSTEM_COLUMN_MODIFY = PROP_SYSTEM_COLUMN + ".modify";

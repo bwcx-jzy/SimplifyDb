@@ -16,17 +16,34 @@ import java.util.Map;
  */
 @SuppressWarnings("unchecked")
 public class Page<T> {
-
-    private long pageNo;// 页码，默认是第一页
-    private long pageSize;// 每页显示的记录数，默认是15
-    private long totalRecord;// 总记录数
-    private long totalPage;// 总页数
-    private List<T> results;// 对应的当前页记录
+    /**
+     * 页码，默认是第一页
+     */
+    private long pageNo;
+    /**
+     * 每页显示的记录数，默认是15
+     */
+    private long pageSize;
+    /**
+     * 总记录数
+     */
+    private long totalRecord;
+    /**
+     * 总页数
+     */
+    private long totalPage;
+    /**
+     * 对应的当前页记录
+     */
+    private List<T> results;
     /**
      * sql 后面where条件 需要自己设定
      */
     private String whereWord;
-    private String orderBy;// 排序字段
+    /**
+     * 排序字段
+     */
+    private String orderBy;
     private String sql;
     private List<Map<String, Object>> mapList;
 
