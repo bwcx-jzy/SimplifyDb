@@ -21,6 +21,7 @@ import java.util.*;
  */
 public final class DataSourceConfig {
     private static boolean active;
+    private static PropertiesParser systemPropertiesParser;
 
     public static boolean isActive() {
         return active;
@@ -30,14 +31,15 @@ public final class DataSourceConfig {
 
     }
 
-    private static PropertiesParser systemPropertiesParser;
-
-    public static void init(String propertyPath) throws Exception {
-        if (StringUtil.isEmpty(propertyPath)) {
-            throw new IllegalArgumentException("propertyPath is null ");
-        }
-        InputStream inputStream = ResourceUtil.getResource(propertyPath);
-        systemPropertiesParser = new PropertiesParser(inputStream);
+    /**
+     * 配置对象初始化
+     *
+     * @param props props
+     * @throws Exception e
+     */
+    public static void init(Properties props) throws Exception {
+        Objects.requireNonNull(props);
+        systemPropertiesParser = new PropertiesParser(props);
         String active = systemPropertiesParser.getStringProperty(ConfigProperties.ACTIVE, "dev");
         DataSourceConfig.active = "prod".equals(active);
         String[] sourceTags = systemPropertiesParser.getStringArrayProperty(ConfigProperties.PROP_SOURCE_TAG);
@@ -57,6 +59,22 @@ public final class DataSourceConfig {
         ModifyUser.initCreate(systemPropertiesParser.getPropertyGroup(ConfigProperties.PROP_CREATE));
         //
         SystemColumn.init(systemPropertiesParser.getPropertyGroup(ConfigProperties.PROP_SYSTEM_COLUMN));
+    }
+
+    /**
+     * 指定文件初始化
+     *
+     * @param propertyPath 路径
+     * @throws Exception e
+     */
+    public static void init(String propertyPath) throws Exception {
+        if (StringUtil.isEmpty(propertyPath)) {
+            throw new IllegalArgumentException("propertyPath is null ");
+        }
+        InputStream inputStream = ResourceUtil.getResource(propertyPath);
+        Properties props = new Properties();
+        props.load(inputStream);
+        init(props);
     }
 
     private static void dataSource(String[] sourceTags, String[] configPaths) throws Exception {
