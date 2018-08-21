@@ -5,6 +5,8 @@ import java.util.*;
 /**
  * 不区分大小写
  * Created by jiangzeyin on 2017/8/15.
+ *
+ * @author jiangzeyin
  */
 public class KeyMap<K, V> {
     private Map<K, V> map;

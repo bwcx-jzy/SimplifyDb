@@ -3,6 +3,8 @@ package cn.jiangzeyin.system;
 /**
  * 日志
  * Created by jiangzeyin on 2017/8/14.
+ *
+ * @author jiangzeyin
  */
 public final class DbLog {
     private DbLog() {
