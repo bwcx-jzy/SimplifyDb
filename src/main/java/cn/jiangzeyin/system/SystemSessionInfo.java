@@ -27,8 +27,9 @@ public final class SystemSessionInfo {
      * @author jiangzeyin
      */
     public static String getUserName() {
-        if (sessionUser == null)
+        if (sessionUser == null) {
             return "";
+        }
         return sessionUser.getUserName();
     }
 
@@ -39,14 +40,16 @@ public final class SystemSessionInfo {
      * @author jiangzeyin
      */
     public static int getUserId() {
-        if (sessionUser == null)
+        if (sessionUser == null) {
             return -1;
+        }
         return sessionUser.getUserId();
     }
 
     public static String userIdGetName(int userId) {
-        if (sessionUser == null)
+        if (sessionUser == null) {
             return "";
+        }
         return sessionUser.userIdGetName(userId);
     }
 

@@ -31,12 +31,34 @@ public final class DbLog {
      * 日志回调接口
      */
     public interface DbLogInterface {
+        /**
+         * info
+         *
+         * @param object obj
+         */
         void info(Object object);
 
+        /**
+         * 错误
+         *
+         * @param msg msg
+         * @param t   异常
+         */
         void error(String msg, Throwable t);
 
+        /**
+         * 警告消息
+         *
+         * @param msg msg
+         */
         void warn(Object msg);
 
+        /**
+         * 警告带异常
+         *
+         * @param msg 消息
+         * @param t   异常
+         */
         void warn(String msg, Throwable t);
     }
 }
