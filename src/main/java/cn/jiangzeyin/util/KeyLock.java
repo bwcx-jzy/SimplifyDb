@@ -7,29 +7,27 @@ import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.Semaphore;
 
 /**
+ * 根据执行KEY 多线程锁
  * Created by jiangzeyin on 2018/8/24.
+ *
+ * @author jiangzeyin
  */
 public class KeyLock<K> {
     /**
      * 保存所有锁定的KEY及其信号量
      */
-    private final ConcurrentMap<K, Semaphore> map = new ConcurrentHashMap<K, Semaphore>();
+    private final ConcurrentMap<K, Semaphore> map = new ConcurrentHashMap<>();
     /**
      * 保存每个线程锁定的KEY及其锁定计数
      */
-    private final ThreadLocal<Map<K, LockInfo>> local = new ThreadLocal<Map<K, LockInfo>>() {
-        @Override
-        protected Map<K, LockInfo> initialValue() {
-            return new HashMap<K, LockInfo>();
-        }
-    };
+    private final ThreadLocal<Map<K, LockInfo>> local = ThreadLocal.withInitial(HashMap::new);
 
     /**
      * 锁定key，其他等待此key的线程将进入等待，直到调用{@link #unlock(K)}
      * 使用hashcode和equals来判断key是否相同，因此key必须实现{@link #hashCode()}和
      * {@link #equals(Object)}方法
      *
-     * @param key
+     * @param key key
      */
     public void lock(K key) {
         if (key == null) {
@@ -52,7 +50,7 @@ public class KeyLock<K> {
     /**
      * 释放key，唤醒其他等待此key的线程
      *
-     * @param key
+     * @param key key
      */
     public void unlock(K key) {
         if (key == null) {
@@ -70,7 +68,7 @@ public class KeyLock<K> {
      * 锁定多个key
      * 建议在调用此方法前先对keys进行排序，使用相同的锁定顺序，防止死锁发生
      *
-     * @param keys
+     * @param keys keys
      */
     public void lock(K[] keys) {
         if (keys == null) {
@@ -84,7 +82,7 @@ public class KeyLock<K> {
     /**
      * 释放多个key
      *
-     * @param keys
+     * @param keys 多个keys
      */
     public void unlock(K[] keys) {
         if (keys == null) {

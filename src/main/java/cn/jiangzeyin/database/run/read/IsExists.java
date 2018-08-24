@@ -6,6 +6,7 @@ import cn.jiangzeyin.database.base.ReadBase;
 import cn.jiangzeyin.database.config.DatabaseContextHolder;
 import cn.jiangzeyin.database.util.SqlUtil;
 import cn.jiangzeyin.system.DbLog;
+import cn.jiangzeyin.util.KeyLock;
 import com.alibaba.druid.util.JdbcUtils;
 import com.alibaba.druid.util.StringUtils;
 
@@ -22,6 +23,22 @@ import java.util.Map;
 @SuppressWarnings("unchecked")
 public class IsExists<T> extends ReadBase<T> {
     private int limit;
+    /**
+     * 表锁
+     */
+    private final static KeyLock<Class> LOCK = new KeyLock<>();
+    /**
+     * 是否使用锁
+     */
+    private boolean useLock = false;
+
+    public boolean isUseLock() {
+        return useLock;
+    }
+
+    public void setUseLock(boolean useLock) {
+        this.useLock = useLock;
+    }
 
     public int getLimit() {
         return limit;
@@ -103,7 +120,10 @@ public class IsExists<T> extends ReadBase<T> {
 
     private List<Map<String, Object>> doData() throws SQLException {
         Class runClass = getTclass();
-        synchronized (runClass.getName()) {
+        if (useLock) {
+            LOCK.lock(runClass);
+        }
+        try {
             if (StringUtils.isEmpty(getKeyColumn())) {
                 throw new IllegalArgumentException(" keyColumn 不能为null");
             }
@@ -116,6 +136,8 @@ public class IsExists<T> extends ReadBase<T> {
             DbLog.getInstance().info(getTransferLog() + sql);
             DataSource dataSource = DatabaseContextHolder.getReadDataSource(tag);
             return JdbcUtils.executeQuery(dataSource, sql, getParameters());
+        } finally {
+            LOCK.unlock(runClass);
         }
     }
 
