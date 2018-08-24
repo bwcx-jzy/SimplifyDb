@@ -27,6 +27,10 @@
 ```
 注：VERSION 请更换为公共maven库最新的版本号
 
+## 版本变更
+
+- [Release版本变更说明](https://gitee.com/jiangzeyin/dbutil/blob/master/CHANGELOG.md)
+
 ### 提供bug反馈或建议
 
 - [码云](https://gitee.com/iangzeyin/dbutil/issues)
