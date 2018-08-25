@@ -1,10 +1,9 @@
 package cn.jiangzeyin.util;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.Semaphore;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * 根据执行KEY 多线程锁
@@ -16,11 +15,27 @@ public class KeyLock<K> {
     /**
      * 保存所有锁定的KEY及其信号量
      */
-    private final ConcurrentMap<K, Semaphore> map = new ConcurrentHashMap<>();
+    private final ConcurrentMap<K, LockInfo> map = new ConcurrentHashMap<>();
+
     /**
-     * 保存每个线程锁定的KEY及其锁定计数
+     * 获取锁的数量
+     *
+     * @return key总数
      */
-    private final ThreadLocal<Map<K, LockInfo>> local = ThreadLocal.withInitial(HashMap::new);
+    public int getLockKeyCount() {
+        return map.size();
+    }
+
+    /**
+     * 根据key 获取等待的线程数
+     *
+     * @param k k
+     * @return 总数
+     */
+    public int getLockCount(K k) {
+        LockInfo lockInfo = map.get(k);
+        return lockInfo == null ? 0 : lockInfo.getLockCount();
+    }
 
     /**
      * 锁定key，其他等待此key的线程将进入等待，直到调用{@link #unlock(K)}
@@ -33,18 +48,8 @@ public class KeyLock<K> {
         if (key == null) {
             return;
         }
-        LockInfo info = local.get().get(key);
-        if (info == null) {
-            Semaphore current = new Semaphore(1);
-            current.acquireUninterruptibly();
-            Semaphore previous = map.put(key, current);
-            if (previous != null) {
-                previous.acquireUninterruptibly();
-            }
-            local.get().put(key, new LockInfo(current));
-        } else {
-            info.lockCount++;
-        }
+        LockInfo lockInfo = map.computeIfAbsent(key, k -> new LockInfo());
+        lockInfo.lock();
     }
 
     /**
@@ -56,11 +61,15 @@ public class KeyLock<K> {
         if (key == null) {
             return;
         }
-        LockInfo info = local.get().get(key);
-        if (info != null && --info.lockCount == 0) {
-            info.current.release();
-            map.remove(key, info.current);
-            local.get().remove(key);
+        LockInfo lockInfo = map.get(key);
+        if (lockInfo == null) {
+            return;
+        }
+        //  释放许可
+        lockInfo.release();
+        if (lockInfo.getLockCount() <= 0) {
+            // 清除锁
+            map.remove(key);
         }
     }
 
@@ -93,13 +102,29 @@ public class KeyLock<K> {
         }
     }
 
+    /**
+     * 锁的信息
+     */
     private static class LockInfo {
-        private final Semaphore current;
-        private int lockCount;
+        private final Semaphore semaphore;
+        private AtomicInteger lockCount = new AtomicInteger(0);
 
-        private LockInfo(Semaphore current) {
-            this.current = current;
-            this.lockCount = 1;
+        private LockInfo() {
+            this.semaphore = new Semaphore(1);
+        }
+
+        private void lock() {
+            lockCount.getAndIncrement();
+            semaphore.acquireUninterruptibly();
+        }
+
+        private void release() {
+            semaphore.release();
+            lockCount.getAndDecrement();
+        }
+
+        private int getLockCount() {
+            return lockCount.get();
         }
     }
 }
