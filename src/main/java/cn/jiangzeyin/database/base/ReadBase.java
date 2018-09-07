@@ -278,12 +278,11 @@ public abstract class ReadBase<T> extends Base<T> {
         if (StringUtil.isEmpty(name)) {
             return name;
         }
-        name = name.toLowerCase();
         String[] names = StringUtil.stringToArray(name, " ");
         if (names.length > 1) {
             return names[names.length - 1];
         }
-        return name;
+        return name.trim();
     }
 
     /**
