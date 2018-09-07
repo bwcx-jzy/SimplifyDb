@@ -280,8 +280,8 @@ public abstract class ReadBase<T> extends Base<T> {
         }
         name = name.toLowerCase();
         String[] names = StringUtil.stringToArray(name, " ");
-        if (name.length() == 3) {
-            return names[2];
+        if (names.length > 1) {
+            return names[names.length - 1];
         }
         return name;
     }
