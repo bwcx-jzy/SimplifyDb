@@ -14,6 +14,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 
 import javax.sql.DataSource;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -135,7 +136,7 @@ public class Select<T> extends ReadBase<T> {
                 case JsonArray:
                     return (t) JSON.toJSON(result);
                 case JsonObject: {
-                    if (result == null || result.size() < 1) {
+                    if (result.size() < 1) {
                         return null;
                     }
                     Map<String, Object> map = result.get(0);
@@ -147,7 +148,7 @@ public class Select<T> extends ReadBase<T> {
                     return (t) result;
                 case String:
                 case Integer: {
-                    if (result == null || result.size() < 1) {
+                    if (result.size() < 1) {
                         return null;
                     }
                     Map<String, Object> map = result.get(0);
@@ -161,14 +162,27 @@ public class Select<T> extends ReadBase<T> {
                         return (t) map.values().toArray()[0];
                     }
                     // 取指定列
-                    String[] columns = StringUtil.stringToArray(column);
-                    if (columns.length == 1) {
+                    String[] columns = StringUtil.stringToArray(column, ",");
+                    if (columns != null && columns.length == 1) {
+                        // 只有一列自动返回对应数据类型
+                        columns[0] = getRealColumnName(columns[0]);
                         return (t) map.get(columns[0]);
                     }
                     return (t) map;
                 }
+                case ListOneColumn:
+                    String[] columns = StringUtil.stringToArray(getColumns(), ",");
+                    if (columns == null || columns.length != 1) {
+                        throw new IllegalArgumentException(Result.ListOneColumn + " must set one columns");
+                    }
+                    columns[0] = getRealColumnName(columns[0]);
+                    List<t> list = new ArrayList<>(result.size());
+                    for (Map<String, Object> map : result) {
+                        list.add((t) map.get(columns[0]));
+                    }
+                    return (t) list;
                 default:
-                    break;
+                    return (t) result;
             }
         } catch (Exception e) {
             // TODO: handle exception

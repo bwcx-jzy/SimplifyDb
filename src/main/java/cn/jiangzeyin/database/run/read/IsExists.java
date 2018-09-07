@@ -165,10 +165,8 @@ public class IsExists<T> extends ReadBase<T> {
                 return (T) map.get("countSum");
             }
             if (keys.length == 1) {
-                String[] array = StringUtil.stringToArray(keys[0]);
-                if (array != null && array.length >= 3 && "as".equalsIgnoreCase(array[array.length - 2])) {
-                    return (T) map.get(array[array.length - 1]);
-                }
+                // 只有一列自动返回对应数据类型
+                keys[0] = getRealColumnName(keys[0]);
                 return (T) map.get(keys[0]);
             }
             return (T) map;

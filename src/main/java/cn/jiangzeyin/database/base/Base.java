@@ -112,9 +112,11 @@ public abstract class Base<T> {
     }
 
     protected void runEnd() {
+        if (DataSourceConfig.SQL_TIMEOUT <= 0) {
+            return;
+        }
         long time = System.currentTimeMillis() - runTime;
-        if (time > 2 * 1000L) {
-            // DatabaseContextHolder.getConnectionTagName();
+        if (time > DataSourceConfig.SQL_TIMEOUT) {
             String tagName = getTagName();
             DbLog.getInstance().warn(tagName + "执行时间过长：" + time + "  " + runSql);
         }

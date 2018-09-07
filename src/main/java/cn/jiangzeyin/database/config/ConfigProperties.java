@@ -114,6 +114,9 @@ public class ConfigProperties {
      * 默认外联主键名
      */
     public static final String PROP_SYSTEM_COLUMN_DEFAULT_KEY_NAME = PROP_SYSTEM_COLUMN + ".defaultKeyName";
-
+    /**
+     * 记录sql 执行超时时间
+     */
+    public static final String LOG_RUN_TIMEOUT_SQL_TIME = "log.sqlTimeOut";
 
 }

@@ -58,7 +58,11 @@ public abstract class ReadBase<T> extends Base<T> {
         /**
          * 分页信息查询
          */
-        PageResultType;
+        PageResultType,
+        /**
+         * 一列多行
+         */
+        ListOneColumn
     }
 
     protected ReadBase() {
@@ -263,6 +267,24 @@ public abstract class ReadBase<T> extends Base<T> {
 
     @SuppressWarnings("unchecked")
     public abstract <t> t run();
+
+    /**
+     * 获取as 后的列名
+     *
+     * @param name name
+     * @return as 后
+     */
+    protected String getRealColumnName(String name) {
+        if (StringUtil.isEmpty(name)) {
+            return name;
+        }
+        name = name.toLowerCase();
+        String[] names = StringUtil.stringToArray(name, " ");
+        if (name.length() == 3) {
+            return names[2];
+        }
+        return name;
+    }
 
     /**
      * @author jiangzeyin

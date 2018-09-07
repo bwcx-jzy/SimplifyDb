@@ -23,6 +23,8 @@ public final class DataSourceConfig {
     private static boolean active;
     private static PropertiesParser systemPropertiesParser;
 
+    public static long SQL_TIMEOUT = 2000L;
+
     public static boolean isActive() {
         return active;
     }
@@ -57,8 +59,10 @@ public final class DataSourceConfig {
         ModifyUser.initModify(systemPropertiesParser.getPropertyGroup(ConfigProperties.PROP_LAST_MODIFY));
         //
         ModifyUser.initCreate(systemPropertiesParser.getPropertyGroup(ConfigProperties.PROP_CREATE));
-        //
+        //  系统字段
         SystemColumn.init(systemPropertiesParser.getPropertyGroup(ConfigProperties.PROP_SYSTEM_COLUMN));
+        SQL_TIMEOUT = StringUtil.parseLong(systemPropertiesParser.getStringProperty(ConfigProperties.LOG_RUN_TIMEOUT_SQL_TIME, "2000"));
+
     }
 
     /**
