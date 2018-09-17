@@ -7,7 +7,7 @@
     <artifactId>simplifydb</artifactId>
     <version>1.3.0</version>
     <name>SimplifyDb</name>
-    <url>http://blog.csdn.net/jiangzeyin_</url>
+    <url>https://gitee.com/jiangzeyin/dbutil</url>
     <description>
         SimplifyDb
         是一个Java基于druid的一款简化写sql语句操作mysql的框架。本项目主要采用反射读写需要操作的实体和表，同时项目还是提供多种主键生成器和自定义主键生成器接口方便用户根据实际业务扩展主键生成器
