@@ -68,25 +68,25 @@ Simple-DbUtil 是一个Java基于druid的一款简化写sql语句操作mysql的�
 
 欢迎━(*｀∀´*)ノ亻!大家测评
 
-cn.jiangzeyin.database.config.DataSourceConfig  工具使用配置类
+cn.simplifydb.database.config.DataSourceConfig  工具使用配置类
 
-cn.jiangzeyin.system.DbLog  工具日志为了各个项目适配，使用了接口形式来提供记录日志
+cn.simplifydb.system.DbLog  工具日志为了各个项目适配，使用了接口形式来提供记录日志
 
-cn.jiangzeyin.database.run.read.IsExists 判断是否存在
+cn.simplifydb.database.run.read.IsExists 判断是否存在
 
-cn.jiangzeyin.database.run.read.Select 多种方式查询
+cn.simplifydb.database.run.read.Select 多种方式查询
 
-cn.jiangzeyin.database.run.read.SelectFunction 查询函数
+cn.simplifydb.database.run.read.SelectFunction 查询函数
 
-cn.jiangzeyin.database.run.read.SelectPage 分页查询
+cn.simplifydb.database.run.read.SelectPage 分页查询
 
-cn.jiangzeyin.database.run.write.Insert 添加数据
+cn.simplifydb.database.run.write.Insert 添加数据
 
-cn.jiangzeyin.database.run.write.Remove 删除数据
+cn.simplifydb.database.run.write.Remove 删除数据
 
-cn.jiangzeyin.database.run.write.Update 修改数据
+cn.simplifydb.database.run.write.Update 修改数据
 
-cn.jiangzeyin.database.run.write.Transaction 事物操作
+cn.simplifydb.database.run.write.Transaction 事物操作
 
 示例配置：(db.properties)
 
@@ -157,19 +157,19 @@ core.logAbandoned=true
 
 `**1.先设置日志接口**`
 
-cn.jiangzeyin.system.DbLog.setDbLogInterface()
+cn.simplifydb.system.DbLog.setDbLogInterface()
 
-方法传入cn.jiangzeyin.system.DbLog.DbLogInterface 接口主要负责记录util 执行日志
+方法传入cn.simplifydb.system.DbLog.DbLogInterface 接口主要负责记录util 执行日志
 
 **`2.开始初始化数据库连接`**
 
-cn.jiangzeyin.database.config.DataSourceConfig.init()  参数为配置文件的路径
+cn.simplifydb.database.config.DataSourceConfig.init()  参数为配置文件的路径
 
 支持file: 、classpath:  
 
 **`3.设置实体转换数据库接口（根据class 获取该实体存在的数据源中）`**
 
-cn.jiangzeyin.database.DbWriteService.setWriteInterface()
+cn.simplifydb.database.DbWriteService.setWriteInterface()
 
-方法传入cn.jiangzeyin.database.DbWriteService.WriteInterface 接口主要负责处理实体对应的数据源标记和实体数据库表名
+方法传入cn.simplifydb.database.DbWriteService.WriteInterface 接口主要负责处理实体对应的数据源标记和实体数据库表名
 
