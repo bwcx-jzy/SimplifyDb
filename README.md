@@ -1,10 +1,20 @@
-# dbutil
+#  Simple-DbUtil
 >在java 中我们有多种方式操作数据库，但是如果只是为了简单处理使用一些框架，在使用中还是显得麻烦。这里就整理一个简单快速操作数据库的一种方案
 
 
 [![Maven metadata URI](https://img.shields.io/maven-metadata/v/http/central.maven.org/maven2/cn/jiangzeyin/dbutil/maven-metadata.xml.svg)](https://mvnrepository.com/artifact/cn.jiangzeyin/dbutil)
 ![Hex.pm](https://img.shields.io/hexpm/l/plug.svg)
 ![jdk](https://img.shields.io/badge/JDK-1.8+-green.svg)
+
+## 简介
+Simple-DbUtil 是一个Java基于druid的一款免写sql语句操作mysql的框架。本项目主要采用反射读写需要操作的实体和表，同时项目还是提供多种主键生成器和自定义主键生成器接口方便用户根据实际业务扩展主键生成器
+> 项目特点
+> 1. 快速配置和操作多数据库
+> 2. 多数据源配置自动切换
+> 3. 提供多种主键生成器以及自定义主键生成器
+> 4. 全局统一记录数据创建人和修改人
+> 5. 快速配置逻辑删除功能
+
 
 ## 文档 
 
