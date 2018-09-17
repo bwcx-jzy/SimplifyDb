@@ -35,8 +35,8 @@ SimplifyDb 是一个Java基于druid的一款简化写sql语句操作mysql的框�
 
 ```xml
 <dependency>
-    <groupId>cn.jiangzeyin</groupId>
-    <artifactId>dbutil</artifactId>
+    <groupId>cn.simplifydb</groupId>
+    <artifactId>simplifydb</artifactId>
     <version>version</version>
 </dependency>
 ```
