@@ -623,8 +623,9 @@ public final class SqlUtil {
         if (base != null) {
             // 判断是否指定表名
             String tableName = base.getTableName();
-            if (!StringUtil.isEmpty(tableName))
+            if (!StringUtil.isEmpty(tableName)) {
                 return tableName;
+            }
             // 读取索引信息
             boolean isIndex = false;
             String index = null;
