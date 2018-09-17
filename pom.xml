@@ -3,12 +3,12 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <groupId>cn.jiangzeyin</groupId>
-    <artifactId>dbutil</artifactId>
+    <groupId>cn.simplifydb</groupId>
+    <artifactId>simplifydb</artifactId>
     <version>1.2.11</version>
-    <name>dbUtil</name>
+    <name>SimplifyDb</name>
     <url>http://blog.csdn.net/jiangzeyin_</url>
-    <description>java dbutil</description>
+    <description>SimplifyDb 是一个Java基于druid的一款简化写sql语句操作mysql的框架。本项目主要采用反射读写需要操作的实体和表，同时项目还是提供多种主键生成器和自定义主键生成器接口方便用户根据实际业务扩展主键生成器</description>
     <inceptionYear>2017</inceptionYear>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
