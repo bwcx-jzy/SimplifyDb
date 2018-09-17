@@ -348,10 +348,10 @@ public final class SqlUtil {
      */
     public static String[] getSelectPageSql(SelectPage<?> select) {
         StringBuffer sql = new StringBuffer("select ");
-        sql.append(select.getColumns())//
-                .append(" from ")//
-                .append(getTableName(select))//
-                .append(" ");//
+        sql.append(select.getColumns())
+                .append(" from ")
+                .append(getTableName(select))
+                .append(" ");
         String[] countSql = new String[2];
         countSql[0] = getCountSql(sql.toString(), select.getPage());
         countSql[1] = getMysqlPageSql(select.getPage(), sql);

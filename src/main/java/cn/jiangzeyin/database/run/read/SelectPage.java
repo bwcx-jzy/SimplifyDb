@@ -55,6 +55,17 @@ public class SelectPage<T> extends ReadBase<T> {
         this.page = page;
     }
 
+    @Override
+    public ReadBase setWhere(String where) {
+        appendWhere(where);
+        return this;
+    }
+
+    @Override
+    public ReadBase appendWhere(String where) {
+        throw new IllegalArgumentException("where please use page");
+    }
+
     /**
      * @return 结果
      * @author jiangzeyin
