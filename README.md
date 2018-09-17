@@ -1,3 +1,6 @@
+<p align="center">
+<img src="https://images.gitee.com/uploads/images/2018/0917/155220_c5663c74_804942.png" width="400">
+</p>
 #  SimplifyDb
 >在java 中我们有多种方式操作数据库，但是如果只是为了简单处理使用一些框架，在使用中还是显得麻烦。这里就整理一个简单快速操作数据库的一种方案
 
