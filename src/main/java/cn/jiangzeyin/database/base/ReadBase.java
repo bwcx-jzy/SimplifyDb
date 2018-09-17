@@ -47,13 +47,6 @@ public abstract class ReadBase<T> extends Base<T> {
          * 默认第一行第一列
          */
         String,
-        /**
-         * 支持取一行数据
-         * <p>
-         * columns 确定取值的列名
-         * <p>
-         * 默认第一行第一列
-         */
         Integer,
         /**
          * 分页信息查询
