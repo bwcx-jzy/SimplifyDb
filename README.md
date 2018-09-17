@@ -159,7 +159,7 @@ core.logAbandoned=true
 
 #**初始化**：
 
-`**1.先设置日志接口**`
+**`1.先设置日志接口`**
 
 cn.simplifydb.system.DbLog.setDbLogInterface()
 
