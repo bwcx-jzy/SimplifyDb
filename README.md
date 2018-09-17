@@ -45,7 +45,7 @@ Simple-DbUtil 是一个Java基于druid的一款简化写sql语句操作mysql的�
 ### 提供bug反馈或建议
 
 - [码云](https://gitee.com/iangzeyin/dbutil/issues)
-- [Gtihub](https://github.com/jiangzeyin/dbutil/issues)
+- [Github](https://github.com/jiangzeyin/dbutil/issues)
 
 
 ## 项目特点：(使用druid 连接池)
