@@ -1,6 +1,7 @@
 package cn.simplifydb.database;
 
 import cn.jiangzeyin.StringUtil;
+import com.alibaba.druid.sql.parser.Token;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
@@ -84,7 +85,7 @@ public class Page<T> {
         if (StringUtil.isEmpty(this.whereWord)) {
             this.whereWord = whereWord;
         } else {
-            this.whereWord += " and " + whereWord;
+            this.whereWord += " " + Token.AND.name + " " + whereWord;
         }
         return this;
     }

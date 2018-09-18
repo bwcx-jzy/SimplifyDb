@@ -105,7 +105,7 @@ public class SelectPage<T> extends ReadBase<T> {
             if (count > 0) {
                 // 查询数据
                 setRunSql(pageSql[1]);
-                DbLog.getInstance().info(getTransferLog() + pageSql[1]);
+                DbLog.getInstance().info(getTransferLog() + getRunSql());
                 errorSql = null;
                 list = JdbcUtils.executeQuery(dataSource, pageSql[1], getParameters());
             } else {

@@ -5,7 +5,7 @@ package cn.simplifydb.database.config;
  *
  * @author jiangzeyin
  */
-public class ConfigProperties {
+public final class ConfigProperties {
     /**
      * 多数据库标识
      */

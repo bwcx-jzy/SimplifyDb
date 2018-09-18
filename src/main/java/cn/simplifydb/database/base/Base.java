@@ -108,6 +108,9 @@ public abstract class Base<T> {
     }
 
     protected void setRunSql(String runSql) {
+        if (!StringUtil.isEmpty(runSql)) {
+            runSql = runSql.replaceAll("[\r\n]", " ");
+        }
         this.runSql = runSql;
     }
 
