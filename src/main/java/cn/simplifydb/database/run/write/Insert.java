@@ -15,6 +15,7 @@ import com.alibaba.druid.util.JdbcUtils;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -25,6 +26,14 @@ import java.util.List;
 public class Insert<T> extends WriteBase<T> {
 
     private List<T> list;
+    /**
+     * 是否批量执行插入操作
+     */
+    private boolean batch;
+
+    public void setBatch(boolean batch) {
+        this.batch = batch;
+    }
 
     public List<T> getList() {
         return list;
@@ -158,55 +167,11 @@ public class Insert<T> extends WriteBase<T> {
             }
             // 添加集合（多个对象）
             if (this.list != null && this.list.size() > 0) {
-                Connection connection = null;
-                try {
-                    SqlAndParameters[] sqlAndParameters = SqlUtil.getInsertSqls(this);
-                    setRunSql("more:" + sqlAndParameters[0].getSql());
-                    for (int i = 0; i < sqlAndParameters.length; i++) {
-                        data = this.list.get(i);
-                        if (data == null) {
-                            continue;
-                        }
-                        if (transactionConnection == null) {
-                            String tag = DbWriteService.getInstance().getDatabaseName(data.getClass());
-                            connection = DatabaseContextHolder.getWriteConnection(tag);
-                        } else {
-                            connection = transactionConnection;
-                        }
-                        event = getEvent(data);
-                        if (event != null) {
-                            Event.BeforeCode beforeCode = event.beforeInsert(this, data);
-                            if (beforeCode == InsertEvent.BeforeCode.END) {
-                                DbLog.getInstance().info("本次执行取消：" + data + " " + list);
-                                continue;
-                            }
-                        }
-                        DbLog.getInstance().info(sqlAndParameters[i].getSql());
-                        Object key = JdbcUtil.executeInsert(connection, sqlAndParameters[i].getSql(), sqlAndParameters[i].getParameters());
-                        if (key == null) {
-                            key = DbReflectUtil.getFieldValue(data, SystemColumn.getDefaultKeyName());
-                        } else {
-                            DbReflectUtil.setFieldValue(data, SystemColumn.getDefaultKeyName(), key);
-                        }
-                        if (event != null) {
-                            event.completeInsert(key);
-                        }
-                        if (callback != null) {
-                            //   异步回调如果  key是null 则 直接 返回实体
-                            if (key == null) {
-                                key = data;
-                            }
-                            callback.success(key);
-                        }
-                    }
-                    return 1;
-                } finally {
-                    // TODO: handle exception
-                    if (transactionConnection == null) {
-                        //  事物连接有事物对象管理
-                        JdbcUtils.close(connection);
-                    }
+                if (batch) {
+                    return batchRun(callback);
                 }
+                // 挨个执行
+                return itemRun(callback);
             }
             throw new RuntimeException("please add data");
         } catch (Exception e) {
@@ -220,5 +185,115 @@ public class Insert<T> extends WriteBase<T> {
             recycling();
         }
         return null;
+    }
+
+    private int batchRun(Callback callback) throws Exception {
+        SqlAndParameters[] sqlAndParameters = SqlUtil.getInsertSqls(this);
+        String sqlFirst = null;
+        String sql;
+        int valuesIndex;
+        StringBuilder values = new StringBuilder();
+        String valuesSql;
+        int valueIndex;
+        StringBuilder showSql = new StringBuilder();
+        for (SqlAndParameters item : sqlAndParameters) {
+            sql = item.getSql();
+            valuesIndex = sql.indexOf("values");
+            if (valuesIndex <= -1) {
+                throw new RuntimeException("sql error not find values[" + sql + "]");
+            }
+            valuesIndex += 6;
+            if (sqlFirst == null) {
+                sqlFirst = sql.substring(0, valuesIndex);
+            }
+            valuesSql = sql.substring(valuesIndex);
+            valueIndex = 0;
+            if (values.length() > 0) {
+                values.append(",");
+                showSql.append(",");
+            }
+            for (char ch : valuesSql.toCharArray()) {
+                if (ch == '?') {
+                    values.append("'").append(item.getParameters().get(valueIndex++)).append("'");
+                } else {
+                    values.append(ch);
+                }
+                showSql.append(ch);
+            }
+        }
+        values.insert(0, sqlFirst);
+        values.append(";");
+        showSql.insert(0, sqlFirst);
+        showSql.append(";");
+        setRunSql(showSql.toString());
+        DbLog.getInstance().info(getTransferLog() + getRunSql());
+        int count;
+        if (transactionConnection == null) {
+            String tag = DbWriteService.getInstance().getDatabaseName(list.get(0).getClass());
+            DataSource dataSource = DatabaseContextHolder.getWriteDataSource(tag);
+            count = JdbcUtils.executeUpdate(dataSource, values.toString());
+        } else {
+            count = JdbcUtils.executeUpdate(transactionConnection, values.toString(), Collections.EMPTY_LIST);
+        }
+        if (callback != null) {
+            callback.success(count);
+        }
+        return count;
+    }
+
+    private int itemRun(Callback callback) throws Exception {
+        Connection connection = null;
+        T data;
+        InsertEvent event;
+        int successCount = 0;
+        try {
+            SqlAndParameters[] sqlAndParameters = SqlUtil.getInsertSqls(this);
+            setRunSql("more:" + sqlAndParameters[0].getSql());
+            for (int i = 0; i < sqlAndParameters.length; i++) {
+                data = this.list.get(i);
+                if (data == null) {
+                    continue;
+                }
+                if (transactionConnection == null) {
+                    String tag = DbWriteService.getInstance().getDatabaseName(data.getClass());
+                    connection = DatabaseContextHolder.getWriteConnection(tag);
+                } else {
+                    connection = transactionConnection;
+                }
+                event = getEvent(data);
+                if (event != null) {
+                    Event.BeforeCode beforeCode = event.beforeInsert(this, data);
+                    if (beforeCode == InsertEvent.BeforeCode.END) {
+                        DbLog.getInstance().info("本次执行取消：" + data + " " + list);
+                        continue;
+                    }
+                }
+                DbLog.getInstance().info(sqlAndParameters[i].getSql());
+                Object key = JdbcUtil.executeInsert(connection, sqlAndParameters[i].getSql(), sqlAndParameters[i].getParameters());
+                if (key == null) {
+                    key = DbReflectUtil.getFieldValue(data, SystemColumn.getDefaultKeyName());
+                } else {
+                    DbReflectUtil.setFieldValue(data, SystemColumn.getDefaultKeyName(), key);
+                }
+                if (event != null) {
+                    event.completeInsert(key);
+                }
+                if (callback != null) {
+                    //   异步回调如果  key是null 则 直接 返回实体
+                    if (key == null) {
+                        key = data;
+                    }
+                    callback.success(key);
+                }
+                successCount++;
+            }
+        } finally {
+            // TODO: handle exception
+            if (transactionConnection == null) {
+                //  事物连接有事物对象管理
+                JdbcUtils.close(connection);
+            }
+        }
+        return successCount;
     }
 }

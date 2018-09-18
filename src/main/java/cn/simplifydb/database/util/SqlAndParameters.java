@@ -8,7 +8,8 @@ import java.util.List;
  *
  * @author jiangzeyin
  */
-public class SqlAndParameters {
+public final class SqlAndParameters {
+
     private String sql;
     private List<Object> parameters;
     private List<String> columns;
@@ -48,5 +49,15 @@ public class SqlAndParameters {
 
     public void setParameters(List<Object> parameters) {
         this.parameters = parameters;
+    }
+
+    @Override
+    public String toString() {
+        return "SqlAndParameters{" +
+                "sql='" + sql + '\'' +
+                ", parameters=" + parameters +
+                ", columns=" + columns +
+                ", systemMap=" + systemMap +
+                '}';
     }
 }

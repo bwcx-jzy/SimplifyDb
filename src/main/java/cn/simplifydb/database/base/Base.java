@@ -111,6 +111,15 @@ public abstract class Base<T> {
         this.runSql = runSql;
     }
 
+    /**
+     * 获取运行的sql
+     *
+     * @return sql
+     */
+    public String getRunSql() {
+        return runSql;
+    }
+
     protected void runEnd() {
         if (DataSourceConfig.SQL_TIMEOUT <= 0) {
             return;
