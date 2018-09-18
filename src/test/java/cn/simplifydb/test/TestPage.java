@@ -54,7 +54,7 @@ public class TestPage {
     @Test
     public void page3() {
         Page<cn.simplifydb.entity.test.Test> page = new Page<>();
-        page.setPageNoAndSize(2, 2);
+        page.setPageNoAndSize(3, 2);
         page.setWhereWord("id>2");
         page.setOrderBy("id desc");
         SelectPage<cn.simplifydb.entity.test.Test> testSelect = new SelectPage<cn.simplifydb.entity.test.Test>(page) {

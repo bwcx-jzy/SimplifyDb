@@ -378,8 +378,6 @@ public final class SqlUtil {
         if (!StringUtil.isEmpty(page.getOrderBy())) {
             sql.append(" order by ").append(page.getOrderBy());
         }
-
-        System.out.println(offset);
         countSql[1] = PagerUtils.limit(sql.toString(), JdbcConstants.MYSQL, offset, (int) page.getPageSize());
         return countSql;
     }
