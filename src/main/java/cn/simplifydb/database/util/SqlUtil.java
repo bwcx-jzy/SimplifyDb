@@ -54,8 +54,9 @@ public final class SqlUtil {
      * @author jiangzeyin
      */
     private static SqlAndParameters getWriteSql(WriteBase<?> write, Object data) throws Exception {
-        if (data == null)
+        if (data == null) {
             data = write.getData();
+        }
         Objects.requireNonNull(data, String.format("%s", write.getTclass(false)));
 
         List<String> columns = new ArrayList<>();
@@ -85,8 +86,9 @@ public final class SqlUtil {
         List<?> fieldList = DbReflectUtil.getDeclaredFields(classT);
         for (Object object : fieldList) {
             Field field = (Field) object;
-            if (!isWrite(field))
+            if (!isWrite(field)) {
                 continue;
+            }
             String name = field.getName();
             // 判断排除字段
             if (remove != null && remove.contains(name.toLowerCase())) {
@@ -97,19 +99,22 @@ public final class SqlUtil {
             if (SystemColumn.isWriteRemove(name)) {
                 if (insertColumns == null || !insertColumns.contains(name.toLowerCase())) {
                     fieldConfig = field.getAnnotation(FieldConfig.class);
-                    if (fieldConfig == null)
+                    if (fieldConfig == null) {
                         continue;
+                    }
                     Class<? extends ISequence> sequenceCls = fieldConfig.sequence();
                     ISequence sequence = SequenceConfig.parseSequence(sequenceCls);
-                    if (sequence == null)
+                    if (sequence == null) {
                         continue;
+                    }
                 }
             }
             // 去掉mark 字段
             if (entityConfig != null) {
                 if (!entityConfig.baseMark()) {
-                    if ("mark".equals(name))
+                    if ("mark".equals(name)) {
                         continue;
+                    }
                 }
                 if (!entityConfig.update() && name.equalsIgnoreCase(SystemColumn.Modify.getColumn())) {
                     continue;
@@ -117,8 +122,9 @@ public final class SqlUtil {
             }
             // 判断insert 注解
             if (isInsert) {
-                if (fieldConfig == null)
+                if (fieldConfig == null) {
                     fieldConfig = field.getAnnotation(FieldConfig.class);
+                }
                 // 获取字段属性
                 if (fieldConfig != null) {
                     String insertDelValue = fieldConfig.insertDefValue();
@@ -150,22 +156,26 @@ public final class SqlUtil {
                 }
             } else {
                 // 修改
-                if (SystemColumn.notCanUpdate(name))
+                if (SystemColumn.notCanUpdate(name)) {
                     continue;
-                if (fieldConfig == null)
+                }
+                if (fieldConfig == null) {
                     fieldConfig = field.getAnnotation(FieldConfig.class);
+                }
                 if (fieldConfig != null) {
                     Class<? extends ISequence> sequenceCls = fieldConfig.sequence();
                     ISequence sequence = SequenceConfig.parseSequence(sequenceCls);
-                    if (sequence != null)
+                    if (sequence != null) {
                         continue;
+                    }
                 }
             }
             columns.add(name);
             // 判断是否为系统字段
             String value1 = SystemColumn.getDefaultValue(name);
             if (value1 == null) {
-                Object va = field.get(data);// DbReflectUtil.getFieldValue(data, name);
+                // DbReflectUtil.getFieldValue(data, name);
+                Object va = field.get(data);
                 // 密码字段
                 if (SystemColumn.getPwdColumn().equalsIgnoreCase(name)) {
                     systemMap.put(name, "PASSWORD(?)");
@@ -239,8 +249,9 @@ public final class SqlUtil {
         SqlAndParameters[] andParameters = new SqlAndParameters[list.size()];
         for (int i = 0; i < andParameters.length; i++) {
             Object object = list.get(i);
-            if (object == null)
+            if (object == null) {
                 continue;
+            }
             SqlAndParameters sqlAndParameters = getWriteSql(insert, object);
             int isDelete = SystemColumn.Active.NO_ACTIVE;
             if (!StringUtils.isEmpty(SystemColumn.Active.getColumn())) {
@@ -271,8 +282,9 @@ public final class SqlUtil {
         Class<?> class1 = update.getTclass();
         EntityConfig entityConfig = class1.getAnnotation(EntityConfig.class);
         boolean isLogUpdate = true;
-        if (entityConfig != null && !entityConfig.update())
+        if (entityConfig != null && !entityConfig.update()) {
             isLogUpdate = false;
+        }
         // 更新部分列
         if (update.getUpdate() != null) {
             sqlAndParameters = new SqlAndParameters();
@@ -324,17 +336,18 @@ public final class SqlUtil {
         sqlAndParameters.setSql(sbSql);
         // 追加where 的参数
         List<Object> parameters;
-        if (update.getUpdate() == null)
+        if (update.getUpdate() == null) {
             parameters = sqlAndParameters.getParameters();
-        else {
+        } else {
             List<Object> paList = new LinkedList<>();
             Collections.addAll(paList, update.getUpdate().values().toArray());
             parameters = paList;
         }
-        if (parameters == null)
+        if (parameters == null) {
             parameters = update.getWhereParameters();
-        else if (update.getWhereParameters() != null)
+        } else if (update.getWhereParameters() != null) {
             parameters.addAll(update.getWhereParameters());
+        }
         sqlAndParameters.setParameters(parameters);
         return sqlAndParameters;
     }
@@ -413,8 +426,9 @@ public final class SqlUtil {
             sql.append(tempWhere.startsWith("or") ? "" : " and ").append(where);
         }
         int limit = isExists.getLimit();
-        if (limit <= 0)
+        if (limit <= 0) {
             limit = 1;
+        }
         sql.append(" limit ").append(limit);
         return sql.toString();
     }
@@ -439,8 +453,9 @@ public final class SqlUtil {
             int status = type == Remove.Type.remove ? SystemColumn.Active.getInActiveValue() : SystemColumn.Active.getActiveValue();
             EntityConfig entityConfig = cls.getAnnotation(EntityConfig.class);
             boolean isLogUpdate = true;
-            if (entityConfig != null && !entityConfig.update())
+            if (entityConfig != null && !entityConfig.update()) {
                 isLogUpdate = false;
+            }
             sql.append("update ")//
                     .append(getTableName(remove, cls))//
                     .append(String.format(" set " + SystemColumn.Active.getColumn() + "=%d", status));
@@ -456,8 +471,9 @@ public final class SqlUtil {
                     List<Object> list = new LinkedList<>(columns.values());
                     List<Object> oldList = remove.getParameters();
                     remove.setParameters(list);
-                    if (oldList != null)
+                    if (oldList != null) {
                         remove.setParameters(oldList.toArray());
+                    }
                 }
             }
             loadModifyUser(remove, sql);
@@ -485,8 +501,9 @@ public final class SqlUtil {
      */
     private static void loadModifyUser(Base<?> base, StringBuilder stringBuffer) {
         int optUserId = base.getOptUserId();
-        if (optUserId < 1)
+        if (optUserId < 1) {
             return;
+        }
         Class cls = base.getTclass();
         if (ModifyUser.Modify.isModifyClass(cls)) {
             stringBuffer.append(",").append(ModifyUser.Modify.getColumnUser()).append("=").append(optUserId);
@@ -521,8 +538,9 @@ public final class SqlUtil {
         if (!StringUtils.isEmpty(select.getWhere())) {
             sql.append(isWhere ? " and " : " where ")//
                     .append(select.getWhere());
-            if (!isWhere)
+            if (!isWhere) {
                 isWhere = true;
+            }
         }
         // 查询数据状态
         if (select.getIsDelete() != SystemColumn.Active.NO_ACTIVE) {
@@ -537,14 +555,15 @@ public final class SqlUtil {
         }
         // limit
         {
-            if (select.getLimitStart() == 0 && select.getLimitCount() != 0)
+            if (select.getLimitStart() == 0 && select.getLimitCount() != 0) {
                 sql.append(" limit ")//
                         .append(select.getLimitCount());
-            else if (select.getLimitStart() > 0)
+            } else if (select.getLimitStart() > 0) {
                 sql.append(" limit ")//
                         .append(select.getLimitStart())//
                         .append(",")//
                         .append(select.getLimitCount());
+            }
         }
         return sql.toString();
     }
@@ -650,12 +669,14 @@ public final class SqlUtil {
     public static String function(String functionName, List<Object> parameters) {
         StringBuilder sb = new StringBuilder();
         sb.append("select ").append(functionName).append("(");
-        if (parameters != null && parameters.size() > 0)
+        if (parameters != null && parameters.size() > 0) {
             for (int i = 0; i < parameters.size(); i++) {
-                if (i > 0)
+                if (i > 0) {
                     sb.append(",");
+                }
                 sb.append("?");
             }
+        }
         sb.append(")");
         return sb.toString();
     }
@@ -688,9 +709,9 @@ public final class SqlUtil {
             if (nameCount > 0) {
                 value.append(",");
             }
-            if (va == null)
+            if (va == null) {
                 value.append("?");
-            else {
+            } else {
                 if (isDeleteValue != SystemColumn.Active.NO_ACTIVE && SystemColumn.Active.getColumn().equals(name)) {
                     value.append(isDeleteValue);
                     isDelete = true;
@@ -740,16 +761,18 @@ public final class SqlUtil {
             sql.append(name);
             sql.append("=");
             String va = systemMap.get(name);
-            if (va == null)
+            if (va == null) {
                 sql.append("?");
-            else
+            } else {
                 sql.append(va);
+            }
             nameCount++;
         }
         if (isLogUpdate && SystemColumn.Modify.isStatus()) {
             String time = SystemColumn.Modify.getColumn() + "=" + SystemColumn.Modify.getTime();
-            if (sql.indexOf(time) == -1)
+            if (sql.indexOf(time) == -1) {
                 sql.append(",").append(time);
+            }
         }
         return sql.toString();
     }
@@ -775,8 +798,9 @@ public final class SqlUtil {
     }
 
     private static void makeUpdateColumns(StringBuilder sql, HashMap<String, Object> columns) {
-        if (columns == null)
+        if (columns == null) {
             return;
+        }
         int nameCount = 0;
         Iterator<Map.Entry<String, Object>> iterator = columns.entrySet().iterator();
         while (iterator.hasNext()) {
@@ -805,8 +829,9 @@ public final class SqlUtil {
                             sql.append("?");
                         }
                     }
-                } else
+                } else {
                     sql.append(va);
+                }
             }
             nameCount++;
         }

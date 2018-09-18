@@ -1,3 +1,5 @@
+package test;
+
 import cn.simplifydb.database.run.read.Select;
 
 /**

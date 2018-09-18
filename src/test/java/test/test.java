@@ -1,3 +1,5 @@
+package test;
+
 import cn.simplifydb.sequence.IQuietSequence;
 import cn.simplifydb.sequence.SequenceConfig;
 import cn.simplifydb.sequence.impl.IdSequence;

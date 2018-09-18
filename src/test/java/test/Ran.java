@@ -1,3 +1,5 @@
+package test;
+
 import cn.jiangzeyin.StringUtil;
 
 import java.util.Arrays;
