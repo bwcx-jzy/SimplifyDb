@@ -182,11 +182,14 @@ cn.simplifydb.system.DbLog.setDbLogInterface()
 
 cn.simplifydb.database.config.DataSourceConfig.init()  参数为配置文件的路径
 
-支持file: 、classpath:  
+支持file: 、classpath: 、Properties
 
 **`3.设置实体转换数据库接口（根据class 获取该实体存在的数据源中）`**
 
 cn.simplifydb.database.DbWriteService.setWriteInterface()
 
 方法传入cn.simplifydb.database.DbWriteService.WriteInterface 接口主要负责处理实体对应的数据源标记和实体数据库表名
+
+
+## 更多使用示例：[src/test/java/cn/simplifydb](src/test/java/cn/simplifydb)
 
