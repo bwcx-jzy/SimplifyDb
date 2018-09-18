@@ -20,6 +20,8 @@ SimplifyDb 是一个Java基于druid的一款简化写sql语句操作mysql的框�
 > 5. 快速配置逻辑删除功能
 > 6. 写操作支持异步执行
 
+#### 使用示例：[https://gitee.com/jiangzeyin/simplifydb-demo](https://gitee.com/jiangzeyin/simplifydb-demo)
+
 
 ## 文档 
 

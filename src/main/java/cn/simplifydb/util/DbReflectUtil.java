@@ -30,6 +30,9 @@ public class DbReflectUtil {
     public static Object getFieldValue(Object obj, String fieldName) throws IllegalAccessException {
         Objects.requireNonNull(obj);
         Field field = getField(obj.getClass(), fieldName);
+        if (field == null) {
+            return null;
+        }
         return field.get(obj);
     }
 
