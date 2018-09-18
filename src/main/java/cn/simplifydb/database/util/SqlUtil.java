@@ -21,6 +21,8 @@ import cn.simplifydb.sequence.IQuietSequence;
 import cn.simplifydb.sequence.ISequence;
 import cn.simplifydb.sequence.SequenceConfig;
 import cn.simplifydb.util.DbReflectUtil;
+import com.alibaba.druid.sql.PagerUtils;
+import com.alibaba.druid.util.JdbcConstants;
 import com.alibaba.druid.util.StringUtils;
 
 import java.lang.reflect.Field;
@@ -365,17 +367,37 @@ public final class SqlUtil {
                 .append(" from ")
                 .append(getTableName(select))
                 .append(" ");
+
+        Page page = select.getPage();
+        doWhere(sql, page);
         String[] countSql = new String[2];
-        countSql[0] = getCountSql(sql.toString(), select.getPage());
-        countSql[1] = getMysqlPageSql(select.getPage(), sql);
+        countSql[0] = PagerUtils.count(sql.toString(), JdbcConstants.MYSQL);
+
+        int offset = (int) ((page.getPageNo() - 1) * page.getPageSize());
+        // 判断是否需要排序
+        if (!StringUtil.isEmpty(page.getOrderBy())) {
+            sql.append(" order by ").append(page.getOrderBy());
+        }
+
+        System.out.println(offset);
+        countSql[1] = PagerUtils.limit(sql.toString(), JdbcConstants.MYSQL, offset, (int) page.getPageSize());
         return countSql;
     }
 
     public static String[] getSelectPageSql(Page<?> page) {
         StringBuffer sql = new StringBuffer(page.getSql());
+
+        doWhere(sql, page);
         String[] countSql = new String[2];
-        countSql[0] = getCountSql(sql.toString(), page);
-        countSql[1] = getMysqlPageSql(page, sql);
+        countSql[0] = PagerUtils.count(sql.toString(), JdbcConstants.MYSQL);
+
+        int offset = (int) ((page.getPageNo() - 1) * page.getPageSize());
+        // 判断是否需要排序
+        if (!StringUtil.isEmpty(page.getOrderBy())) {
+            sql.append(" order by ").append(page.getOrderBy());
+        }
+
+        countSql[1] = PagerUtils.limit(sql.toString(), JdbcConstants.MYSQL, offset, (int) page.getPageSize());
         return countSql;
     }
 
@@ -388,12 +410,12 @@ public final class SqlUtil {
      * @author jiangzeyin
      */
     static String getRefSql(Class<?> ref, String keyColumn, String where) {
-        StringBuilder sql = new StringBuilder("select ")//
-                .append(" * from ")//
-                .append(getTableName(null, ref))//
-                .append(" where ")//
-                .append(keyColumn)//
-                .append("=?");//
+        StringBuilder sql = new StringBuilder("select ")
+                .append(" * from ")
+                .append(getTableName(null, ref))
+                .append(" where ")
+                .append(keyColumn)
+                .append("=?");
         if (!StringUtils.isEmpty(where)) {
             sql.append(" and ").append(where);
         }
@@ -409,17 +431,17 @@ public final class SqlUtil {
      * @author jiangzeyin
      */
     public static String getIsExistsSql(IsExists isExists, Class<?> clas, String keyColumn, String where) {
-        StringBuilder sql = new StringBuilder("select ");//
+        StringBuilder sql = new StringBuilder("select ");
         String column = isExists.getColumns();
         if (StringUtils.isEmpty(column)) {
-            sql.append(" count(1) as countSum from ");//
+            sql.append(" count(1) as countSum from ");
         } else {
-            sql.append(" ").append(column).append(" from ");//
+            sql.append(" ").append(column).append(" from ");
         }
-        sql.append(getTableName(isExists, clas))//
-                .append(" where ")//
-                .append(keyColumn)//
-                .append("=?");//
+        sql.append(getTableName(isExists, clas))
+                .append(" where ")
+                .append(keyColumn)
+                .append("=?");
         if (!StringUtils.isEmpty(where)) {
             // 判断or 条件
             String tempWhere = where.toLowerCase().trim();
@@ -521,22 +543,22 @@ public final class SqlUtil {
      */
     public static String getSelectSql(Select<?> select) throws IllegalArgumentException {
         StringBuilder sql = new StringBuilder("select ");
-        sql.append(select.getColumns())//
+        sql.append(select.getColumns())
                 .append(" from ")
-                .append(getTableName(select))//
-                .append(" ");//
+                .append(getTableName(select))
+                .append(" ");
         boolean isWhere = false;
         // datakey
         if (!StringUtils.isEmpty(StringUtil.convertNULL(select.getKeyValue()))) {
             isWhere = true;
-            sql.append("where ")//
-                    .append(select.getKeyColumn())//
-                    .append("=")//
+            sql.append("where ")
+                    .append(select.getKeyColumn())
+                    .append("=")
                     .append("'").append(select.getKeyValue()).append("'");
         }
         // 条件
         if (!StringUtils.isEmpty(select.getWhere())) {
-            sql.append(isWhere ? " and " : " where ")//
+            sql.append(isWhere ? " and " : " where ")
                     .append(select.getWhere());
             if (!isWhere) {
                 isWhere = true;
@@ -550,41 +572,22 @@ public final class SqlUtil {
         }
         // 排序
         if (!StringUtils.isEmpty(select.getOrderBy())) {
-            sql.append(" order by ")//
+            sql.append(" order by ")
                     .append(select.getOrderBy());
         }
         // limit
         {
             if (select.getLimitStart() == 0 && select.getLimitCount() != 0) {
-                sql.append(" limit ")//
+                sql.append(" limit ")
                         .append(select.getLimitCount());
             } else if (select.getLimitStart() > 0) {
-                sql.append(" limit ")//
-                        .append(select.getLimitStart())//
-                        .append(",")//
+                sql.append(" limit ")
+                        .append(select.getLimitStart())
+                        .append(",")
                         .append(select.getLimitCount());
             }
         }
         return sql.toString();
-    }
-
-    /**
-     * mysql 分页
-     *
-     * @param page      page
-     * @param sqlBuffer sql
-     * @return sql
-     * @author jiangzeyin
-     */
-    private static String getMysqlPageSql(Page<?> page, StringBuffer sqlBuffer) {
-        // 计算第一条记录的位置，Mysql中记录的位置是从0开始的。
-        long offset = (page.getPageNo() - 1) * page.getPageSize();
-        // 条件
-        doWhere(sqlBuffer, page);
-        // 判断是否需要排序
-        doCount(sqlBuffer, page);
-        sqlBuffer.append(" limit ").append(offset).append(",").append(page.getPageSize());
-        return sqlBuffer.toString();
     }
 
     private static void doWhere(StringBuffer sqlBuffer, Page page) {
@@ -598,27 +601,21 @@ public final class SqlUtil {
         }
     }
 
-    private static void doCount(StringBuffer stringBuffer, Page page) {
-        if (!StringUtil.isEmpty(page.getOrderBy())) {
-            stringBuffer.append(" order by ").append(page.getOrderBy());
-        }
-    }
-
-    /**
-     * 获取分页总数sql
-     *
-     * @param sql  sql
-     * @param page page
-     * @return sql
-     * @author jiangzeyin
-     */
-    private static String getCountSql(String sql, Page<?> page) {
-        StringBuffer sqlBuffer = new StringBuffer(sql);
-        doWhere(sqlBuffer, page);
-        //
-        //doCount(sqlBuffer, page);
-        return "select count(1)  as count from (" + sqlBuffer + ") as total";
-    }
+//    /**
+//     * 获取分页总数sql
+//     *
+//     * @param sql  sql
+//     * @param page page
+//     * @return sql
+//     * @author jiangzeyin
+//     */
+//    private static String getCountSql(String sql, Page<?> page) {
+//        StringBuffer sqlBuffer = new StringBuffer(sql);
+//
+//        //
+//        //doCount(sqlBuffer, page);
+//        return "select count(1)  as count from (" + sqlBuffer + ") as total";
+//    }
 
     /**
      * 获取表明 默认添加索引
