@@ -1,4 +1,4 @@
-### 使用的JDK版本、dbUtil 版本
+### 使用的JDK版本、SimplifyDb 版本
 
 ### 问题描述（包括截图）
 
