@@ -1,6 +1,7 @@
 package cn.simplifydb.entity.test1;
 
 /**
+ * 2号数据库
  * Created by jiangzeyin on 2018/9/18.
  */
 public class Db2Test {
