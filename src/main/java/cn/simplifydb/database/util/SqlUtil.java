@@ -22,6 +22,7 @@ import cn.simplifydb.sequence.ISequence;
 import cn.simplifydb.sequence.SequenceConfig;
 import cn.simplifydb.util.DbReflectUtil;
 import com.alibaba.druid.sql.PagerUtils;
+import com.alibaba.druid.sql.parser.Token;
 import com.alibaba.druid.util.JdbcConstants;
 import com.alibaba.druid.util.StringUtils;
 
@@ -75,11 +76,11 @@ public final class SqlUtil {
         if (isInsert) {
             entityConfig = (EntityConfig) classT.getAnnotation(EntityConfig.class);
             if (entityConfig != null) {
-                String insertColumns_ = entityConfig.insertColumns();
-                String[] columns_ = StringUtil.stringToArray(insertColumns_, ",");
-                if (columns_ != null) {
+                String insertColumns2 = entityConfig.insertColumns();
+                String[] columns2 = StringUtil.stringToArray(insertColumns2, ",");
+                if (columns2 != null) {
                     insertColumns = new ArrayList<>();
-                    for (String columnItem : columns_) {
+                    for (String columnItem : columns2) {
                         insertColumns.add(columnItem.toLowerCase());
                     }
                 }
@@ -307,9 +308,9 @@ public final class SqlUtil {
         if (!StringUtils.isEmpty(StringUtil.convertNULL(update.getKeyValue()))) {
             sbSql.append(" where ");
             sbSql.append(update.getKeyColumn());
-            sbSql.append("=")//
-                    .append("'")//
-                    .append(update.getKeyValue())//
+            sbSql.append("=")
+                    .append("'")
+                    .append(update.getKeyValue())
                     .append("'");
             isAppendWhere = true;
             isWhere = true;
@@ -328,9 +329,9 @@ public final class SqlUtil {
                 sbSql.append(" where id=");
                 sbSql.append(Long.parseLong(objId.toString()));
             } else {
-                sbSql.append(" where ")//
-                        .append(update.getKeyColumn())//
-                        .append("=")//
+                sbSql.append(" where ")
+                        .append(update.getKeyColumn())
+                        .append("=")
                         .append(update.getKeyValue());
             }
         }
@@ -365,8 +366,8 @@ public final class SqlUtil {
         StringBuffer sql = new StringBuffer("select ");
         sql.append(select.getColumns())
                 .append(" from ")
-                .append(getTableName(select))
-                .append(" ");
+                .append(getTableName(select));
+//                .append(" ");
 
         Page page = select.getPage();
         doWhere(sql, page);
@@ -467,7 +468,7 @@ public final class SqlUtil {
         String ids = remove.getIds();
         StringBuilder sql = new StringBuilder();
         if (type == Remove.Type.delete) {
-            sql.append("delete from ")//
+            sql.append("delete from ")
                     .append(getTableName(remove, cls));
         } else {
             int status = type == Remove.Type.remove ? SystemColumn.Active.getInActiveValue() : SystemColumn.Active.getActiveValue();
@@ -476,8 +477,8 @@ public final class SqlUtil {
             if (entityConfig != null && !entityConfig.update()) {
                 isLogUpdate = false;
             }
-            sql.append("update ")//
-                    .append(getTableName(remove, cls))//
+            sql.append("update ")
+                    .append(getTableName(remove, cls))
                     .append(String.format(" set " + SystemColumn.Active.getColumn() + "=%d", status));
             if (isLogUpdate && SystemColumn.Modify.isStatus()) {
                 sql.append(",").append(SystemColumn.Modify.getColumn()).append("=").append(SystemColumn.Modify.getTime());
@@ -500,7 +501,7 @@ public final class SqlUtil {
         }
         boolean isWhere = false;
         if (!StringUtils.isEmpty(ids)) {
-            sql.append(" where id in(").append(ids).append(")");
+            sql.append(" where ").append(SystemColumn.getDefaultKeyName()).append(" in(").append(ids).append(")");
             isWhere = true;
         }
         if (!StringUtils.isEmpty(where)) {
@@ -589,31 +590,17 @@ public final class SqlUtil {
     }
 
     private static void doWhere(StringBuffer sqlBuffer, Page page) {
-        if (!StringUtil.isEmpty(page.getWhereWord())) {
-            if (sqlBuffer.indexOf("where") == -1) {
-                sqlBuffer.append(" where ");
-            } else {
-                sqlBuffer.append(" and ");
-            }
-            sqlBuffer.append(page.getWhereWord());
+        if (StringUtil.isEmpty(page.getWhereWord())) {
+            return;
         }
+        sqlBuffer.append(" ");
+        if (!sqlBuffer.toString().toUpperCase().contains(Token.WHERE.name)) {
+            sqlBuffer.append(Token.WHERE.name).append(" ");
+        } else {
+            sqlBuffer.append(Token.AND.name).append(" ");
+        }
+        sqlBuffer.append(page.getWhereWord());
     }
-
-//    /**
-//     * 获取分页总数sql
-//     *
-//     * @param sql  sql
-//     * @param page page
-//     * @return sql
-//     * @author jiangzeyin
-//     */
-//    private static String getCountSql(String sql, Page<?> page) {
-//        StringBuffer sqlBuffer = new StringBuffer(sql);
-//
-//        //
-//        //doCount(sqlBuffer, page);
-//        return "select count(1)  as count from (" + sqlBuffer + ") as total";
-//    }
 
     /**
      * 获取表明 默认添加索引
@@ -686,10 +673,10 @@ public final class SqlUtil {
      */
     private static String makeInsertToTableSql(Class<?> class1, int createUser, Collection<String> names, HashMap<String, String> systemMap, int isDeleteValue) {
         String tableName = getTableName(null, class1);
-        StringBuilder sql = new StringBuilder() //
-                .append("insert into ") //
-                .append(tableName) //
-                .append("("); //
+        StringBuilder sql = new StringBuilder()
+                .append("insert into ")
+                .append(tableName)
+                .append("(");
 
         int nameCount = 0;
         StringBuilder value = new StringBuilder();
@@ -743,10 +730,10 @@ public final class SqlUtil {
      * @author jiangzeyin
      */
     private static String makeUpdateToTableSql(String tableName, Collection<String> names, HashMap<String, String> systemMap, boolean isLogUpdate) {
-        StringBuilder sql = new StringBuilder() //
-                .append("update ") //
-                .append(tableName) //
-                .append(" set "); //
+        StringBuilder sql = new StringBuilder()
+                .append("update ")
+                .append(tableName)
+                .append(" set ");
 
         int nameCount = 0;
         for (String name : names) {
@@ -781,10 +768,10 @@ public final class SqlUtil {
      * @author jiangzeyin
      */
     private static String makeUpdateToTableSql(String tableName, HashMap<String, Object> columns, boolean isLogUpdate) {
-        StringBuilder sql = new StringBuilder() //
-                .append("update ") //
-                .append(tableName) //
-                .append(" set "); //
+        StringBuilder sql = new StringBuilder()
+                .append("update ")
+                .append(tableName)
+                .append(" set ");
         makeUpdateColumns(sql, columns);
         if (isLogUpdate && SystemColumn.Modify.isStatus()) {
             sql.append(",").append(SystemColumn.Modify.getColumn()).append("=").append(SystemColumn.Modify.getTime());
@@ -801,21 +788,22 @@ public final class SqlUtil {
         while (iterator.hasNext()) {
             Map.Entry<String, Object> entry = iterator.next();
             String name = entry.getKey();
-            Object obj_value = entry.getValue();
+            Object objValue = entry.getValue();
             if (nameCount > 0) {
                 sql.append(",");
             }
             sql.append(name);
             sql.append("=");
             { // 判断是否为系统字段
-                String va = SystemColumn.getDefaultValue(name);//  getSystemValue(name);
+                //  getSystemValue(name);
+                String va = SystemColumn.getDefaultValue(name);
                 if (va == null) {
                     // 密码字段处理
                     if (SystemColumn.getPwdColumn().equalsIgnoreCase(name)) {
                         sql.append("PASSWORD(?)");
                     } else {
                         // sql 函数处理
-                        String value = StringUtil.convertNULL(obj_value);
+                        String value = StringUtil.convertNULL(objValue);
                         if (value.startsWith("#{") && value.endsWith("}")) {
                             value = value.substring(value.indexOf("#{") + 2, value.indexOf("}"));
                             sql.append(value);

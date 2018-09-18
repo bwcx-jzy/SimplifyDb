@@ -17,6 +17,7 @@ import java.util.*;
  *
  * @author jiangzeyin
  */
+@SuppressWarnings("unchecked")
 public class Util {
 
 
@@ -87,9 +88,9 @@ public class Util {
                 List<Object> parameters = new ArrayList<>();
                 parameters.add(value);
                 List<Map<String, Object>> refList = JdbcUtils.executeQuery(dataSource, sql, parameters);
-                if (refList != null && refList.size() > 0) {
-                    Map<String, Object> refMap_data = refList.get(0);
-                    Object refValue = convertMap(read, refMap_data, refMapClass);
+                if (refList.size() > 0) {
+                    Map<String, Object> refMapData = refList.get(0);
+                    Object refValue = convertMap(read, refMapData, refMapClass);
                     try {
                         method.invoke(obj, refValue);
                     } catch (IllegalArgumentException e) {
@@ -100,7 +101,7 @@ public class Util {
             }
             // 正常的字段
             Class<?>[] classes = method.getParameterTypes();
-            if (classes == null || classes.length != 1) {
+            if (classes.length != 1) {
                 throw new IllegalArgumentException(method + " 不符合规范");
             }
             Class pClass = classes[0];
