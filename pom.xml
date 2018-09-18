@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>cn.simplifydb</groupId>
     <artifactId>simplifydb</artifactId>
-    <version>1.0.0</version>
+    <version>1.0.1</version>
     <name>SimplifyDb</name>
     <url>https://gitee.com/jiangzeyin/dbutil</url>
     <description>
