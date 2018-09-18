@@ -42,8 +42,9 @@ public class Insert<T> extends WriteBase<T> {
      * @return 事件接口
      */
     private InsertEvent getEvent(Object data) {
-        if (data != null && InsertEvent.class.isAssignableFrom(data.getClass()))
+        if (data != null && InsertEvent.class.isAssignableFrom(data.getClass())) {
             return (InsertEvent) data;
+        }
         return null;
     }
 
@@ -89,8 +90,9 @@ public class Insert<T> extends WriteBase<T> {
      */
     @Override
     public void run() {
-        if (transactionConnection != null)
+        if (transactionConnection != null) {
             throw new RuntimeException("Transaction must sync");
+        }
         setAsync();
         setThrowable(new Throwable());
         getAsyncLog();
@@ -137,15 +139,17 @@ public class Insert<T> extends WriteBase<T> {
                 } else {
                     key = JdbcUtil.executeInsert(transactionConnection, sqlAndParameters.getSql(), sqlAndParameters.getParameters());
                 }
-                if (key == null)
+                if (key == null) {
                     key = DbReflectUtil.getFieldValue(data, SystemColumn.getDefaultKeyName());
-                else
+                } else {
                     DbReflectUtil.setFieldValue(data, SystemColumn.getDefaultKeyName(), key);
+                }
                 //T data = getData();
 
                 // 实体事件
-                if (event != null)
+                if (event != null) {
                     event.completeInsert(key);
+                }
                 //  util
                 if (callback != null) {
                     callback.success(key);
@@ -160,10 +164,15 @@ public class Insert<T> extends WriteBase<T> {
                     setRunSql("more:" + sqlAndParameters[0].getSql());
                     for (int i = 0; i < sqlAndParameters.length; i++) {
                         data = this.list.get(i);
-                        if (data == null)
+                        if (data == null) {
                             continue;
-                        String tag = DbWriteService.getInstance().getDatabaseName(data.getClass());
-                        connection = DatabaseContextHolder.getWriteConnection(tag);
+                        }
+                        if (transactionConnection == null) {
+                            String tag = DbWriteService.getInstance().getDatabaseName(data.getClass());
+                            connection = DatabaseContextHolder.getWriteConnection(tag);
+                        } else {
+                            connection = transactionConnection;
+                        }
                         event = getEvent(data);
                         if (event != null) {
                             Event.BeforeCode beforeCode = event.beforeInsert(this, data);
@@ -176,28 +185,36 @@ public class Insert<T> extends WriteBase<T> {
                         Object key = JdbcUtil.executeInsert(connection, sqlAndParameters[i].getSql(), sqlAndParameters[i].getParameters());
                         if (key == null) {
                             key = DbReflectUtil.getFieldValue(data, SystemColumn.getDefaultKeyName());
-                            if (key == null)
-                                return null;
-                        } else
+                        } else {
                             DbReflectUtil.setFieldValue(data, SystemColumn.getDefaultKeyName(), key);
-                        if (event != null)
+                        }
+                        if (event != null) {
                             event.completeInsert(key);
+                        }
                         if (callback != null) {
+                            //   异步回调如果  key是null 则 直接 返回实体
+                            if (key == null) {
+                                key = data;
+                            }
                             callback.success(key);
                         }
                     }
                     return 1;
                 } finally {
                     // TODO: handle exception
-                    JdbcUtils.close(connection);
+                    if (transactionConnection == null) {
+                        //  事物连接有事物对象管理
+                        JdbcUtils.close(connection);
+                    }
                 }
             }
             throw new RuntimeException("please add data");
         } catch (Exception e) {
             // TODO: handle exception
             isThrows(e);
-            if (event != null)
+            if (event != null) {
                 event.errorInsert(e);
+            }
         } finally {
             runEnd();
             recycling();
