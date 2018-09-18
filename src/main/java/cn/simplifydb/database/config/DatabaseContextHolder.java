@@ -100,23 +100,6 @@ public final class DatabaseContextHolder {
         return dataSource;
     }
 
-//    public static DataSource getReadDataSource_V(Base base) {
-//        String tag = base.getTag();
-//        DataSource dataSource = null;
-//        if (databaseOptType == DatabaseOptType.One) {
-//            dataSource = (DataSource) targetDataSourcesMap.get(tag);
-//            threadLocal.set(tagNames[0]);
-//        } else if (databaseOptType == DatabaseOptType.Two) {
-//            dataSource = (DataSource) MAPS[1].get(tag);
-//            threadLocal.set(tagNames[1]);
-//        } else if (databaseOptType == DatabaseOptType.More)
-//            dataSource = (DataSource) randMap().get(tag);
-//        Assert.notNull(dataSource, "没有找到对应数据源：" + tag);
-//        base.setTagName(getConnectionTagName());
-//        return dataSource;
-//    }
-
-
     public static DataSource getWriteDataSource(String tag) {
         DataSource dataSource = null;
         if (databaseOptType == DatabaseOptType.One) {

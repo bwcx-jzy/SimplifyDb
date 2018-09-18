@@ -12,6 +12,8 @@ import java.util.Properties;
 /**
  * 记录最后修改人
  * Created by jiangzeyin on 2017/8/14.
+ *
+ * @author jiangzeyin
  */
 public class ModifyUser {
 
@@ -35,11 +37,13 @@ public class ModifyUser {
         }
 
         public static boolean isModifyClass(Class tClass) {
-            if (tClass == null)
+            if (tClass == null) {
                 return false;
+            }
             for (Class<?> item : modify_class) {
-                if (item.isAssignableFrom(tClass))
+                if (item.isAssignableFrom(tClass)) {
                     return true;
+                }
             }
             return false;
         }
@@ -57,11 +61,13 @@ public class ModifyUser {
         }
 
         public static boolean isCreateClass(Class tClass) {
-            if (tClass == null)
+            if (tClass == null) {
                 return false;
+            }
             for (Class<?> item : create_class) {
-                if (item.isAssignableFrom(tClass))
+                if (item.isAssignableFrom(tClass)) {
                     return true;
+                }
             }
             return false;
         }
@@ -70,14 +76,15 @@ public class ModifyUser {
     static void initCreate(Properties properties) {
         Objects.requireNonNull(properties);
         String createClass = properties.getProperty(ConfigProperties.PROP_CREATE_CLASS);
-        if (StringUtils.isEmpty(createClass))
+        if (StringUtils.isEmpty(createClass)) {
             return;
+        }
 
-        String[] createClass_s = StringUtil.stringToArray(createClass);
-        if (createClass_s == null || createClass_s.length < 1) {
+        String[] createClassS = StringUtil.stringToArray(createClass);
+        if (createClassS == null || createClassS.length < 1) {
             DbLog.getInstance().warn(ConfigProperties.PROP_CREATE_CLASS + " is null");
         } else {
-            for (String item : createClass_s) {
+            for (String item : createClassS) {
                 try {
                     Create.create_class.add(Class.forName(item));
                 } catch (ClassNotFoundException e) {
@@ -85,11 +92,11 @@ public class ModifyUser {
                 }
             }
 
-            String column_user = properties.getProperty(ConfigProperties.PROP_CREATE_COLUMN_USER);
-            if (StringUtils.isEmpty(column_user)) {
+            String columnUser = properties.getProperty(ConfigProperties.PROP_CREATE_COLUMN_USER);
+            if (StringUtils.isEmpty(columnUser)) {
                 DbLog.getInstance().warn(ConfigProperties.PROP_LAST_MODIFY_COLUMN_USER + " is null");
             } else {
-                Create.columnUser = column_user;
+                Create.columnUser = columnUser;
             }
         }
     }
@@ -98,11 +105,11 @@ public class ModifyUser {
         Objects.requireNonNull(properties);
         String modifyClass = properties.getProperty(ConfigProperties.PROP_LAST_MODIFY_CLASS);
         if (!StringUtils.isEmpty(modifyClass)) {
-            String[] modifyClass_s = StringUtil.stringToArray(modifyClass);
-            if (modifyClass_s == null || modifyClass_s.length < 1) {
+            String[] modifyClassS = StringUtil.stringToArray(modifyClass);
+            if (modifyClassS == null || modifyClassS.length < 1) {
                 DbLog.getInstance().warn(ConfigProperties.PROP_LAST_MODIFY_CLASS + " is null");
             } else {
-                for (String item : modifyClass_s) {
+                for (String item : modifyClassS) {
                     try {
                         Modify.modify_class.add(Class.forName(item));
                     } catch (ClassNotFoundException e) {
@@ -110,25 +117,25 @@ public class ModifyUser {
                     }
                 }
 
-                String modify_time = properties.getProperty(ConfigProperties.PROP_LAST_MODIFY_TIME);
-                if (StringUtils.isEmpty(modify_time)) {
+                String modifyTime = properties.getProperty(ConfigProperties.PROP_LAST_MODIFY_TIME);
+                if (StringUtils.isEmpty(modifyTime)) {
                     DbLog.getInstance().warn(ConfigProperties.PROP_LAST_MODIFY_TIME + " is null");
                 } else {
-                    Modify.modifyTime = modify_time;
+                    Modify.modifyTime = modifyTime;
                 }
 
-                String column_user = properties.getProperty(ConfigProperties.PROP_LAST_MODIFY_COLUMN_USER);
-                if (StringUtils.isEmpty(column_user)) {
+                String columnUser = properties.getProperty(ConfigProperties.PROP_LAST_MODIFY_COLUMN_USER);
+                if (StringUtils.isEmpty(columnUser)) {
                     DbLog.getInstance().warn(ConfigProperties.PROP_LAST_MODIFY_COLUMN_USER + " is null");
                 } else {
-                    Modify.columnUser = column_user;
+                    Modify.columnUser = columnUser;
                 }
 
-                String column_time = properties.getProperty(ConfigProperties.PROP_LAST_MODIFY_COLUMN_TIME);
-                if (StringUtils.isEmpty(column_time)) {
+                String columnTime = properties.getProperty(ConfigProperties.PROP_LAST_MODIFY_COLUMN_TIME);
+                if (StringUtils.isEmpty(columnTime)) {
                     DbLog.getInstance().warn(ConfigProperties.PROP_LAST_MODIFY_COLUMN_TIME + " is null");
                 } else {
-                    Modify.columnTime = column_time;
+                    Modify.columnTime = columnTime;
                 }
             }
         }
