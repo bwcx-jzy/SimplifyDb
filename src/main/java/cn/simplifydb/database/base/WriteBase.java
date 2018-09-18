@@ -124,7 +124,13 @@ public abstract class WriteBase<T> extends Base<T> {
          * 操作前
          */
         enum BeforeCode {
+            /**
+             * 继续执行
+             */
             CONTINUE("继续", 0),
+            /**
+             * 结束执行
+             */
             END("结束", -100);
 
             BeforeCode(String desc, int resultCode) {
@@ -155,10 +161,12 @@ public abstract class WriteBase<T> extends Base<T> {
         if (update != null) {
             Set<String> set = update.keySet();
             for (String item : set) {
-                if (SystemColumn.notCanUpdate(item))
+                if (SystemColumn.notCanUpdate(item)) {
                     throw new IllegalArgumentException(item + " not update");
-                if (SystemColumn.isSequence(cls, item))
+                }
+                if (SystemColumn.isSequence(cls, item)) {
                     throw new IllegalArgumentException(item + " not update sequence");
+                }
             }
         }
     }
@@ -169,6 +177,7 @@ public abstract class WriteBase<T> extends Base<T> {
     public interface Callback {
         /**
          * success
+         * 插入后能成获取主键值  则直接返回对应主键，反之返回实体
          *
          * @param key 主键
          */

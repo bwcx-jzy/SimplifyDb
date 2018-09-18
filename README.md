@@ -1,14 +1,25 @@
 <p align="center">
     <img src="https://images.gitee.com/uploads/images/2018/0917/155220_c5663c74_804942.png" width="400">
 </p>
+<p align="center">
+	<a target="_blank" href="https://mvnrepository.com/artifact/cn.simplifydb/simplifydb">
+		<img src="https://img.shields.io/maven-metadata/v/http/central.maven.org/maven2/cn/simplifydb/simplifydb/maven-metadata.xml.svg" ></img>
+	</a>
+	<a target="_blank" href="http://www.apache.org/licenses/LICENSE-2.0.html">
+		<img src="http://img.shields.io/:license-apache-blue.svg" ></img>
+	</a>
+	<a target="_blank" href="https://www.oracle.com/technetwork/java/javase/downloads/index.html">
+		<img src="https://img.shields.io/badge/JDK-1.8+-green.svg" ></img>
+	</a>
+</p>
+
+<p align="center">
+	-- QQ群：<a target="_blank" href="//shang.qq.com/wpa/qunwpa?idkey=6ba1c95552b1e944c14d898f4ac625ec5cacf119ef9a9fd67c91f3aff2ff88f1">136715345</a> --
+</p>
 
 #  SimplifyDb
 >在java 中我们有多种方式操作数据库，但是如果只是为了简单处理使用一些框架，在使用中还是显得麻烦。这里就整理一个简单快速操作数据库的一种方案
 
-
-[![Maven metadata URI](https://img.shields.io/maven-metadata/v/http/central.maven.org/maven2/cn/simplifydb/simplifydb/maven-metadata.xml.svg)](https://mvnrepository.com/artifact/cn.simplifydb/simplifydb)
-![Hex.pm](https://img.shields.io/hexpm/l/plug.svg)
-![jdk](https://img.shields.io/badge/JDK-1.8+-green.svg)
 
 ## 简介
 SimplifyDb 是一个Java基于druid的一款简化写sql语句操作mysql的框架。本项目主要采用反射读写需要操作的实体和表，同时项目还是提供多种主键生成器和自定义主键生成器接口方便用户根据实际业务扩展主键生成器
@@ -19,6 +30,8 @@ SimplifyDb 是一个Java基于druid的一款简化写sql语句操作mysql的框�
 > 4. 全局统一记录数据创建人和修改人
 > 5. 快速配置逻辑删除功能
 > 6. 写操作支持异步执行
+
+#### 使用示例：[https://gitee.com/jiangzeyin/simplifydb-demo](https://gitee.com/jiangzeyin/simplifydb-demo)
 
 
 ## 文档 
@@ -35,8 +48,8 @@ SimplifyDb 是一个Java基于druid的一款简化写sql语句操作mysql的框�
 
 ```xml
 <dependency>
-    <groupId>cn.jiangzeyin</groupId>
-    <artifactId>dbutil</artifactId>
+    <groupId>cn.simplifydb</groupId>
+    <artifactId>simplifydb</artifactId>
     <version>version</version>
 </dependency>
 ```
@@ -159,7 +172,7 @@ core.logAbandoned=true
 
 #**初始化**：
 
-`**1.先设置日志接口**`
+**`1.先设置日志接口`**
 
 cn.simplifydb.system.DbLog.setDbLogInterface()
 
