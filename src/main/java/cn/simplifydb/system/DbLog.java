@@ -12,10 +12,12 @@ public final class DbLog {
 
     private volatile static DbLogInterface dbLogInterface;
 
+    /**
+     * 设置日志接口
+     *
+     * @param dbLogInterface 接口
+     */
     public static void setDbLogInterface(DbLogInterface dbLogInterface) {
-        if (DbLog.dbLogInterface != null) {
-            throw new IllegalArgumentException("duplicate set");
-        }
         DbLog.dbLogInterface = dbLogInterface;
     }
 
