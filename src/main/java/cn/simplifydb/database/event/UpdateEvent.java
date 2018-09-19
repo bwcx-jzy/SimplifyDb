@@ -1,7 +1,7 @@
 package cn.simplifydb.database.event;
 
 
-import cn.simplifydb.database.base.WriteBase;
+import cn.simplifydb.database.base.BaseWrite;
 import cn.simplifydb.database.run.write.Update;
 
 /**
@@ -9,7 +9,7 @@ import cn.simplifydb.database.run.write.Update;
  *
  * @author jiangzeyin
  */
-public interface UpdateEvent extends WriteBase.Event {
+public interface UpdateEvent extends BaseWrite.Event {
 
     /**
      * 开始事件之前

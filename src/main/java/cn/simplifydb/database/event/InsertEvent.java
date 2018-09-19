@@ -1,6 +1,6 @@
 package cn.simplifydb.database.event;
 
-import cn.simplifydb.database.base.WriteBase;
+import cn.simplifydb.database.base.BaseWrite;
 import cn.simplifydb.database.run.write.Insert;
 
 /**
@@ -8,7 +8,7 @@ import cn.simplifydb.database.run.write.Insert;
  *
  * @author jiangzeyin
  */
-public interface InsertEvent extends WriteBase.Event {
+public interface InsertEvent extends BaseWrite.Event {
 
     /**
      * 开始事件之前

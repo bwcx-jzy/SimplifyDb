@@ -1,6 +1,6 @@
 package cn.simplifydb.database.run.read;
 
-import cn.simplifydb.database.base.ReadBase;
+import cn.simplifydb.database.base.BaseRead;
 import cn.simplifydb.database.config.DatabaseContextHolder;
 import cn.simplifydb.database.util.SqlUtil;
 import cn.simplifydb.system.DbLog;
@@ -17,7 +17,7 @@ import java.util.Map;
  * @author jiangzeyin
  */
 @SuppressWarnings("unchecked")
-public class SelectFunction<T> extends ReadBase<T> {
+public class SelectFunction<T> extends BaseRead<T> {
 
     private String name;
 
@@ -45,11 +45,13 @@ public class SelectFunction<T> extends ReadBase<T> {
             setRunSql(sql);
             DbLog.getInstance().info(getTransferLog() + sql);
             List<Map<String, Object>> list = JdbcUtils.executeQuery(dataSource, sql, getParameters());
-            if (list == null || list.size() < 1)
+            if (list.size() < 1) {
                 return null;
+            }
             Map<String, Object> map = list.get(0);
-            if (map == null)
+            if (map == null) {
                 return null;
+            }
             Collection<Object> collection = map.values();
             return (T) collection.toArray()[0];
         } catch (Exception e) {

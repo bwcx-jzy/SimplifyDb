@@ -1,7 +1,7 @@
 package cn.simplifydb.database.run.write;
 
 import cn.simplifydb.database.DbWriteService;
-import cn.simplifydb.database.base.WriteBase;
+import cn.simplifydb.database.base.BaseWrite;
 import cn.simplifydb.database.config.DatabaseContextHolder;
 import cn.simplifydb.database.config.SystemColumn;
 import cn.simplifydb.database.util.SqlUtil;
@@ -18,7 +18,7 @@ import java.util.*;
  *
  * @author jiangzeyin
  */
-public class Remove<T> extends WriteBase<T> {
+public class Remove<T> extends BaseWrite<T> {
 
 
     public enum Type {
@@ -189,7 +189,7 @@ public class Remove<T> extends WriteBase<T> {
             throw new IllegalArgumentException("type null");
         }
         try {
-            WriteBase.Callback callback = getCallback();
+            BaseWrite.Callback callback = getCallback();
             String tag = DbWriteService.getInstance().getDatabaseName(getTclass());
             String sql = SqlUtil.getRemoveSql(this);
             DbLog.getInstance().info(getTransferLog() + sql);

@@ -2,17 +2,13 @@ package cn.simplifydb.database.util;
 
 import cn.jiangzeyin.StringUtil;
 import cn.simplifydb.database.DbWriteService;
-import cn.simplifydb.database.Page;
 import cn.simplifydb.database.annotation.EntityConfig;
 import cn.simplifydb.database.annotation.FieldConfig;
 import cn.simplifydb.database.base.Base;
-import cn.simplifydb.database.base.ReadBase;
-import cn.simplifydb.database.base.WriteBase;
+import cn.simplifydb.database.base.BaseRead;
+import cn.simplifydb.database.base.BaseWrite;
 import cn.simplifydb.database.config.ModifyUser;
 import cn.simplifydb.database.config.SystemColumn;
-import cn.simplifydb.database.run.read.IsExists;
-import cn.simplifydb.database.run.read.Select;
-import cn.simplifydb.database.run.read.SelectPage;
 import cn.simplifydb.database.run.write.Insert;
 import cn.simplifydb.database.run.write.Remove;
 import cn.simplifydb.database.run.write.Update;
@@ -21,9 +17,6 @@ import cn.simplifydb.sequence.IQuietSequence;
 import cn.simplifydb.sequence.ISequence;
 import cn.simplifydb.sequence.SequenceConfig;
 import cn.simplifydb.util.DbReflectUtil;
-import com.alibaba.druid.sql.PagerUtils;
-import com.alibaba.druid.sql.parser.Token;
-import com.alibaba.druid.util.JdbcConstants;
 import com.alibaba.druid.util.StringUtils;
 
 import java.lang.reflect.Field;
@@ -56,7 +49,7 @@ public final class SqlUtil {
      * @throws IllegalAccessException   yic
      * @author jiangzeyin
      */
-    private static SqlAndParameters getWriteSql(WriteBase<?> write, Object data) throws Exception {
+    private static SqlAndParameters getWriteSql(BaseWrite<?> write, Object data) throws Exception {
         if (data == null) {
             data = write.getData();
         }
@@ -213,7 +206,7 @@ public final class SqlUtil {
      * @throws IllegalAccessException   y
      * @author jiangzeyin
      */
-    private static SqlAndParameters getWriteSql(WriteBase<?> write) throws Exception {
+    private static SqlAndParameters getWriteSql(BaseWrite<?> write) throws Exception {
         return getWriteSql(write, null);
     }
 
@@ -355,50 +348,50 @@ public final class SqlUtil {
         return sqlAndParameters;
     }
 
-    /**
-     * 获取分页操作信息
-     *
-     * @param select 查询对象
-     * @return 数组
-     * @author jiangzeyin
-     */
-    public static String[] getSelectPageSql(SelectPage<?> select) {
-        StringBuffer sql = new StringBuffer("select ");
-        sql.append(select.getColumns())
-                .append(" from ")
-                .append(getTableName(select));
-//                .append(" ");
+//    /**
+//     * 获取分页操作信息
+//     *
+//     * @param select 查询对象
+//     * @return 数组
+//     * @author jiangzeyin
+//     */
+//    public static String[] getSelectPageSql(SelectPage<?> select) {
+//        StringBuffer sql = new StringBuffer("select ");
+//        sql.append(select.getColumns())
+//                .append(" from ")
+//                .append(getTableName(select));
+////                .append(" ");
+//
+//        Page page = select.getPage();
+//        doWhere(sql, page);
+//        String[] countSql = new String[2];
+//        countSql[0] = PagerUtils.count(sql.toString(), JdbcConstants.MYSQL);
+//
+//        int offset = (int) ((page.getPageNo() - 1) * page.getPageSize());
+//        // 判断是否需要排序
+//        if (!StringUtil.isEmpty(page.getOrderBy())) {
+//            sql.append(" order by ").append(page.getOrderBy());
+//        }
+//        countSql[1] = PagerUtils.limit(sql.toString(), JdbcConstants.MYSQL, offset, (int) page.getPageSize());
+//        return countSql;
+//    }
 
-        Page page = select.getPage();
-        doWhere(sql, page);
-        String[] countSql = new String[2];
-        countSql[0] = PagerUtils.count(sql.toString(), JdbcConstants.MYSQL);
-
-        int offset = (int) ((page.getPageNo() - 1) * page.getPageSize());
-        // 判断是否需要排序
-        if (!StringUtil.isEmpty(page.getOrderBy())) {
-            sql.append(" order by ").append(page.getOrderBy());
-        }
-        countSql[1] = PagerUtils.limit(sql.toString(), JdbcConstants.MYSQL, offset, (int) page.getPageSize());
-        return countSql;
-    }
-
-    public static String[] getSelectPageSql(Page<?> page) {
-        StringBuffer sql = new StringBuffer(page.getSql());
-
-        doWhere(sql, page);
-        String[] countSql = new String[2];
-        countSql[0] = PagerUtils.count(sql.toString(), JdbcConstants.MYSQL);
-
-        int offset = (int) ((page.getPageNo() - 1) * page.getPageSize());
-        // 判断是否需要排序
-        if (!StringUtil.isEmpty(page.getOrderBy())) {
-            sql.append(" order by ").append(page.getOrderBy());
-        }
-
-        countSql[1] = PagerUtils.limit(sql.toString(), JdbcConstants.MYSQL, offset, (int) page.getPageSize());
-        return countSql;
-    }
+//    public static String[] getSelectPageSql(Page<?> page) {
+//        StringBuffer sql = new StringBuffer(page.getSql());
+//
+//        doWhere(sql, page);
+//        String[] countSql = new String[2];
+//        countSql[0] = PagerUtils.count(sql.toString(), JdbcConstants.MYSQL);
+//
+//        int offset = (int) ((page.getPageNo() - 1) * page.getPageSize());
+//        // 判断是否需要排序
+//        if (!StringUtil.isEmpty(page.getOrderBy())) {
+//            sql.append(" order by ").append(page.getOrderBy());
+//        }
+//
+//        countSql[1] = PagerUtils.limit(sql.toString(), JdbcConstants.MYSQL, offset, (int) page.getPageSize());
+//        return countSql;
+//    }
 
     /**
      * 获取读取外键的sql 语句
@@ -421,38 +414,38 @@ public final class SqlUtil {
         return sql.toString();
     }
 
-    /**
-     * @param clas      类
-     * @param keyColumn 列
-     * @param where     条件
-     * @param isExists  isExists
-     * @return sql
-     * @author jiangzeyin
-     */
-    public static String getIsExistsSql(IsExists isExists, Class<?> clas, String keyColumn, String where) {
-        StringBuilder sql = new StringBuilder("select ");
-        String column = isExists.getColumns();
-        if (StringUtils.isEmpty(column)) {
-            sql.append(" count(1) as countSum from ");
-        } else {
-            sql.append(" ").append(column).append(" from ");
-        }
-        sql.append(getTableName(isExists, clas))
-                .append(" where ")
-                .append(keyColumn)
-                .append("=?");
-        if (!StringUtils.isEmpty(where)) {
-            // 判断or 条件
-            String tempWhere = where.toLowerCase().trim();
-            sql.append(tempWhere.startsWith("or") ? "" : " and ").append(where);
-        }
-        int limit = isExists.getLimit();
-        if (limit <= 0) {
-            limit = 1;
-        }
-        sql.append(" limit ").append(limit);
-        return sql.toString();
-    }
+//    /**
+//     * @param clas      类
+//     * @param keyColumn 列
+//     * @param where     条件
+//     * @param isExists  isExists
+//     * @return sql
+//     * @author jiangzeyin
+//     */
+//    public static String getIsExistsSql(IsExists isExists, Class<?> clas, String keyColumn, String where) {
+//        StringBuilder sql = new StringBuilder("select ");
+//        String column = isExists.getColumns();
+//        if (StringUtils.isEmpty(column)) {
+//            sql.append(" count(1) as countSum from ");
+//        } else {
+//            sql.append(" ").append(column).append(" from ");
+//        }
+//        sql.append(getTableName(isExists, clas))
+//                .append(" where ")
+//                .append(keyColumn)
+//                .append("=?");
+//        if (!StringUtils.isEmpty(where)) {
+//            // 判断or 条件
+//            String tempWhere = where.toLowerCase().trim();
+//            sql.append(tempWhere.startsWith("or") ? "" : " and ").append(where);
+//        }
+//        int limit = isExists.getLimit();
+//        if (limit <= 0) {
+//            limit = 1;
+//        }
+//        sql.append(" limit ").append(limit);
+//        return sql.toString();
+//    }
 
     /**
      * 获取移除sql 语句
@@ -520,7 +513,7 @@ public final class SqlUtil {
      * @param base         base
      * @param stringBuffer sql 对象
      */
-    private static void loadModifyUser(Base<?> base, StringBuilder stringBuffer) {
+    private static void loadModifyUser(BaseWrite<?> base, StringBuilder stringBuffer) {
         int optUserId = base.getOptUserId();
         if (optUserId < 1) {
             return;
@@ -532,86 +525,86 @@ public final class SqlUtil {
         }
     }
 
-    /**
-     * 获取查询信息
-     *
-     * @param select 对象
-     * @return sql
-     * @throws IllegalArgumentException y
-     * @author jiangzeyin
-     */
-    public static String getSelectSql(Select<?> select) throws IllegalArgumentException {
-        StringBuilder sql = new StringBuilder("select ");
-        sql.append(select.getColumns())
-                .append(" from ")
-                .append(getTableName(select))
-                .append(" ");
-        boolean isWhere = false;
-        // datakey
-        if (!StringUtils.isEmpty(StringUtil.convertNULL(select.getKeyValue()))) {
-            isWhere = true;
-            sql.append("where ")
-                    .append(select.getKeyColumn())
-                    .append("=")
-                    .append("'").append(select.getKeyValue()).append("'");
-        }
-        // 条件
-        if (!StringUtils.isEmpty(select.getWhere())) {
-            sql.append(isWhere ? " and " : " where ")
-                    .append(select.getWhere());
-            if (!isWhere) {
-                isWhere = true;
-            }
-        }
-        // 查询数据状态
-        if (select.getIsDelete() != SystemColumn.Active.NO_ACTIVE) {
-            //
-            sql.append(isWhere ? " and " : " where ").
-                    append(SystemColumn.Active.getColumn()).append("=").append(select.getIsDelete());
-        }
-        // 排序
-        if (!StringUtils.isEmpty(select.getOrderBy())) {
-            sql.append(" order by ")
-                    .append(select.getOrderBy());
-        }
-        // limit
-        {
-            if (select.getLimitStart() == 0 && select.getLimitCount() != 0) {
-                sql.append(" limit ")
-                        .append(select.getLimitCount());
-            } else if (select.getLimitStart() > 0) {
-                sql.append(" limit ")
-                        .append(select.getLimitStart())
-                        .append(",")
-                        .append(select.getLimitCount());
-            }
-        }
-        return sql.toString();
-    }
+//    /**
+//     * 获取查询信息
+//     *
+//     * @param select 对象
+//     * @return sql
+//     * @throws IllegalArgumentException y
+//     * @author jiangzeyin
+//     */
+//    public static String getSelectSql(Select<?> select) throws IllegalArgumentException {
+//        StringBuilder sql = new StringBuilder("select ");
+//        sql.append(select.getColumns())
+//                .append(" from ")
+//                .append(getTableName(select))
+//                .append(" ");
+//        boolean isWhere = false;
+//        // datakey
+//        if (!StringUtils.isEmpty(StringUtil.convertNULL(select.getKeyValue()))) {
+//            isWhere = true;
+//            sql.append("where ")
+//                    .append(select.getKeyColumn())
+//                    .append("=")
+//                    .append("'").append(select.getKeyValue()).append("'");
+//        }
+//        // 条件
+//        if (!StringUtils.isEmpty(select.getWhere())) {
+//            sql.append(isWhere ? " and " : " where ")
+//                    .append(select.getWhere());
+//            if (!isWhere) {
+//                isWhere = true;
+//            }
+//        }
+//        // 查询数据状态
+//        if (select.getIsDelete() != SystemColumn.Active.NO_ACTIVE) {
+//            //
+//            sql.append(isWhere ? " and " : " where ").
+//                    append(SystemColumn.Active.getColumn()).append("=").append(select.getIsDelete());
+//        }
+//        // 排序
+//        if (!StringUtils.isEmpty(select.getOrderBy())) {
+//            sql.append(" order by ")
+//                    .append(select.getOrderBy());
+//        }
+//        // limit
+//        {
+//            if (select.getLimitStart() == 0 && select.getLimitCount() != 0) {
+//                sql.append(" limit ")
+//                        .append(select.getLimitCount());
+//            } else if (select.getLimitStart() > 0) {
+//                sql.append(" limit ")
+//                        .append(select.getLimitStart())
+//                        .append(",")
+//                        .append(select.getLimitCount());
+//            }
+//        }
+//        return sql.toString();
+//    }
 
-    private static void doWhere(StringBuffer sqlBuffer, Page page) {
-        if (StringUtil.isEmpty(page.getWhereWord())) {
-            return;
-        }
-        sqlBuffer.append(" ");
-        if (!sqlBuffer.toString().toUpperCase().contains(Token.WHERE.name)) {
-            sqlBuffer.append(Token.WHERE.name).append(" ");
-        } else {
-            sqlBuffer.append(Token.AND.name).append(" ");
-        }
-        sqlBuffer.append(page.getWhereWord());
-    }
+//    private static void doWhere(StringBuffer sqlBuffer, Page page) {
+//        if (StringUtil.isEmpty(page.getWhereWord())) {
+//            return;
+//        }
+//        sqlBuffer.append(" ");
+//        if (!sqlBuffer.toString().toUpperCase().contains(Token.WHERE.name)) {
+//            sqlBuffer.append(Token.WHERE.name).append(" ");
+//        } else {
+//            sqlBuffer.append(Token.AND.name).append(" ");
+//        }
+//        sqlBuffer.append(page.getWhereWord());
+//    }
 
-    /**
-     * 获取表明 默认添加索引
-     *
-     * @param base 数据库操作类
-     * @return 表名
-     * @author jiangzeyin
-     */
-    private static String getTableName(Base base) {
-        return getTableName(base, null);
-    }
+//    /**
+//     * 获取表明 默认添加索引
+//     *
+//     * @param base 数据库操作类
+//     * @return 表名
+//     * @author jiangzeyin
+//     */
+//    private static String getTableName(Base base) {
+//        return getTableName(base, null);
+//    }
 
     /**
      * 获取表明 和 自动加主键索引
@@ -620,24 +613,27 @@ public final class SqlUtil {
      * @return 表名
      * @author jiangzeyin
      */
-    private static String getTableName(Base base, Class cls) {
+    public static String getTableName(Base base, Class cls) {
+        String tableName;
         if (base != null) {
             // 判断是否指定表名
-            String tableName = base.getTableName();
+            tableName = base.getTableName();
             if (!StringUtil.isEmpty(tableName)) {
                 return tableName;
             }
             // 读取索引信息
             boolean isIndex = false;
             String index = null;
-            if (base instanceof ReadBase) {
-                ReadBase readBase = (ReadBase) base;
-                index = readBase.getIndex();
-                isIndex = readBase.isUseIndex();
+            if (base instanceof BaseRead) {
+                BaseRead baseRead = (BaseRead) base;
+                index = baseRead.getIndex();
+                isIndex = baseRead.isUseIndex();
             }
-            return DbWriteService.getInstance().getTableName(base.getTclass(), isIndex, index, base.isUseDataBaseName());
+            tableName = DbWriteService.getInstance().getTableName(base.getTclass(), isIndex, index, base.isUseDataBaseName());
+            base.setTableName(tableName);
         }
-        return DbWriteService.getInstance().getTableName(cls, false, null, false);
+        tableName = DbWriteService.getInstance().getTableName(cls, false, null, false);
+        return tableName;
     }
 
     /**

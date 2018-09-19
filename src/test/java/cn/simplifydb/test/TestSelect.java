@@ -1,7 +1,7 @@
 package cn.simplifydb.test;
 
 import cn.simplifydb.Init;
-import cn.simplifydb.database.base.ReadBase;
+import cn.simplifydb.database.base.BaseRead;
 import cn.simplifydb.database.run.read.Select;
 import com.alibaba.fastjson.JSONArray;
 import org.junit.Before;
@@ -50,7 +50,7 @@ public class TestSelect {
     public void selectEntity3() {
         Select<cn.simplifydb.entity.test.Test> testSelect = new Select<cn.simplifydb.entity.test.Test>() {
         };
-        testSelect.setResultType(ReadBase.Result.JsonArray);
+        testSelect.setResultType(BaseRead.Result.JsonArray);
         JSONArray jsonArray = testSelect.run();
         System.out.println("selectEntity3");
         System.out.println(jsonArray);
@@ -63,7 +63,7 @@ public class TestSelect {
     public void selectEntity4() {
         Select<cn.simplifydb.entity.test.Test> testSelect = new Select<cn.simplifydb.entity.test.Test>() {
         };
-        testSelect.setResultType(ReadBase.Result.JsonArray);
+        testSelect.setResultType(BaseRead.Result.JsonArray);
         testSelect.setColumns("name");
         JSONArray jsonArray = testSelect.run();
         System.out.println("selectEntity4");
@@ -74,9 +74,9 @@ public class TestSelect {
     public void selectEntity5() {
         Select<cn.simplifydb.entity.test.Test> testSelect = new Select<cn.simplifydb.entity.test.Test>() {
         };
-        testSelect.setResultType(ReadBase.Result.JsonArray);
+        testSelect.setResultType(BaseRead.Result.JsonArray);
         testSelect.setColumns("name");
-        testSelect.setWhere("id>2");
+        testSelect.where("id>2");
         JSONArray jsonArray = testSelect.run();
         System.out.println(jsonArray);
     }

@@ -1,7 +1,7 @@
 package cn.simplifydb.database.run.write;
 
 import cn.simplifydb.database.DbWriteService;
-import cn.simplifydb.database.base.WriteBase;
+import cn.simplifydb.database.base.BaseWrite;
 import cn.simplifydb.database.config.DatabaseContextHolder;
 import cn.simplifydb.database.config.SystemColumn;
 import cn.simplifydb.database.event.UpdateEvent;
@@ -24,7 +24,7 @@ import java.util.List;
  *
  * @author jiangzeyin
  */
-public class Update<T> extends WriteBase<T> {
+public class Update<T> extends BaseWrite<T> {
 
     private String where;
     private List<Object> whereParameters;

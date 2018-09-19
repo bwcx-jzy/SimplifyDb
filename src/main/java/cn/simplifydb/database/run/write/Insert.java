@@ -1,7 +1,7 @@
 package cn.simplifydb.database.run.write;
 
 import cn.simplifydb.database.DbWriteService;
-import cn.simplifydb.database.base.WriteBase;
+import cn.simplifydb.database.base.BaseWrite;
 import cn.simplifydb.database.config.DatabaseContextHolder;
 import cn.simplifydb.database.config.SystemColumn;
 import cn.simplifydb.database.event.InsertEvent;
@@ -23,7 +23,7 @@ import java.util.List;
  *
  * @author jiangzeyin
  */
-public class Insert<T> extends WriteBase<T> {
+public class Insert<T> extends BaseWrite<T> {
 
     private List<T> list;
     /**

@@ -1,12 +1,12 @@
 package cn.simplifydb.database.run.read;
 
-import cn.jiangzeyin.StringUtil;
 import cn.simplifydb.database.DbWriteService;
-import cn.simplifydb.database.base.ReadBase;
+import cn.simplifydb.database.base.BaseRead;
 import cn.simplifydb.database.config.DatabaseContextHolder;
-import cn.simplifydb.database.util.SqlUtil;
 import cn.simplifydb.system.DbLog;
 import cn.simplifydb.util.KeyLock;
+import com.alibaba.druid.sql.ast.SQLLimit;
+import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
 import com.alibaba.druid.util.JdbcUtils;
 import com.alibaba.druid.util.StringUtils;
 
@@ -21,8 +21,9 @@ import java.util.Map;
  * @author jiangzeyin
  */
 @SuppressWarnings("unchecked")
-public class IsExists<T> extends ReadBase<T> {
-    private int limit;
+public class IsExists<T> extends BaseRead<T> {
+    public static final String COUNT_SUM = "countSum";
+
     /**
      * 表锁
      */
@@ -40,23 +41,6 @@ public class IsExists<T> extends ReadBase<T> {
         this.useLock = useLock;
     }
 
-    public int getLimit() {
-        return limit;
-    }
-
-    public void setLimit(int limit) {
-        this.limit = limit;
-    }
-
-    @Override
-    public List<Object> getParameters() {
-        List<Object> paList = super.getParameters();
-        paList.add(0, getKeyValue());
-        //paList.add(getKeyValue());
-        //if (parameters != null)
-        //  paList.addAll(parameters);
-        return paList;
-    }
 
     public IsExists(String keyColumn, String keyValue) {
         this(true);
@@ -81,6 +65,78 @@ public class IsExists<T> extends ReadBase<T> {
         setTag(tag);
     }
 
+
+    @Override
+    protected String builder() {
+        SQLSelectQueryBlock sqlSelectQueryBlock = sqlSelectBuilder.getSQLSelect().getFirstQueryBlock();
+        if (sqlSelectQueryBlock == null || sqlSelectQueryBlock.getSelectList().size() <= 0) {
+            sqlSelectBuilder.selectWithAlias("count(*)", COUNT_SUM);
+            limit(1);
+        }
+        //
+        if (sqlSelectQueryBlock != null) {
+            SQLLimit sqlLimit = sqlSelectQueryBlock.getLimit();
+            if (sqlLimit == null) {
+                limit(1);
+            }
+        }
+        return super.builder();
+    }
+
+    private List<Map<String, Object>> doData() throws SQLException {
+        Class runClass = getTclass();
+        if (useLock) {
+            LOCK.lock(runClass);
+        }
+        try {
+            String tag = getTag();
+            if (StringUtils.isEmpty(tag)) {
+                tag = DbWriteService.getInstance().getDatabaseName(runClass);
+            }
+            String sql = builder();
+            DbLog.getInstance().info(getTransferLog() + getRunSql());
+            DataSource dataSource = DatabaseContextHolder.getReadDataSource(tag);
+            return JdbcUtils.executeQuery(dataSource, sql, getParameters());
+        } finally {
+            LOCK.unlock(runClass);
+        }
+    }
+
+
+    /**
+     * 查询是否存在
+     *
+     * @return 结果
+     * @author jiangzeyin
+     */
+    @Override
+    public <T> T run() {
+        try {
+            List<Map<String, Object>> list = doData();
+            if (list == null || list.size() < 1) {
+                return null;
+            }
+            Map<String, Object> map = list.get(0);
+            String columns = getColumns();
+            if (COUNT_SUM.equals(columns)) {
+                return (T) map.get(COUNT_SUM);
+            }
+            if (columns != null) {
+                // 只有一列自动返回对应数据类型
+                columns = getRealColumnName(columns);
+                return (T) map.get(columns);
+            }
+            return (T) map;
+        } catch (Exception e) {
+            // TODO: handle exception
+            isThrows(e);
+        } finally {
+            runEnd();
+            recycling();
+        }
+        return null;
+    }
+
     /**
      * 判断是否存在
      *
@@ -94,7 +150,7 @@ public class IsExists<T> extends ReadBase<T> {
                 return false;
             }
             Map<String, Object> map = list.get(0);
-            Object object = map.get("countSum");
+            Object object = map.get(COUNT_SUM);
             if (object == null) {
                 throw new RuntimeException("查询结果没有countSum");
             }
@@ -115,69 +171,5 @@ public class IsExists<T> extends ReadBase<T> {
             recycling();
         }
         return true;
-
     }
-
-    private List<Map<String, Object>> doData() throws SQLException {
-        Class runClass = getTclass();
-        if (useLock) {
-            LOCK.lock(runClass);
-        }
-        try {
-            if (StringUtils.isEmpty(getKeyColumn())) {
-                throw new IllegalArgumentException(" keyColumn 不能为null");
-            }
-            String tag = getTag();
-            if (StringUtils.isEmpty(tag)) {
-                tag = DbWriteService.getInstance().getDatabaseName(runClass);
-            }
-            String sql = SqlUtil.getIsExistsSql(this, runClass, getKeyColumn(), getWhere());
-            setRunSql(sql);
-            DbLog.getInstance().info(getTransferLog() + sql);
-            DataSource dataSource = DatabaseContextHolder.getReadDataSource(tag);
-            return JdbcUtils.executeQuery(dataSource, sql, getParameters());
-        } finally {
-            LOCK.unlock(runClass);
-        }
-    }
-
-    @Override
-    public String getColumns() {
-        return columns;
-    }
-
-    /**
-     * 查询是否存在
-     *
-     * @return 结果
-     * @author jiangzeyin
-     */
-    @Override
-    public <T> T run() {
-        try {
-            List<Map<String, Object>> list = doData();
-            if (list == null || list.size() < 1) {
-                return null;
-            }
-            Map<String, Object> map = list.get(0);
-            String[] keys = StringUtil.stringToArray(getColumns(), ",");
-            if (keys == null || keys.length <= 0) {
-                return (T) map.get("countSum");
-            }
-            if (keys.length == 1) {
-                // 只有一列自动返回对应数据类型
-                keys[0] = getRealColumnName(keys[0]);
-                return (T) map.get(keys[0]);
-            }
-            return (T) map;
-        } catch (Exception e) {
-            // TODO: handle exception
-            isThrows(e);
-        } finally {
-            runEnd();
-            recycling();
-        }
-        return null;
-    }
-
 }

@@ -6,7 +6,6 @@ import cn.simplifydb.database.config.DataSourceConfig;
 import cn.simplifydb.database.config.DatabaseContextHolder;
 import cn.simplifydb.database.config.SystemColumn;
 import cn.simplifydb.system.DbLog;
-import cn.simplifydb.system.SystemSessionInfo;
 import cn.simplifydb.util.DbReflectUtil;
 import com.alibaba.druid.util.StringUtils;
 
@@ -45,10 +44,6 @@ public abstract class Base<T> {
      * 数据库对应class
      */
     private Class<?> tclass;
-    /**
-     * 操作人
-     */
-    private int optUserId;
     private long runTime;
     private String runSql;
     private String tempTransferLog;
@@ -103,7 +98,6 @@ public abstract class Base<T> {
      */
     Base() {
         // TODO Auto-generated constructor stub
-        setOptUserId(SystemSessionInfo.getUserId());
         runTime = System.currentTimeMillis();
     }
 
@@ -134,13 +128,6 @@ public abstract class Base<T> {
         }
     }
 
-    public int getOptUserId() {
-        return optUserId;
-    }
-
-    public void setOptUserId(int optUserId) {
-        this.optUserId = optUserId;
-    }
 
     /**
      * 返回操作的泛型类
@@ -282,7 +269,6 @@ public abstract class Base<T> {
         remove = null;
         tag = null;
         tclass = null;
-        optUserId = 0;
         runSql = null;
         runTime = 0L;
         tagName = null;

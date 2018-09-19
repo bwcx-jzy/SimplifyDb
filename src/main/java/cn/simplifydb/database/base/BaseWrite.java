@@ -3,6 +3,7 @@ package cn.simplifydb.database.base;
 
 import cn.simplifydb.database.config.SystemColumn;
 import cn.simplifydb.system.DbLog;
+import cn.simplifydb.system.SystemSessionInfo;
 
 import java.sql.Connection;
 import java.util.HashMap;
@@ -14,7 +15,11 @@ import java.util.Set;
  * @author jiangzeyin
  */
 @SuppressWarnings("unchecked")
-public abstract class WriteBase<T> extends Base<T> {
+public abstract class BaseWrite<T> extends Base<T> {
+    /**
+     * 操作人
+     */
+    private int optUserId;
     private Callback callback;
     private T data;
     private Throwable throwable;
@@ -24,13 +29,21 @@ public abstract class WriteBase<T> extends Base<T> {
      */
     protected Connection transactionConnection;
 
+    public int getOptUserId() {
+        return optUserId;
+    }
+
+    public void setOptUserId(int optUserId) {
+        this.optUserId = optUserId;
+    }
+
     /**
      * 设置回调事件监听
      *
      * @param callback 事件
-     * @return WriteBase
+     * @return BaseWrite
      */
-    public WriteBase setCallback(Callback callback) {
+    public BaseWrite setCallback(Callback callback) {
         this.callback = callback;
         return this;
     }
@@ -55,12 +68,12 @@ public abstract class WriteBase<T> extends Base<T> {
         this.isAsync = true;
     }
 
-    protected WriteBase(Connection transactionConnection) {
+    protected BaseWrite(Connection transactionConnection) {
         this.transactionConnection = transactionConnection;
     }
 
-    protected WriteBase() {
-
+    protected BaseWrite() {
+        setOptUserId(SystemSessionInfo.getUserId());
     }
 
     /**
@@ -73,7 +86,7 @@ public abstract class WriteBase<T> extends Base<T> {
     /**
      * @param data 对应实体
      */
-    public WriteBase(T data) {
+    public BaseWrite(T data) {
         // TODO Auto-generated constructor stub
         this.data = data;
     }
@@ -82,7 +95,7 @@ public abstract class WriteBase<T> extends Base<T> {
         return data;
     }
 
-    public WriteBase setData(T data) {
+    public BaseWrite setData(T data) {
         this.data = data;
         return this;
     }
@@ -116,6 +129,7 @@ public abstract class WriteBase<T> extends Base<T> {
         data = null;
         throwable = null;
         transactionConnection = null;
+        optUserId = 0;
     }
 
     public interface Event {

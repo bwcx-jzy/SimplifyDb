@@ -134,13 +134,6 @@ public class Page<T> {
         return totalRecord;
     }
 
-    public Page setTotalRecord(long totalRecord) {
-        this.totalRecord = totalRecord;
-        // 在设置总页数的时候计算出对应的总页数，在下面的三目运算中加法拥有更高的优先级，所以最后可以不加括号。
-        long totalPage = totalRecord % pageSize == 0 ? totalRecord / pageSize : totalRecord / pageSize + 1;
-        this.setTotalPage(totalPage);
-        return this;
-    }
 
     // public void setTotalRecord(long totalRecord) {
     // this.totalRecord = totalRecord;
