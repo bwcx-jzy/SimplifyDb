@@ -20,8 +20,8 @@ public class TestIsExists {
     public void exists() {
         IsExists<Db2Test> isExists = new IsExists<Db2Test>() {
         };
-        isExists.setKeyColumn("id");
-        isExists.setKeyValue(1);
+        isExists.setKeyColumn("id", 1);
+//        isExists.setKeyValue(1);
         System.out.println(isExists.runBoolean());
     }
 
@@ -29,8 +29,8 @@ public class TestIsExists {
     public void exists2() {
         IsExists<Db2Test> isExists = new IsExists<Db2Test>() {
         };
-        isExists.setKeyColumn("id");
-        isExists.setKeyValue(1);
+        isExists.setKeyColumn("id", 1);
+//        isExists.setKeyValue(1);
         isExists.setColumns("name");
         System.out.println((String) isExists.run());
     }

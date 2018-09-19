@@ -51,10 +51,7 @@ public abstract class Base<T> {
      * 操作的对应tag
      */
     private String tagName;
-    /**
-     * 表名
-     */
-    private String tableName;
+
     /**
      * 是否使用数据库名
      */
@@ -69,13 +66,7 @@ public abstract class Base<T> {
         this.useDataBaseName = useDataBaseName;
     }
 
-    public String getTableName() {
-        return tableName;
-    }
 
-    public void setTableName(String tableName) {
-        this.tableName = tableName;
-    }
 
     private String getTagName() {
         if (tagName == null) {

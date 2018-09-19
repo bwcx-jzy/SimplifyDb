@@ -58,7 +58,7 @@ public class Insert<T> extends BaseWrite<T> {
     }
 
     public Insert(Connection connection) {
-        super(connection);
+        super(null, connection);
         setThrows(true);
     }
 
@@ -67,11 +67,11 @@ public class Insert<T> extends BaseWrite<T> {
      */
     public Insert(T data) {
         // TODO Auto-generated constructor stub
-        super(data);
+        super(data, null);
     }
 
     public Insert(List<T> list) {
-        super((T) null);
+        super((T) null, null);
         this.list = list;
     }
 
@@ -82,12 +82,12 @@ public class Insert<T> extends BaseWrite<T> {
      * @param isThrows 发生异常是否抛出
      */
     public Insert(T data, boolean isThrows) {
-        super(data);
+        super(data, null);
         setThrows(isThrows);
     }
 
     public Insert(List<T> list, boolean isThrows) {
-        super((T) null);
+        super((T) null, null);
         this.list = list;
         setThrows(isThrows);
     }
@@ -113,6 +113,7 @@ public class Insert<T> extends BaseWrite<T> {
             }
         });
     }
+
 
     /**
      * 执行添加数据操作

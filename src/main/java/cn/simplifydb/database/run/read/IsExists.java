@@ -44,8 +44,8 @@ public class IsExists<T> extends BaseRead<T> {
 
     public IsExists(String keyColumn, String keyValue) {
         this(true);
-        setKeyValue(keyValue);
-        setKeyColumn(keyColumn);
+        //setKeyValue(keyValue);
+        setKeyColumn(keyColumn, keyValue);
     }
 
     public IsExists() {

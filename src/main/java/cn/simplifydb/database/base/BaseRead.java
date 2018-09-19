@@ -117,11 +117,13 @@ public abstract class BaseRead<T> extends Base<T> implements SQLSelectBuilder {
      * 默认为 id
      *
      * @param keyColumn 名称
+     * @param keyValue  键值
      * @return this
      * @author jiangzeyin
      */
-    public BaseRead setKeyColumn(String keyColumn) {
-        sqlSelectBuilder.where(keyColumn + "=!keyValue");
+    public BaseRead setKeyColumn(String keyColumn, Object keyValue) {
+        sqlSelectBuilder.whereAnd(keyColumn + "=!keyValue");
+        this.keyValue = keyValue;
         return this;
     }
 
@@ -130,21 +132,8 @@ public abstract class BaseRead<T> extends Base<T> implements SQLSelectBuilder {
     }
 
 
-    /**
-     * 设置查询主键值
-     *
-     * @param keyValue 键值
-     * @return this
-     * @author jiangzeyin
-     */
-    public BaseRead setKeyValue(Object keyValue) {
-        this.keyValue = keyValue;
-        return this;
-    }
-
-
     public BaseRead setIsDelete(int isDelete) {
-        sqlSelectBuilder.where(SystemColumn.Active.getColumn() + "=" + isDelete);
+        sqlSelectBuilder.whereAnd(SystemColumn.Active.getColumn() + "=" + isDelete);
         return this;
     }
 
@@ -269,11 +258,6 @@ public abstract class BaseRead<T> extends Base<T> implements SQLSelectBuilder {
         sqlSelectBuilder = null;
     }
 
-    @Override
-    public void setTableName(String tableName) {
-        super.setTableName(tableName);
-        sqlSelectBuilder.from(tableName);
-    }
 
     protected String builder() {
         SQLSelectQueryBlock sqlSelectQueryBlock = sqlSelectBuilder.getSQLSelect().getFirstQueryBlock();

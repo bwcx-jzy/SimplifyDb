@@ -16,12 +16,13 @@ import java.util.Set;
  */
 @SuppressWarnings("unchecked")
 public abstract class BaseWrite<T> extends Base<T> {
+
     /**
      * 操作人
      */
     private int optUserId;
     private Callback callback;
-    private T data;
+    protected T data;
     private Throwable throwable;
     private boolean isAsync;
     /**
@@ -68,11 +69,9 @@ public abstract class BaseWrite<T> extends Base<T> {
         this.isAsync = true;
     }
 
-    protected BaseWrite(Connection transactionConnection) {
+    protected BaseWrite(T data, Connection transactionConnection) {
         this.transactionConnection = transactionConnection;
-    }
-
-    protected BaseWrite() {
+        this.data = data;
         setOptUserId(SystemSessionInfo.getUserId());
     }
 
@@ -83,16 +82,18 @@ public abstract class BaseWrite<T> extends Base<T> {
      */
     public abstract void run();
 
-    /**
-     * @param data 对应实体
-     */
-    public BaseWrite(T data) {
-        // TODO Auto-generated constructor stub
-        this.data = data;
-    }
 
     public T getData() {
         return data;
+    }
+
+    @Override
+    public Class<?> getTclass() {
+        T t = getData();
+        if (t != null) {
+            return t.getClass();
+        }
+        return super.getTclass();
     }
 
     public BaseWrite setData(T data) {
@@ -155,10 +156,20 @@ public abstract class BaseWrite<T> extends Base<T> {
             private String desc;
             private int resultCode;
 
+            /**
+             * 返回的状态码
+             *
+             * @return int
+             */
             public int getResultCode() {
                 return resultCode;
             }
 
+            /**
+             * 描述
+             *
+             * @return desc
+             */
             public String getDesc() {
                 return desc;
             }
@@ -171,7 +182,7 @@ public abstract class BaseWrite<T> extends Base<T> {
      * @param cls    cls
      * @param update map
      */
-    protected static void checkUpdate(Class cls, HashMap<String, Object> update) {
+    static void checkUpdate(Class cls, HashMap<String, Object> update) {
         if (update != null) {
             Set<String> set = update.keySet();
             for (String item : set) {
@@ -197,5 +208,6 @@ public abstract class BaseWrite<T> extends Base<T> {
          */
         void success(Object key);
     }
+
 
 }

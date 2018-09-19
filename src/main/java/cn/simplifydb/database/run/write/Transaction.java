@@ -200,8 +200,8 @@ public class Transaction {
          *
          * @return remove
          */
-        public Remove getRemove() {
-            return new Remove(transaction.connection);
+        public Remove getRemove(Remove.Type type) {
+            return new Remove(transaction.connection, type);
         }
 
         /**

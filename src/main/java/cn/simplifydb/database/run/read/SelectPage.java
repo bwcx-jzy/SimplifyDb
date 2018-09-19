@@ -67,6 +67,15 @@ public class SelectPage<T> extends BaseRead<T> {
     }
 
     /**
+     * 固定类型
+     *
+     * @param result result
+     */
+    public SelectPage(Result result) {
+        setResultType(result);
+    }
+
+    /**
      * 分页基本使用
      *
      * @param pageNo   页数

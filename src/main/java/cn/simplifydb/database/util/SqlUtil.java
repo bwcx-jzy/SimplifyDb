@@ -49,7 +49,7 @@ public final class SqlUtil {
      * @throws IllegalAccessException   yic
      * @author jiangzeyin
      */
-    private static SqlAndParameters getWriteSql(BaseWrite<?> write, Object data) throws Exception {
+    public static SqlAndParameters getWriteSql(BaseWrite<?> write, Object data) throws Exception {
         if (data == null) {
             data = write.getData();
         }
@@ -273,7 +273,7 @@ public final class SqlUtil {
      * @author jiangzeyin
      */
     public static SqlAndParameters getUpdateSql(Update<?> update) throws Exception {
-        SqlAndParameters sqlAndParameters;
+        SqlAndParameters sqlAndParameters = null;
         StringBuilder sbSql;
         Class<?> class1 = update.getTclass();
         EntityConfig entityConfig = class1.getAnnotation(EntityConfig.class);
@@ -281,70 +281,70 @@ public final class SqlUtil {
         if (entityConfig != null && !entityConfig.update()) {
             isLogUpdate = false;
         }
-        // 更新部分列
-        if (update.getUpdate() != null) {
-            sqlAndParameters = new SqlAndParameters();
-            String sql = makeUpdateToTableSql(getTableName(update, class1), update.getUpdate(), isLogUpdate);
-            sbSql = new StringBuilder(sql);
-        } else {
-            // 按照实体更新
-            sqlAndParameters = getWriteSql(update);
-            String sql = makeUpdateToTableSql(getTableName(update, class1), sqlAndParameters.getColumns(), sqlAndParameters.getSystemMap(), isLogUpdate);
-            sbSql = new StringBuilder(sql);
-        }
+//        // 更新部分列
+//        if (update.getUpdate() != null) {
+//            sqlAndParameters = new SqlAndParameters();
+//            String sql = makeUpdateToTableSql(getTableName(update, class1), update.getUpdate(), isLogUpdate);
+//            sbSql = new StringBuilder(sql);
+//        } else {
+//            // 按照实体更新
+//            sqlAndParameters = getWriteSql(update);
+//            String sql = makeUpdateToTableSql(getTableName(update, class1), sqlAndParameters.getColumns(), sqlAndParameters.getSystemMap(), isLogUpdate);
+//            sbSql = new StringBuilder(sql);
+//        }
         // 获取修改数据的操作人
-        loadModifyUser(update, sbSql);
+        // loadModifyUser(update, sbSql);
         // 处理where 条件
         boolean isAppendWhere = false;
         boolean isWhere = false;
         // 获取主键 数据
-        if (!StringUtils.isEmpty(StringUtil.convertNULL(update.getKeyValue()))) {
-            sbSql.append(" where ");
-            sbSql.append(update.getKeyColumn());
-            sbSql.append("=")
-                    .append("'")
-                    .append(update.getKeyValue())
-                    .append("'");
-            isAppendWhere = true;
-            isWhere = true;
-        }
-        // 添加where 条件
-        if (!StringUtils.isEmpty(update.getWhere())) {
-            sbSql.append(isAppendWhere ? " and " : " where ");
-            sbSql.append(update.getWhere());
-            isWhere = true;
-        }
+//        if (!StringUtils.isEmpty(StringUtil.convertNULL(update.getKeyValue()))) {
+//            sbSql.append(" where ");
+//            sbSql.append(update.getKeyColumn());
+//            sbSql.append("=")
+//                    .append("'")
+//                    .append(update.getKeyValue())
+//                    .append("'");
+//            isAppendWhere = true;
+//            isWhere = true;
+//        }
+//        // 添加where 条件
+//        if (!StringUtils.isEmpty(update.getWhere())) {
+//            sbSql.append(isAppendWhere ? " and " : " where ");
+//            sbSql.append(update.getWhere());
+//            isWhere = true;
+//        }
         // 没有任何更新条件
-        if (!isWhere) {
-            if (update.getData() != null) {
-                Object objId = DbReflectUtil.getFieldValue(update.getData(), SystemColumn.getDefaultKeyName());
-                Objects.requireNonNull(objId, "没有找到任何更新条件");
-                sbSql.append(" where id=");
-                sbSql.append(Long.parseLong(objId.toString()));
-            } else {
-                sbSql.append(" where ")
-                        .append(update.getKeyColumn())
-                        .append("=")
-                        .append(update.getKeyValue());
-            }
-        }
-
-        sqlAndParameters.setSql(sbSql);
-        // 追加where 的参数
-        List<Object> parameters;
-        if (update.getUpdate() == null) {
-            parameters = sqlAndParameters.getParameters();
-        } else {
-            List<Object> paList = new LinkedList<>();
-            Collections.addAll(paList, update.getUpdate().values().toArray());
-            parameters = paList;
-        }
-        if (parameters == null) {
-            parameters = update.getWhereParameters();
-        } else if (update.getWhereParameters() != null) {
-            parameters.addAll(update.getWhereParameters());
-        }
-        sqlAndParameters.setParameters(parameters);
+//        if (!isWhere) {
+//            if (update.getData() != null) {
+//                Object objId = DbReflectUtil.getFieldValue(update.getData(), SystemColumn.getDefaultKeyName());
+//                Objects.requireNonNull(objId, "没有找到任何更新条件");
+//                sbSql.append(" where id=");
+//                sbSql.append(Long.parseLong(objId.toString()));
+//            } else {
+//                sbSql.append(" where ")
+//                        .append(update.getKeyColumn())
+//                        .append("=")
+//                        .append(update.getKeyValue());
+//            }
+//        }
+//
+//        sqlAndParameters.setSql(sbSql);
+//        // 追加where 的参数
+//        List<Object> parameters;
+//        if (update.getUpdate() == null) {
+//            parameters = sqlAndParameters.getParameters();
+//        } else {
+//            List<Object> paList = new LinkedList<>();
+//            Collections.addAll(paList, update.getUpdate().values().toArray());
+//            parameters = paList;
+//        }
+//        if (parameters == null) {
+//            parameters = update.getWhereParameters();
+//        } else if (update.getWhereParameters() != null) {
+//            parameters.addAll(update.getWhereParameters());
+//        }
+//        sqlAndParameters.setParameters(parameters);
         return sqlAndParameters;
     }
 
@@ -455,75 +455,59 @@ public final class SqlUtil {
      * @author jiangzeyin
      */
     public static String getRemoveSql(Remove<?> remove) {
-        String where = remove.getWhere();
-        Class<?> cls = remove.getTclass();
-        Remove.Type type = remove.getType();
-        String ids = remove.getIds();
-        StringBuilder sql = new StringBuilder();
-        if (type == Remove.Type.delete) {
-            sql.append("delete from ")
-                    .append(getTableName(remove, cls));
-        } else {
-            int status = type == Remove.Type.remove ? SystemColumn.Active.getInActiveValue() : SystemColumn.Active.getActiveValue();
-            EntityConfig entityConfig = cls.getAnnotation(EntityConfig.class);
-            boolean isLogUpdate = true;
-            if (entityConfig != null && !entityConfig.update()) {
-                isLogUpdate = false;
-            }
-            sql.append("update ")
-                    .append(getTableName(remove, cls))
-                    .append(String.format(" set " + SystemColumn.Active.getColumn() + "=%d", status));
-            if (isLogUpdate && SystemColumn.Modify.isStatus()) {
-                sql.append(",").append(SystemColumn.Modify.getColumn()).append("=").append(SystemColumn.Modify.getTime());
-            }
-            // 还原的时候可以更新部分字段
-            if (type == Remove.Type.recovery) {
-                HashMap<String, Object> columns = remove.getUpdate();
-                if (columns != null) {
-                    sql.append(",");
-                    makeUpdateColumns(sql, columns);
-                    List<Object> list = new LinkedList<>(columns.values());
-                    List<Object> oldList = remove.getParameters();
-                    remove.setParameters(list);
-                    if (oldList != null) {
-                        remove.setParameters(oldList.toArray());
-                    }
-                }
-            }
-            loadModifyUser(remove, sql);
-        }
-        boolean isWhere = false;
-        if (!StringUtils.isEmpty(ids)) {
-            sql.append(" where ").append(SystemColumn.getDefaultKeyName()).append(" in(").append(ids).append(")");
-            isWhere = true;
-        }
-        if (!StringUtils.isEmpty(where)) {
-            sql.append(isWhere ? " and " : " where ").append(where);
-            isWhere = true;
-        }
-        if (!isWhere) {
-            throw new IllegalArgumentException("remove must have where");
-        }
-        return sql.toString();
+//        String where = remove.getWhere();
+//        Class<?> cls = remove.getTclass();
+//        Remove.Type type = remove.getType();
+//        String ids = remove.getIds();
+//        StringBuilder sql = new StringBuilder();
+//        if (type == Remove.Type.delete) {
+//            sql.append("delete from ")
+//                    .append(getTableName(remove, cls));
+//        } else {
+//            int status = type == Remove.Type.remove ? SystemColumn.Active.getInActiveValue() : SystemColumn.Active.getActiveValue();
+//            EntityConfig entityConfig = cls.getAnnotation(EntityConfig.class);
+//            boolean isLogUpdate = true;
+//            if (entityConfig != null && !entityConfig.update()) {
+//                isLogUpdate = false;
+//            }
+//            sql.append("update ")
+//                    .append(getTableName(remove, cls))
+//                    .append(String.format(" set " + SystemColumn.Active.getColumn() + "=%d", status));
+//            if (isLogUpdate && SystemColumn.Modify.isStatus()) {
+//                sql.append(",").append(SystemColumn.Modify.getColumn()).append("=").append(SystemColumn.Modify.getTime());
+//            }
+//            // 还原的时候可以更新部分字段
+//            if (type == Remove.Type.recovery) {
+//                HashMap<String, Object> columns = remove.getUpdate();
+//                if (columns != null) {
+//                    sql.append(",");
+//                    makeUpdateColumns(sql, columns);
+//                    List<Object> list = new LinkedList<>(columns.values());
+//                    List<Object> oldList = remove.getParameters();
+//                    remove.setParameters(list);
+//                    if (oldList != null) {
+//                        remove.setParameters(oldList.toArray());
+//                    }
+//                }
+//            }
+//            loadModifyUser(remove, sql);
+//        }
+//        boolean isWhere = false;
+//        if (!StringUtils.isEmpty(ids)) {
+//            sql.append(" where ").append(SystemColumn.getDefaultKeyName()).append(" in(").append(ids).append(")");
+//            isWhere = true;
+//        }
+//        if (!StringUtils.isEmpty(where)) {
+//            sql.append(isWhere ? " and " : " where ").append(where);
+//            isWhere = true;
+//        }
+//        if (!isWhere) {
+//            throw new IllegalArgumentException("remove must have where");
+//        }
+//        return sql.toString();
+        return "";
     }
 
-    /**
-     * sql 记录操作人
-     *
-     * @param base         base
-     * @param stringBuffer sql 对象
-     */
-    private static void loadModifyUser(BaseWrite<?> base, StringBuilder stringBuffer) {
-        int optUserId = base.getOptUserId();
-        if (optUserId < 1) {
-            return;
-        }
-        Class cls = base.getTclass();
-        if (ModifyUser.Modify.isModifyClass(cls)) {
-            stringBuffer.append(",").append(ModifyUser.Modify.getColumnUser()).append("=").append(optUserId);
-            stringBuffer.append(",").append(ModifyUser.Modify.getColumnTime()).append("=").append(ModifyUser.Modify.getModifyTime());
-        }
-    }
 
 //    /**
 //     * 获取查询信息
@@ -616,11 +600,6 @@ public final class SqlUtil {
     public static String getTableName(Base base, Class cls) {
         String tableName;
         if (base != null) {
-            // 判断是否指定表名
-            tableName = base.getTableName();
-            if (!StringUtil.isEmpty(tableName)) {
-                return tableName;
-            }
             // 读取索引信息
             boolean isIndex = false;
             String index = null;
@@ -630,7 +609,6 @@ public final class SqlUtil {
                 isIndex = baseRead.isUseIndex();
             }
             tableName = DbWriteService.getInstance().getTableName(base.getTclass(), isIndex, index, base.isUseDataBaseName());
-            base.setTableName(tableName);
         }
         tableName = DbWriteService.getInstance().getTableName(cls, false, null, false);
         return tableName;
