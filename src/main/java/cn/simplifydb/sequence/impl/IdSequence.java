@@ -46,7 +46,7 @@ public class IdSequence extends BaseSequence {
     /**
      * 起始时间戳，用于用当前时间戳减去这个时间戳，算出偏移量
      **/
-    private static final long startTime;
+    private static final long START_TIME;
 
     static {
         long startTime1;
@@ -56,7 +56,7 @@ public class IdSequence extends BaseSequence {
             e.printStackTrace();
             startTime1 = 0L;
         }
-        startTime = startTime1;
+        START_TIME = startTime1;
     }
 
 
@@ -123,7 +123,7 @@ public class IdSequence extends BaseSequence {
          * 2.然后对每个左移后的值(la、lb、lc、sequence)做位或运算，是为了把各个短的数据合并起来，合并成一个二进制数
          * 3.最后转换成10进制，就是最终生成的id
          */
-        return String.valueOf(((timestamp - startTime) << timestampLeftShift) |
+        return String.valueOf(((timestamp - START_TIME) << timestampLeftShift) |
                 (dataCenterId << dataCenterIdShift) |
                 (workerId << workerIdShift) |
                 sequence);
@@ -148,7 +148,7 @@ public class IdSequence extends BaseSequence {
         int dataCenterIdInt = Integer.valueOf(dataCenterId, 2);
         jsonObject.put("dataCenter", dataCenterIdInt);
         long diffTime = Long.parseLong(time, 2);
-        long timeLong = diffTime + startTime;
+        long timeLong = diffTime + START_TIME;
         String date = DateUtil.formatTime(null, timeLong);
         jsonObject.put("date", date);
         return jsonObject;

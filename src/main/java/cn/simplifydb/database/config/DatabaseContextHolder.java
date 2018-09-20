@@ -79,7 +79,6 @@ public final class DatabaseContextHolder {
     }
 
     private static Map<String, DataSource> randMap() {
-        // RANDOM.nextInt(MAPS.length);
         int index = RandomUtil.getRandom(0, MAPS.length);
         THREAD_LOCAL.set(tagNames[index]);
         return MAPS[index];

@@ -112,7 +112,7 @@ public final class DataSourceConfig {
         }
         String[] systemKeyColumn = systemPropertiesParser.getStringArrayProperty(ConfigProperties.PROP_SYSTEM_KEY_COLUMN, null);
         if (systemKeyColumn != null && systemKey1 == null) {
-            DbLog.getInstance().warn(" use systemKeyColumn moust systemKey");
+            DbLog.getInstance().warn(" use systemKeyColumn must systemKey");
         }
         for (String tag : sourceTags) {
             Properties propertiesTag = propertiesParser.getPropertyGroup(tag, true);
@@ -167,12 +167,13 @@ public final class DataSourceConfig {
         try {
             socket.connect(new InetSocketAddress(host, port));
         } catch (IOException e) {
+            DbLog.getInstance().warn("isConnect", e);
             return false;
         } finally {
             try {
                 socket.close();
             } catch (IOException e) {
-                e.printStackTrace();
+                DbLog.getInstance().warn("close", e);
             }
         }
         return true;
