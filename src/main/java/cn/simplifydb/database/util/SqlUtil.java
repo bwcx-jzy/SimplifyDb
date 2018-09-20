@@ -7,7 +7,6 @@ import cn.simplifydb.database.annotation.FieldConfig;
 import cn.simplifydb.database.base.Base;
 import cn.simplifydb.database.base.BaseRead;
 import cn.simplifydb.database.base.BaseWrite;
-import cn.simplifydb.database.config.ModifyUser;
 import cn.simplifydb.database.config.SystemColumn;
 import cn.simplifydb.database.run.write.Insert;
 import cn.simplifydb.database.run.write.Remove;
@@ -21,7 +20,10 @@ import com.alibaba.druid.util.StringUtils;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Objects;
 
 /**
  * sql 工具
@@ -55,8 +57,8 @@ public final class SqlUtil {
         }
         Objects.requireNonNull(data, String.format("%s", write.getTclass(false)));
 
-        List<String> columns = new ArrayList<>();
-        List<Object> values = new ArrayList<>();
+        List<String> columns = new ArrayList<>(20);
+        List<Object> values = new ArrayList<>(20);
         HashMap<String, String> systemMap = new HashMap<>();
 
         List<String> remove = write.getRemove();
@@ -198,43 +200,6 @@ public final class SqlUtil {
     }
 
     /**
-     * 获取操作 信息
-     *
-     * @param write write
-     * @return 结果对象
-     * @throws IllegalArgumentException y
-     * @throws IllegalAccessException   y
-     * @author jiangzeyin
-     */
-    private static SqlAndParameters getWriteSql(BaseWrite<?> write) throws Exception {
-        return getWriteSql(write, null);
-    }
-
-//    /**
-//     * 获取添加对象信息
-//     *
-//     * @param insert 对象
-//     * @return 结果
-//     * @throws IllegalArgumentException y
-//     * @throws IllegalAccessException   y
-//     * @author jiangzeyin
-//     */
-//    public static SqlAndParameters getInsertSql(Insert<?> insert) throws Exception {
-//        SqlAndParameters sqlAndParameters = getWriteSql(insert);
-//        int isDelete = SystemColumn.Active.NO_ACTIVE;
-//        if (!StringUtils.isEmpty(SystemColumn.Active.getColumn())) {
-//            EntityConfig entityConfig = insert.getData().getClass().getAnnotation(EntityConfig.class);
-//            if (entityConfig == null || entityConfig.active()) {
-//                Object isDeleteF = DbReflectUtil.getFieldValue(insert.getData(), SystemColumn.Active.getColumn());
-//                isDelete = isDeleteF == null ? SystemColumn.Active.getActiveValue() : Integer.parseInt(isDeleteF.toString());
-//            }
-//        }
-//        sqlAndParameters.setIsDelete(isDelete);
-//        //sqlAndParameters.setSql(makeInsertToTableSql(insert.getData().getClass(), insert.getOptUserId(), sqlAndParameters.getColumns(), sqlAndParameters.getSystemMap(), isDelete));
-//        return sqlAndParameters;
-//    }
-
-    /**
      * @param insert 对象
      * @return 结果数组
      * @throws IllegalArgumentException y
@@ -259,7 +224,6 @@ public final class SqlUtil {
                 }
             }
             sqlAndParameters.setIsDelete(isDelete);
-            // sqlAndParameters.setSql(makeInsertToTableSql(object.getClass(), insert.getOptUserId(), sqlAndParameters.getColumns(), sqlAndParameters.getSystemMap(), isDelete));
             andParameters[i] = sqlAndParameters;
         }
         return andParameters;
@@ -568,29 +532,6 @@ public final class SqlUtil {
 //        return sql.toString();
 //    }
 
-//    private static void doWhere(StringBuffer sqlBuffer, Page page) {
-//        if (StringUtil.isEmpty(page.getWhereWord())) {
-//            return;
-//        }
-//        sqlBuffer.append(" ");
-//        if (!sqlBuffer.toString().toUpperCase().contains(Token.WHERE.name)) {
-//            sqlBuffer.append(Token.WHERE.name).append(" ");
-//        } else {
-//            sqlBuffer.append(Token.AND.name).append(" ");
-//        }
-//        sqlBuffer.append(page.getWhereWord());
-//    }
-
-//    /**
-//     * 获取表明 默认添加索引
-//     *
-//     * @param base 数据库操作类
-//     * @return 表名
-//     * @author jiangzeyin
-//     */
-//    private static String getTableName(Base base) {
-//        return getTableName(base, null);
-//    }
 
     /**
      * 获取表明 和 自动加主键索引
@@ -637,160 +578,160 @@ public final class SqlUtil {
         return sb.toString();
     }
 
-    /**
-     * @param class1     类
-     * @param createUser 创建者
-     * @param names      名称
-     * @param systemMap  map
-     * @return j结果
-     * @author jiangzeyin
-     */
-    private static String makeInsertToTableSql(Class<?> class1, int createUser, Collection<String> names, HashMap<String, String> systemMap, int isDeleteValue) {
-        String tableName = getTableName(null, class1);
-        StringBuilder sql = new StringBuilder()
-                .append("insert into ")
-                .append(tableName)
-                .append("(");
+//    /**
+//     * @param class1     类
+//     * @param createUser 创建者
+//     * @param names      名称
+//     * @param systemMap  map
+//     * @return j结果
+//     * @author jiangzeyin
+//     */
+//    private static String makeInsertToTableSql(Class<?> class1, int createUser, Collection<String> names, HashMap<String, String> systemMap, int isDeleteValue) {
+//        String tableName = getTableName(null, class1);
+//        StringBuilder sql = new StringBuilder()
+//                .append("insert into ")
+//                .append(tableName)
+//                .append("(");
+//
+//        int nameCount = 0;
+//        StringBuilder value = new StringBuilder();
+//        boolean isDelete = false;
+//        //
+//        for (String name : names) {
+//            if (nameCount > 0) {
+//                sql.append(",");
+//            }
+//            sql.append(name);
+//            String va = systemMap.get(name);
+//            if (nameCount > 0) {
+//                value.append(",");
+//            }
+//            if (va == null) {
+//                value.append("?");
+//            } else {
+//                if (isDeleteValue != SystemColumn.Active.NO_ACTIVE && SystemColumn.Active.getColumn().equals(name)) {
+//                    value.append(isDeleteValue);
+//                    isDelete = true;
+//                } else {
+//                    value.append(va);
+//                }
+//            }
+//            nameCount++;
+//        }
+//
+//        // 获取修改数据的操作人
+//        if (createUser != -1 && ModifyUser.Create.isCreateClass(class1)) {
+//            sql.append(",").append(ModifyUser.Create.getColumnUser());
+//            value.append(",").append(createUser);
+//        }
+//        // 处理插入默认状态值
+//        if (isDeleteValue != SystemColumn.Active.NO_ACTIVE && !isDelete) {
+//            sql.append(",").append(SystemColumn.Active.getColumn());
+//            value.append(",").append(isDeleteValue);
+//        }
+//        sql.append(") values (");
+//        sql.append(value);
+//        sql.append(")");
+//        return sql.toString();
+//    }
 
-        int nameCount = 0;
-        StringBuilder value = new StringBuilder();
-        boolean isDelete = false;
-        //
-        for (String name : names) {
-            if (nameCount > 0) {
-                sql.append(",");
-            }
-            sql.append(name);
-            String va = systemMap.get(name);
-            if (nameCount > 0) {
-                value.append(",");
-            }
-            if (va == null) {
-                value.append("?");
-            } else {
-                if (isDeleteValue != SystemColumn.Active.NO_ACTIVE && SystemColumn.Active.getColumn().equals(name)) {
-                    value.append(isDeleteValue);
-                    isDelete = true;
-                } else {
-                    value.append(va);
-                }
-            }
-            nameCount++;
-        }
+//    /**
+//     * 获取更新sql 语句
+//     *
+//     * @param tableName 表名
+//     * @param names     列名
+//     * @param systemMap 值
+//     * @return 结果
+//     * @author jiangzeyin
+//     */
+//    private static String makeUpdateToTableSql(String tableName, Collection<String> names, HashMap<String, String> systemMap, boolean isLogUpdate) {
+//        StringBuilder sql = new StringBuilder()
+//                .append("update ")
+//                .append(tableName)
+//                .append(" set ");
+//
+//        int nameCount = 0;
+//        for (String name : names) {
+//            if (nameCount > 0) {
+//                sql.append(",");
+//            }
+//            sql.append(name);
+//            sql.append("=");
+//            String va = systemMap.get(name);
+//            if (va == null) {
+//                sql.append("?");
+//            } else {
+//                sql.append(va);
+//            }
+//            nameCount++;
+//        }
+//        if (isLogUpdate && SystemColumn.Modify.isStatus()) {
+//            String time = SystemColumn.Modify.getColumn() + "=" + SystemColumn.Modify.getTime();
+//            if (sql.indexOf(time) == -1) {
+//                sql.append(",").append(time);
+//            }
+//        }
+//        return sql.toString();
+//    }
 
-        // 获取修改数据的操作人
-        if (createUser != -1 && ModifyUser.Create.isCreateClass(class1)) {
-            sql.append(",").append(ModifyUser.Create.getColumnUser());
-            value.append(",").append(createUser);
-        }
-        // 处理插入默认状态值
-        if (isDeleteValue != SystemColumn.Active.NO_ACTIVE && !isDelete) {
-            sql.append(",").append(SystemColumn.Active.getColumn());
-            value.append(",").append(isDeleteValue);
-        }
-        sql.append(") values (");
-        sql.append(value);
-        sql.append(")");
-        return sql.toString();
-    }
+//    /**
+//     * 获取修改指定字段的sql
+//     *
+//     * @param tableName 表名
+//     * @param columns   列名
+//     * @return 结果
+//     * @author jiangzeyin
+//     */
+//    private static String makeUpdateToTableSql(String tableName, HashMap<String, Object> columns, boolean isLogUpdate) {
+//        StringBuilder sql = new StringBuilder()
+//                .append("update ")
+//                .append(tableName)
+//                .append(" set ");
+//        makeUpdateColumns(sql, columns);
+//        if (isLogUpdate && SystemColumn.Modify.isStatus()) {
+//            sql.append(",").append(SystemColumn.Modify.getColumn()).append("=").append(SystemColumn.Modify.getTime());
+//        }
+//        return sql.toString();
+//    }
 
-    /**
-     * 获取更新sql 语句
-     *
-     * @param tableName 表名
-     * @param names     列名
-     * @param systemMap 值
-     * @return 结果
-     * @author jiangzeyin
-     */
-    private static String makeUpdateToTableSql(String tableName, Collection<String> names, HashMap<String, String> systemMap, boolean isLogUpdate) {
-        StringBuilder sql = new StringBuilder()
-                .append("update ")
-                .append(tableName)
-                .append(" set ");
-
-        int nameCount = 0;
-        for (String name : names) {
-            if (nameCount > 0) {
-                sql.append(",");
-            }
-            sql.append(name);
-            sql.append("=");
-            String va = systemMap.get(name);
-            if (va == null) {
-                sql.append("?");
-            } else {
-                sql.append(va);
-            }
-            nameCount++;
-        }
-        if (isLogUpdate && SystemColumn.Modify.isStatus()) {
-            String time = SystemColumn.Modify.getColumn() + "=" + SystemColumn.Modify.getTime();
-            if (sql.indexOf(time) == -1) {
-                sql.append(",").append(time);
-            }
-        }
-        return sql.toString();
-    }
-
-    /**
-     * 获取修改指定字段的sql
-     *
-     * @param tableName 表名
-     * @param columns   列名
-     * @return 结果
-     * @author jiangzeyin
-     */
-    private static String makeUpdateToTableSql(String tableName, HashMap<String, Object> columns, boolean isLogUpdate) {
-        StringBuilder sql = new StringBuilder()
-                .append("update ")
-                .append(tableName)
-                .append(" set ");
-        makeUpdateColumns(sql, columns);
-        if (isLogUpdate && SystemColumn.Modify.isStatus()) {
-            sql.append(",").append(SystemColumn.Modify.getColumn()).append("=").append(SystemColumn.Modify.getTime());
-        }
-        return sql.toString();
-    }
-
-    private static void makeUpdateColumns(StringBuilder sql, HashMap<String, Object> columns) {
-        if (columns == null) {
-            return;
-        }
-        int nameCount = 0;
-        Iterator<Map.Entry<String, Object>> iterator = columns.entrySet().iterator();
-        while (iterator.hasNext()) {
-            Map.Entry<String, Object> entry = iterator.next();
-            String name = entry.getKey();
-            Object objValue = entry.getValue();
-            if (nameCount > 0) {
-                sql.append(",");
-            }
-            sql.append(name);
-            sql.append("=");
-            { // 判断是否为系统字段
-                //  getSystemValue(name);
-                String va = SystemColumn.getDefaultValue(name);
-                if (va == null) {
-                    // 密码字段处理
-                    if (SystemColumn.getPwdColumn().equalsIgnoreCase(name)) {
-                        sql.append("PASSWORD(?)");
-                    } else {
-                        // sql 函数处理
-                        String value = StringUtil.convertNULL(objValue);
-                        if (value.startsWith("#{") && value.endsWith("}")) {
-                            value = value.substring(value.indexOf("#{") + 2, value.indexOf("}"));
-                            sql.append(value);
-                            iterator.remove();
-                        } else {
-                            sql.append("?");
-                        }
-                    }
-                } else {
-                    sql.append(va);
-                }
-            }
-            nameCount++;
-        }
-    }
+//    private static void makeUpdateColumns(StringBuilder sql, HashMap<String, Object> columns) {
+//        if (columns == null) {
+//            return;
+//        }
+//        int nameCount = 0;
+//        Iterator<Map.Entry<String, Object>> iterator = columns.entrySet().iterator();
+//        while (iterator.hasNext()) {
+//            Map.Entry<String, Object> entry = iterator.next();
+//            String name = entry.getKey();
+//            Object objValue = entry.getValue();
+//            if (nameCount > 0) {
+//                sql.append(",");
+//            }
+//            sql.append(name);
+//            sql.append("=");
+//            { // 判断是否为系统字段
+//                //  getSystemValue(name);
+//                String va = SystemColumn.getDefaultValue(name);
+//                if (va == null) {
+//                    // 密码字段处理
+//                    if (SystemColumn.getPwdColumn().equalsIgnoreCase(name)) {
+//                        sql.append("PASSWORD(?)");
+//                    } else {
+//                        // sql 函数处理
+//                        String value = StringUtil.convertNULL(objValue);
+//                        if (value.startsWith("#{") && value.endsWith("}")) {
+//                            value = value.substring(value.indexOf("#{") + 2, value.indexOf("}"));
+//                            sql.append(value);
+//                            iterator.remove();
+//                        } else {
+//                            sql.append("?");
+//                        }
+//                    }
+//                } else {
+//                    sql.append(va);
+//                }
+//            }
+//            nameCount++;
+//        }
+//    }
 }

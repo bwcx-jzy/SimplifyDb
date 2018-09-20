@@ -66,7 +66,6 @@ public abstract class Base<T> {
         this.useDataBaseName = useDataBaseName;
     }
 
-
     private String getTagName() {
         if (tagName == null) {
             return DatabaseContextHolder.getConnectionTagName();
@@ -217,17 +216,17 @@ public abstract class Base<T> {
      */
     public void putRefClass(String name, Class<?> refClass) {
         if (refMap == null) {
-            refMap = new HashMap<>();
+            refMap = new HashMap<>(5);
         }
         refMap.put(name.toLowerCase(), refClass);
     }
 
     public void putRefClass(String name, Class<?> refClass, String where) {
         if (refMap == null) {
-            refMap = new HashMap<>();
+            refMap = new HashMap<>(5);
         }
         if (refWhere == null) {
-            refWhere = new HashMap<>();
+            refWhere = new HashMap<>(5);
         }
         refMap.put(name, refClass);
         refWhere.put(name, where);

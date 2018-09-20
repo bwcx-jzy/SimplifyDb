@@ -208,6 +208,4 @@ public abstract class BaseWrite<T> extends Base<T> {
          */
         void success(Object key);
     }
-
-
 }

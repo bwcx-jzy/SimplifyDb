@@ -160,6 +160,9 @@ public class Remove<T> extends BaseUpdate<T> {
     @Override
     public String builder() throws Exception {
         if (sqlDeleteBuilder == null) {
+            // 逻辑删除和恢复
+            int status = type == Remove.Type.remove ? SystemColumn.Active.getInActiveValue() : SystemColumn.Active.getActiveValue();
+            sqlUpdateBuilder.setValue(SystemColumn.Active.getColumn(), status);
             return super.builder();
         }
         SQLDeleteStatement sqlDeleteStatement = sqlDeleteBuilder.getSQLDeleteStatement();
@@ -167,7 +170,7 @@ public class Remove<T> extends BaseUpdate<T> {
             String tableName = SqlUtil.getTableName(this, getTclass());
             sqlDeleteBuilder.from(tableName);
         }
-        String sql = sqlUpdateBuilder.toString();
+        String sql = sqlDeleteBuilder.toString();
         setRunSql(sql);
         return sql;
     }
