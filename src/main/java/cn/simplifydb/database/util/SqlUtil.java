@@ -220,7 +220,9 @@ public final class SqlUtil {
                 EntityConfig entityConfig = object.getClass().getAnnotation(EntityConfig.class);
                 if (entityConfig == null || entityConfig.active()) {
                     Object isDeleteF = DbReflectUtil.getFieldValue(object, SystemColumn.Active.getColumn());
-                    isDelete = isDeleteF == null ? SystemColumn.Active.getActiveValue() : Integer.parseInt(isDeleteF.toString());
+                    if (isDeleteF != null) {
+                        isDelete = Integer.parseInt(isDeleteF.toString());
+                    }
                 }
             }
             sqlAndParameters.setIsDelete(isDelete);

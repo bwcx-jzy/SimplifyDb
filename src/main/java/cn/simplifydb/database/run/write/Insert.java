@@ -1,5 +1,6 @@
 package cn.simplifydb.database.run.write;
 
+import cn.jiangzeyin.StringUtil;
 import cn.simplifydb.database.DbWriteService;
 import cn.simplifydb.database.base.BaseWrite;
 import cn.simplifydb.database.config.DatabaseContextHolder;
@@ -278,7 +279,8 @@ public class Insert<T> extends BaseWrite<T> {
                     SQLExprParser sqlExpr = SQLParserUtils.createExprParser("?", JdbcConstants.MYSQL);
                     valuesClause.addValue(sqlExpr.additive());
                 } else {
-                    valuesClause.addValue(SQLBuilderImpl.toSQLExpr(val, JdbcConstants.MYSQL));
+                    SQLExprParser sqlExpr = SQLParserUtils.createExprParser(StringUtil.convertNULL(val), JdbcConstants.MYSQL);
+                    valuesClause.addValue(sqlExpr.additive());
                 }
             }
             sqlInsertStatement.setValues(valuesClause);

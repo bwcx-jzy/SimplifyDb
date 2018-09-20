@@ -66,6 +66,10 @@ public class SelectPage<T> extends BaseRead<T> {
         return totalPage;
     }
 
+    public SelectPage() {
+
+    }
+
     /**
      * 固定类型
      *
@@ -85,6 +89,16 @@ public class SelectPage<T> extends BaseRead<T> {
         // TODO Auto-generated constructor stub
         this.pageNo = pageNo;
         this.pageSize = pageSize;
+    }
+
+    public SelectPage setDisplayPage(int start, int length) {
+        int pageNo = 1;
+        if (start >= length) {
+            pageNo += start / length;
+        }
+        this.setPageNo(pageNo);
+        this.setPageSize(length);
+        return this;
     }
 
     private SelectPage<T> setTotalRecord(long totalRecord) {

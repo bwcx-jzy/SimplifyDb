@@ -1,12 +1,11 @@
 package cn.simplifydb.entity.test1;
 
-import cn.simplifydb.entity.test1.base.BaseRemove;
+import cn.simplifydb.entity.test1.base.BaseCreate;
 
 /**
- * 测试remove
  * Created by jiangzeyin on 2018/9/20.
  */
-public class TestRemove extends BaseRemove {
+public class TestCreateUser extends BaseCreate {
     private int id;
     private String name;
 

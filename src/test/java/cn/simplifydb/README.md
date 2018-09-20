@@ -28,4 +28,10 @@ simplifydb 示例，示例文档正在逐步完善有不懂的请私信我
 ###  page 分页
 
     cn.simplifydb.test.TestPage
+    
+### remove 删除与恢复
+
+    cn.simplifydb.test.TestRemoveFn
+    
+ 
 

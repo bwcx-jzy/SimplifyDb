@@ -1,4 +1,4 @@
-package cn.simplifydb.entity.test1;
+package cn.simplifydb.entity.test1.base;
 
 /**
  * Created by jiangzeyin on 2018/9/20.
