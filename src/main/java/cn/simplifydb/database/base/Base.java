@@ -6,13 +6,10 @@ import cn.simplifydb.database.config.DataSourceConfig;
 import cn.simplifydb.database.config.DatabaseContextHolder;
 import cn.simplifydb.database.config.SystemColumn;
 import cn.simplifydb.system.DbLog;
-import cn.simplifydb.system.SystemSessionInfo;
 import cn.simplifydb.util.DbReflectUtil;
 import com.alibaba.druid.util.StringUtils;
 
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 /**
  * 数据库操作公共
@@ -20,6 +17,10 @@ import java.util.List;
  * @author jiangzeyin
  */
 public abstract class Base<T> {
+    /**
+     * 参数
+     */
+    private List<Object> parameters = new ArrayList<>();
     /**
      * 异常是否抛出
      */
@@ -45,10 +46,6 @@ public abstract class Base<T> {
      * 数据库对应class
      */
     private Class<?> tclass;
-    /**
-     * 操作人
-     */
-    private int optUserId;
     private long runTime;
     private String runSql;
     private String tempTransferLog;
@@ -56,15 +53,56 @@ public abstract class Base<T> {
      * 操作的对应tag
      */
     private String tagName;
-    /**
-     * 表名
-     */
-    private String tableName;
+
     /**
      * 是否使用数据库名
      */
     private boolean useDataBaseName;
+    /**
+     * 主键值
+     */
+    protected Object keyValue;
+    protected String keyColumn;
 
+    public Object getKeyValue() {
+        return keyValue;
+    }
+
+    public String getKeyColumn() {
+        return keyColumn;
+    }
+
+    /**
+     * 查询的主键
+     *
+     * @param keyValue 主键值
+     * @return this
+     */
+
+    public abstract Base<T> setKeyValue(Object keyValue);
+
+    /**
+     * 查询的主键值和列名
+     *
+     * @param column   列名
+     * @param keyValue 值
+     * @return this
+     */
+    public abstract Base<T> setKeyColumnAndValue(String column, Object keyValue);
+
+    public List<Object> getParameters() throws Exception {
+        return parameters;
+    }
+
+    public Base<T> addParameters(Object... object) {
+        parameters.addAll(Arrays.asList(object));
+        return this;
+    }
+
+    public Base<T> setParameters(List<Object> whereParameters) {
+        this.parameters = whereParameters;
+        return this;
+    }
 
     public boolean isUseDataBaseName() {
         return useDataBaseName;
@@ -72,14 +110,6 @@ public abstract class Base<T> {
 
     public void setUseDataBaseName(boolean useDataBaseName) {
         this.useDataBaseName = useDataBaseName;
-    }
-
-    public String getTableName() {
-        return tableName;
-    }
-
-    public void setTableName(String tableName) {
-        this.tableName = tableName;
     }
 
     private String getTagName() {
@@ -103,9 +133,16 @@ public abstract class Base<T> {
      */
     Base() {
         // TODO Auto-generated constructor stub
-        setOptUserId(SystemSessionInfo.getUserId());
         runTime = System.currentTimeMillis();
     }
+
+    /**
+     * 生成sql
+     *
+     * @return sql
+     * @throws Exception 实体读取
+     */
+    protected abstract String builder() throws Exception;
 
     protected void setRunSql(String runSql) {
         if (!StringUtil.isEmpty(runSql)) {
@@ -134,13 +171,6 @@ public abstract class Base<T> {
         }
     }
 
-    public int getOptUserId() {
-        return optUserId;
-    }
-
-    public void setOptUserId(int optUserId) {
-        this.optUserId = optUserId;
-    }
 
     /**
      * 返回操作的泛型类
@@ -190,8 +220,6 @@ public abstract class Base<T> {
         if (remove == null) {
             return;
         }
-//        List<String> remove = this.remove;
-        //getRemove();
         if (this.remove == null) {
             this.remove = new LinkedList<>();
         }
@@ -233,17 +261,17 @@ public abstract class Base<T> {
      */
     public void putRefClass(String name, Class<?> refClass) {
         if (refMap == null) {
-            refMap = new HashMap<>();
+            refMap = new HashMap<>(5);
         }
         refMap.put(name.toLowerCase(), refClass);
     }
 
     public void putRefClass(String name, Class<?> refClass, String where) {
         if (refMap == null) {
-            refMap = new HashMap<>();
+            refMap = new HashMap<>(5);
         }
         if (refWhere == null) {
-            refWhere = new HashMap<>();
+            refWhere = new HashMap<>(5);
         }
         refMap.put(name, refClass);
         refWhere.put(name, where);
@@ -282,10 +310,10 @@ public abstract class Base<T> {
         remove = null;
         tag = null;
         tclass = null;
-        optUserId = 0;
         runSql = null;
         runTime = 0L;
         tagName = null;
+        this.parameters = null;
         // tag 标记
         DatabaseContextHolder.recycling();
     }

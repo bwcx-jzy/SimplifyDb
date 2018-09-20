@@ -13,10 +13,12 @@ public final class DbWriteService {
     private DbWriteService() {
     }
 
+    /**
+     * 设置数据库实体和表名转换接口
+     *
+     * @param writeInterface 接口
+     */
     public static void setWriteInterface(WriteInterface writeInterface) {
-        if (DbWriteService.writeInterface != null) {
-            throw new IllegalArgumentException("duplicate set");
-        }
         DbWriteService.writeInterface = writeInterface;
     }
 
@@ -27,6 +29,7 @@ public final class DbWriteService {
 
 
     /**
+     * 表与实体关系接口
      * convert database name
      */
     public interface WriteInterface {

@@ -9,6 +9,6 @@ public class bul {
     public static void main(String[] args) {
         Select<String> s = new Select<>();
 
-        s.setKeyValue("").setIsDelete(1);
+//        s.setKeyValue("").setIsDelete(1);
     }
 }

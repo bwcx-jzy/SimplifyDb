@@ -1,15 +1,12 @@
 package cn.simplifydb.database.run.read;
 
-import cn.jiangzeyin.StringUtil;
 import cn.simplifydb.database.DbWriteService;
-import cn.simplifydb.database.base.ReadBase;
+import cn.simplifydb.database.base.BaseRead;
 import cn.simplifydb.database.config.DatabaseContextHolder;
 import cn.simplifydb.database.config.SystemColumn;
-import cn.simplifydb.database.util.SqlUtil;
 import cn.simplifydb.database.util.Util;
 import cn.simplifydb.system.DbLog;
 import com.alibaba.druid.util.JdbcUtils;
-import com.alibaba.druid.util.StringUtils;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 
@@ -24,88 +21,17 @@ import java.util.Map;
  * @author jiangzeyin
  */
 @SuppressWarnings("unchecked")
-public class Select<T> extends ReadBase<T> {
-
-    private String orderBy;
-    private String sql;
-    /**
-     * 查询数据重多少开始
-     */
-    private int limitStart;
-    /**
-     * 查询数据个数
-     */
-    private int limitCount;
-
-
-    public int getLimitStart() {
-        return limitStart;
-    }
-
-    /**
-     * 设置查询开始位置
-     *
-     * @param limitStart 开始行
-     * @return this
-     * @author jiangzeyin
-     */
-    public Select setLimitStart(int limitStart) {
-        this.limitStart = limitStart;
-        return this;
-    }
-
-    public int getLimitCount() {
-        return limitCount;
-    }
-
-    /**
-     * 设置查询数量
-     *
-     * @param limitCount 共几行
-     * @return this
-     * @author jiangzeyin
-     */
-    public Select setLimitCount(int limitCount) {
-        this.limitCount = limitCount;
-        return this;
-    }
+public class Select<T> extends BaseRead<T> {
 
     public Select() {
-        // setTclass(DbReflectUtil.getTClass(this));
     }
 
     public Select(int isDelete) {
-        setIsDelete(isDelete);
-    }
-
-    public Select(String tag) {
-        super.setTag(tag);
+        sqlSelectBuilder.where(SystemColumn.Active.getColumn() + "=" + isDelete);
     }
 
 
-    public String getOrderBy() {
-        return orderBy;
-    }
-
-    public Select setOrderBy(String orderBy) {
-        this.orderBy = orderBy;
-        return this;
-    }
-
-    public String getSql() {
-        return sql;
-    }
-
-    public void setSql(String sql) {
-        this.sql = sql;
-    }
-
-    public void setSql(String sql, Result resultType) {
-        this.sql = sql;
-        setResultType(resultType);
-    }
-
-    public T run(Result resultType) {
+    public <t> t run(Result resultType) {
         setResultType(resultType);
         return run();
     }
@@ -120,17 +46,13 @@ public class Select<T> extends ReadBase<T> {
     public <t> t run() {
         try {
             if (getResultType() == Result.JsonObject) {
-                setLimitCount(1);
+                limit(1);
             }
             String tag = getTag() == null ? DbWriteService.getInstance().getDatabaseName(getTclass()) : getTag();
             setTag(tag);
             DataSource dataSource = DatabaseContextHolder.getReadDataSource(tag);
-            String runSql = getSql();
-            if (StringUtils.isEmpty(runSql)) {
-                runSql = SqlUtil.getSelectSql(this);
-            }
-            setRunSql(runSql);
-            DbLog.getInstance().info(getTransferLog() + runSql);
+            String runSql = builder();
+            DbLog.getInstance().info(getTransferLog() + getRunSql());
             List<Map<String, Object>> result = JdbcUtils.executeQuery(dataSource, runSql, getParameters());
             switch (getResultType()) {
                 case JsonArray:
@@ -155,30 +77,28 @@ public class Select<T> extends ReadBase<T> {
                     if (map == null) {
                         return null;
                     }
-                    //Object object = null;
                     String column = getColumns();
                     if (SystemColumn.getDefaultSelectColumns().equals(column)) {
                         // 默认取第一行一列数据
                         return (t) map.values().toArray()[0];
                     }
                     // 取指定列
-                    String[] columns = StringUtil.stringToArray(column, ",");
-                    if (columns != null && columns.length == 1) {
+                    if (column != null) {
                         // 只有一列自动返回对应数据类型
-                        columns[0] = getRealColumnName(columns[0]);
-                        return (t) map.get(columns[0]);
+                        column = getRealColumnName(column);
+                        return (t) map.get(column);
                     }
                     return (t) map;
                 }
                 case ListOneColumn:
-                    String[] columns = StringUtil.stringToArray(getColumns(), ",");
-                    if (columns == null || columns.length != 1) {
+                    String column = getColumns();
+                    if (column == null) {
                         throw new IllegalArgumentException(Result.ListOneColumn + " must set one columns");
                     }
-                    columns[0] = getRealColumnName(columns[0]);
+                    column = getRealColumnName(column);
                     List<t> list = new ArrayList<>(result.size());
                     for (Map<String, Object> map : result) {
-                        list.add((t) map.get(columns[0]));
+                        list.add((t) map.get(column));
                     }
                     return (t) list;
                 default:
@@ -201,7 +121,7 @@ public class Select<T> extends ReadBase<T> {
      * @author jiangzeyin
      */
     public T runOne() {
-        setLimitCount(1);
+        limit(1);
         List<T> list = run();
         if (list == null) {
             return null;

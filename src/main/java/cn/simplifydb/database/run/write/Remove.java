@@ -1,25 +1,30 @@
 package cn.simplifydb.database.run.write;
 
 import cn.simplifydb.database.DbWriteService;
-import cn.simplifydb.database.base.WriteBase;
+import cn.simplifydb.database.base.BaseUpdate;
+import cn.simplifydb.database.base.BaseWrite;
+import cn.simplifydb.database.base.SQLUpdateAndDeleteBuilder;
 import cn.simplifydb.database.config.DatabaseContextHolder;
 import cn.simplifydb.database.config.SystemColumn;
 import cn.simplifydb.database.util.SqlUtil;
 import cn.simplifydb.system.DBExecutorService;
 import cn.simplifydb.system.DbLog;
+import com.alibaba.druid.sql.ast.statement.SQLDeleteStatement;
+import com.alibaba.druid.sql.builder.impl.SQLDeleteBuilderImpl;
+import com.alibaba.druid.util.JdbcConstants;
 import com.alibaba.druid.util.JdbcUtils;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
-import java.util.*;
 
 /**
  * 移除数据 即更改isDelete 状态
  *
  * @author jiangzeyin
  */
-public class Remove<T> extends WriteBase<T> {
+public class Remove<T> extends BaseUpdate<T> {
 
+    private SQLDeleteBuilderImpl sqlDeleteBuilder;
 
     public enum Type {
         /**
@@ -36,133 +41,55 @@ public class Remove<T> extends WriteBase<T> {
         remove
     }
 
-    private String ids;
-    private String where;
-    private List<Object> parameters;
+
     private Type type;
-    private HashMap<String, Object> update;
+
 
     /**
      * 事物模式
      *
+     * @param type                  操作类型
      * @param transactionConnection connection
      */
-    public Remove(Connection transactionConnection) {
-        super(transactionConnection);
+    public Remove(Connection transactionConnection, Type type) {
+        // TODO Auto-generated constructor stub
+        super(null, transactionConnection);
+        setType(type);
         setThrows(true);
     }
 
-    public Remove setUpdate(HashMap<String, Object> update) {
-        checkUpdate();
-        checkUpdate(getTclass(), update);
-        this.update = update;
-        return this;
-    }
-
-    /**
-     * 添加要更新的字段
-     *
-     * @param column 列名
-     * @param value  值
-     * @return this
-     * @author jiangzeyin
-     */
-    public Remove putUpdate(String column, Object value) {
-        checkUpdate();
-        // 判断对应字段是否可以被修改
-        if (SystemColumn.notCanUpdate(column)) {
-            throw new IllegalArgumentException(column + " not update");
-        }
-        if (SystemColumn.isSequence(getTclass(), column)) {
-            throw new IllegalArgumentException(column + " not update sequence");
-        }
-        if (update == null) {
-            update = new HashMap<>();
-        }
-        update.put(column, value);
-        return this;
-    }
-
-    /**
-     * 验证update 的类型是否正确
-     */
-    private void checkUpdate() {
-        if (type == Type.delete) {
-            throw new IllegalArgumentException("type error " + Type.delete);
-        }
-    }
-
-    public Remove setType(Type type) {
-        this.type = type;
-        return this;
-    }
-
-    public HashMap<String, Object> getUpdate() {
-        return update;
-    }
-
-    public Type getType() {
-        return type;
-    }
-
-    /**
-     * @param type 操作类型
-     */
     public Remove(Type type) {
+        super(null, null);
         // TODO Auto-generated constructor stub
-        this(type, false);
+        setType(type);
+
     }
 
     public Remove(Type type, boolean isThrows) {
         // TODO Auto-generated constructor stub
-        this.type = type;
+        super(null, null);
+        setType(type);
         setThrows(isThrows);
+    }
+
+    @Override
+    protected void checkUpdate(Class cls, String columns) {
+        if (type == Type.delete) {
+            throw new IllegalArgumentException("type error " + Type.delete);
+        }
+        super.checkUpdate(cls, columns);
+    }
+
+    private void setType(Type type) {
+        this.type = type;
         if (SystemColumn.Active.NO_ACTIVE == SystemColumn.Active.getActiveValue()) {
             if (type != Type.delete) {
                 throw new IllegalArgumentException("please set systemColumn.active");
             }
         }
-    }
-
-    public List<Object> getParameters() {
-        if (parameters == null) {
-            return new ArrayList<>();
+        if (type == Type.delete) {
+            sqlDeleteBuilder = new SQLDeleteBuilderImpl(JdbcConstants.MYSQL);
         }
-        return parameters;
-    }
-
-    public Remove setParameters(List<Object> parameters) {
-        this.parameters = parameters;
-        return this;
-    }
-
-    public Remove setParameters(Object... parameters) {
-        if (this.parameters == null) {
-            this.parameters = new LinkedList<>();
-        }
-        Collections.addAll(this.parameters, parameters);
-        return this;
-    }
-
-    public String getIds() {
-        return ids;
-    }
-
-    public void setIds(String ids) {
-        this.ids = ids;
-    }
-
-    public void setIds(int id) {
-        this.ids = String.valueOf(id);
-    }
-
-    public String getWhere() {
-        return where;
-    }
-
-    public Remove setWhere(String where) {
-        this.where = where;
-        return this;
     }
 
     /**
@@ -189,11 +116,10 @@ public class Remove<T> extends WriteBase<T> {
             throw new IllegalArgumentException("type null");
         }
         try {
-            WriteBase.Callback callback = getCallback();
+            BaseWrite.Callback callback = getCallback();
             String tag = DbWriteService.getInstance().getDatabaseName(getTclass());
-            String sql = SqlUtil.getRemoveSql(this);
-            DbLog.getInstance().info(getTransferLog() + sql);
-            setRunSql(sql);
+            String sql = builder();
+            DbLog.getInstance().info(getTransferLog() + getRunSql());
             int up;
             if (transactionConnection != null) {
                 up = JdbcUtils.executeUpdate(transactionConnection, sql, getParameters());
@@ -211,12 +137,108 @@ public class Remove<T> extends WriteBase<T> {
         } finally {
             runEnd();
             recycling();
-            parameters = null;
-            ids = null;
-            where = null;
         }
         return 0;
     }
 
+    @Override
+    public String builder() throws Exception {
+        if (sqlDeleteBuilder == null) {
+            // 逻辑删除和恢复
+            int status = type == Remove.Type.remove ? SystemColumn.Active.getInActiveValue() : SystemColumn.Active.getActiveValue();
+            sqlUpdateBuilder.setValue(SystemColumn.Active.getColumn(), status);
+            return super.builder();
+        }
+        SQLDeleteStatement sqlDeleteStatement = sqlDeleteBuilder.getSQLDeleteStatement();
+        if (sqlDeleteStatement == null || sqlDeleteStatement.getFrom() == null) {
+            String tableName = SqlUtil.getTableName(this, getTclass());
+            sqlDeleteBuilder.from(tableName);
+        }
+        if (ids != null) {
+            sqlDeleteBuilder.whereAnd(SystemColumn.getDefaultKeyName() + " in(" + ids + ")");
+        }
+        String sql = sqlDeleteBuilder.toString();
+        setRunSql(sql);
+        return sql;
+    }
 
+    @Override
+    public SQLUpdateAndDeleteBuilder from(String table) {
+        if (sqlDeleteBuilder == null) {
+            sqlUpdateBuilder.from(table);
+        } else {
+            sqlDeleteBuilder.from(table);
+        }
+        return this;
+    }
+
+    @Override
+    public SQLUpdateAndDeleteBuilder from(String table, String alias) {
+        if (sqlDeleteBuilder == null) {
+            sqlUpdateBuilder.from(table, alias);
+        } else {
+            sqlDeleteBuilder.from(table, alias);
+        }
+        return this;
+    }
+
+    @Override
+    public SQLUpdateAndDeleteBuilder limit(int rowCount) {
+        if (sqlDeleteBuilder == null) {
+            sqlUpdateBuilder.limit(rowCount);
+        } else {
+            sqlDeleteBuilder.limit(rowCount);
+        }
+        return this;
+    }
+
+    @Override
+    public SQLUpdateAndDeleteBuilder limit(int rowCount, int offset) {
+        if (sqlDeleteBuilder == null) {
+            sqlUpdateBuilder.limit(rowCount, offset);
+        } else {
+            sqlDeleteBuilder.limit(rowCount, offset);
+        }
+        return this;
+    }
+
+    @Override
+    public SQLUpdateAndDeleteBuilder where(String sql) {
+        if (sqlDeleteBuilder == null) {
+            sqlUpdateBuilder.where(sql);
+        } else {
+            sqlDeleteBuilder.where(sql);
+        }
+        return this;
+    }
+
+    @Override
+    public SQLUpdateAndDeleteBuilder whereAnd(String sql) {
+        if (sqlDeleteBuilder == null) {
+            sqlUpdateBuilder.whereAnd(sql);
+        } else {
+            sqlDeleteBuilder.whereAnd(sql);
+        }
+        return this;
+    }
+
+    @Override
+    public SQLUpdateAndDeleteBuilder whereOr(String sql) {
+        if (sqlDeleteBuilder == null) {
+            sqlUpdateBuilder.whereOr(sql);
+        } else {
+            sqlDeleteBuilder.whereOr(sql);
+        }
+        return this;
+    }
+
+    @Override
+    public SQLUpdateAndDeleteBuilder set(String... items) {
+        if (sqlDeleteBuilder == null) {
+            sqlUpdateBuilder.set(items);
+        } else {
+            throw new IllegalArgumentException("not set");
+        }
+        return this;
+    }
 }

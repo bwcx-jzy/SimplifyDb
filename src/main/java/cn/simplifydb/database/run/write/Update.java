@@ -1,42 +1,28 @@
 package cn.simplifydb.database.run.write;
 
 import cn.simplifydb.database.DbWriteService;
-import cn.simplifydb.database.base.WriteBase;
+import cn.simplifydb.database.base.BaseUpdate;
 import cn.simplifydb.database.config.DatabaseContextHolder;
-import cn.simplifydb.database.config.SystemColumn;
 import cn.simplifydb.database.event.UpdateEvent;
-import cn.simplifydb.database.util.SqlAndParameters;
-import cn.simplifydb.database.util.SqlUtil;
 import cn.simplifydb.system.DBExecutorService;
 import cn.simplifydb.system.DbLog;
 import com.alibaba.druid.util.JdbcUtils;
-import com.alibaba.druid.util.StringUtils;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
 
 /**
  * update 数据库操作
  *
  * @author jiangzeyin
  */
-public class Update<T> extends WriteBase<T> {
-
-    private String where;
-    private List<Object> whereParameters;
-    private Object keyValue;
-    private String keyColumn;
-    private HashMap<String, Object> update;
+public class Update<T> extends BaseUpdate<T> {
 
     /**
      * @param data 数据对象
      */
     public Update(T data) {
-        super(data);
+        super(data, null);
     }
 
     /**
@@ -45,118 +31,24 @@ public class Update<T> extends WriteBase<T> {
      * @param connection 连接信息
      */
     Update(Connection connection) {
-        super(connection);
+        super(null, connection);
         setThrows(true);
     }
 
     public Update(T data, boolean isThrows) {
-        super(data);
+        super(data, null);
         setThrows(isThrows);
     }
 
     public Update() {
-        super((T) null);
+        super((T) null, null);
     }
 
     public Update(boolean isThrows) {
-        super((T) null);
+        super((T) null, null);
         setThrows(isThrows);
     }
 
-    public HashMap<String, Object> getUpdate() {
-        return update;
-    }
-
-    public Update setUpdate(HashMap<String, Object> update) {
-        checkUpdate(getTclass(), update);
-        this.update = update;
-        return this;
-    }
-
-    /**
-     * 添加要更新的字段
-     *
-     * @param column 列名
-     * @param value  值
-     * @author jiangzeyin
-     */
-    public void putUpdate(String column, Object value) {
-        // 判断对应字段是否可以被修改
-        if (SystemColumn.notCanUpdate(column)) {
-            throw new IllegalArgumentException(column + " not update");
-        }
-        if (SystemColumn.isSequence(getTclass(), column)) {
-            throw new IllegalArgumentException(column + " not update sequence");
-        }
-        if (update == null) {
-            update = new HashMap<>();
-        }
-        update.put(column, value);
-    }
-
-    public Object getKeyValue() {
-        return keyValue;
-    }
-
-    /**
-     * 设置查询主键值
-     *
-     * @param keyValue 键
-     * @author jiangzeyin
-     */
-    public void setKeyValue(Object keyValue) {
-        this.keyValue = keyValue;
-    }
-
-    public String getKeyColumn() {
-        if (StringUtils.isEmpty(keyColumn)) {
-            return SystemColumn.getDefaultKeyName();
-        }
-        return keyColumn;
-    }
-
-    /**
-     * 设置主键列名
-     * <p>
-     * 默认为 id
-     *
-     * @param keyColumn 列
-     * @author jiangzeyin
-     */
-    public void setKeyColumn(String keyColumn) {
-        this.keyColumn = keyColumn;
-    }
-
-    public String getWhere() {
-        return where;
-    }
-
-    public void setWhere(String where) {
-        this.where = where;
-    }
-
-    public void appendWhere(String where) {
-        if (StringUtils.isEmpty(this.where)) {
-            this.where = where;
-        } else {
-            this.where += " and " + where;
-        }
-    }
-
-    public List<Object> getWhereParameters() {
-        return whereParameters;
-    }
-
-    public void setWhereParameters(List<Object> whereParameters) {
-        this.whereParameters = whereParameters;
-    }
-
-    public void setWhereParameters(Object... whereParameters) {
-        if (this.whereParameters == null) {
-            this.whereParameters = new LinkedList<>();
-        }
-        Collections.addAll(this.whereParameters, whereParameters);
-    }
 
     @Override
     public void run() {
@@ -168,15 +60,6 @@ public class Update<T> extends WriteBase<T> {
         getAsyncLog();
         // TODO Auto-generated method stub
         DBExecutorService.execute(this::syncRun);
-    }
-
-    @Override
-    public Class<?> getTclass() {
-        T t = getData();
-        if (t != null) {
-            return t.getClass();
-        }
-        return super.getTclass();
     }
 
     /**
@@ -215,20 +98,18 @@ public class Update<T> extends WriteBase<T> {
             if (event != null) {
                 Event.BeforeCode beforeCode = event.beforeUpdate(this, data);
                 if (beforeCode == Event.BeforeCode.END) {
-                    DbLog.getInstance().info("本次执行取消：" + data + "  " + getUpdate());
+                    DbLog.getInstance().info("本次执行取消：" + data);
                     return beforeCode.getResultCode();
                 }
             }
-            SqlAndParameters sqlAndParameters = SqlUtil.getUpdateSql(this);
-            String sql = sqlAndParameters.getSql();
-            DbLog.getInstance().info(getTransferLog() + sql);
-            setRunSql(sql);
+            String sql = builder();
+            DbLog.getInstance().info(getTransferLog() + getRunSql());
             int count;
             if (transactionConnection == null) {
                 DataSource dataSource = DatabaseContextHolder.getWriteDataSource(tag);
-                count = JdbcUtils.executeUpdate(dataSource, sql, sqlAndParameters.getParameters());
+                count = JdbcUtils.executeUpdate(dataSource, sql, getParameters());
             } else {
-                count = JdbcUtils.executeUpdate(transactionConnection, sql, sqlAndParameters.getParameters());
+                count = JdbcUtils.executeUpdate(transactionConnection, sql, getParameters());
             }
             Object keyValue = getKeyValue();
             if (event != null) {
@@ -251,8 +132,7 @@ public class Update<T> extends WriteBase<T> {
         } finally {
             runEnd();
             recycling();
-            this.update = null;
-            this.whereParameters = null;
+
         }
         return -1;
     }

@@ -1,8 +1,7 @@
 package cn.simplifydb.test;
 
 import cn.simplifydb.Init;
-import cn.simplifydb.database.Page;
-import cn.simplifydb.database.base.ReadBase;
+import cn.simplifydb.database.base.BaseRead;
 import cn.simplifydb.database.run.read.SelectPage;
 import com.alibaba.fastjson.JSONArray;
 import org.junit.Before;
@@ -25,9 +24,8 @@ public class TestPage {
      */
     @Test
     public void page() {
-        Page<cn.simplifydb.entity.test.Test> page = new Page<>();
-        page.setPageNoAndSize(1, 1);
-        SelectPage<cn.simplifydb.entity.test.Test> testSelect = new SelectPage<cn.simplifydb.entity.test.Test>(page) {
+
+        SelectPage<cn.simplifydb.entity.test.Test> testSelect = new SelectPage<cn.simplifydb.entity.test.Test>(1, 1) {
         };
         testSelect.setTclass(cn.simplifydb.entity.test.Test.class);
         List<cn.simplifydb.entity.test.Test> testList = testSelect.run();
@@ -39,49 +37,49 @@ public class TestPage {
      */
     @Test
     public void page2() {
-        Page<cn.simplifydb.entity.test.Test> page = new Page<>();
-        page.setPageNoAndSize(1, 2);
-        SelectPage<cn.simplifydb.entity.test.Test> testSelect = new SelectPage<cn.simplifydb.entity.test.Test>(page) {
+
+        SelectPage<cn.simplifydb.entity.test.Test> testSelect = new SelectPage<cn.simplifydb.entity.test.Test>(1, 2) {
         };
         testSelect.setTclass(cn.simplifydb.entity.test.Test.class);
-        testSelect.setResultType(ReadBase.Result.JsonArray);
+        testSelect.setResultType(BaseRead.Result.JsonArray);
         JSONArray jsonArray = testSelect.run();
         System.out.println(jsonArray);
-        System.out.println(page);
     }
 
 
     @Test
     public void page3() {
-        Page<cn.simplifydb.entity.test.Test> page = new Page<>();
-        page.setPageNoAndSize(3, 2);
-        page.setWhereWord("id>2");
-        page.setOrderBy("id desc");
-        SelectPage<cn.simplifydb.entity.test.Test> testSelect = new SelectPage<cn.simplifydb.entity.test.Test>(page) {
+
+        SelectPage<cn.simplifydb.entity.test.Test> testSelect = new SelectPage<cn.simplifydb.entity.test.Test>(3, 2) {
         };
+        testSelect.orderBy("id desc");
+        testSelect.where("id>2");
+//        Page<cn.simplifydb.entity.test.Test> page = new Page<>();
+//        page.setPageNoAndSize(3, 2);
+//        page.setWhereWord("id>2");
+//        page.setOrderBy("id desc");
         testSelect.setTclass(cn.simplifydb.entity.test.Test.class);
-        testSelect.setResultType(ReadBase.Result.JsonArray);
+        testSelect.setResultType(BaseRead.Result.JsonArray);
         JSONArray jsonArray = testSelect.run();
         System.out.println(jsonArray);
-        System.out.println(page);
+//        System.out.println(page);
     }
 
 
     @Test
     public void page4() {
-        Page<cn.simplifydb.entity.test.Test> page = new Page<>();
-        page.setPageNoAndSize(3, 2);
-        page.setSql("select * from test where id>2");
-        page.setOrderBy("id desc");
-        page.setWhereWord("id>1");
 
-        page.setWhereWord("id>1");
-        SelectPage<cn.simplifydb.entity.test.Test> testSelect = new SelectPage<cn.simplifydb.entity.test.Test>(page) {
+        SelectPage<cn.simplifydb.entity.test.Test> testSelect = new SelectPage<cn.simplifydb.entity.test.Test>(3, 2) {
         };
+
+        testSelect.setSql("select * from test where id>2");
+        testSelect.orderBy("id desc");
+        testSelect.where("id>1");
+
+        testSelect.whereAnd("id>1");
         testSelect.setTclass(cn.simplifydb.entity.test.Test.class);
-        testSelect.setResultType(ReadBase.Result.JsonArray);
+        testSelect.setResultType(BaseRead.Result.JsonArray);
         JSONArray jsonArray = testSelect.run();
         System.out.println(jsonArray);
-        System.out.println(page);
     }
 }

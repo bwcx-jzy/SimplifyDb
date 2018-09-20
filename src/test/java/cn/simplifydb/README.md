@@ -28,4 +28,24 @@ simplifydb 示例，示例文档正在逐步完善有不懂的请私信我
 ###  page 分页
 
     cn.simplifydb.test.TestPage
+    
+### remove 删除与恢复
+
+    cn.simplifydb.test.TestRemoveFn
+    
+### 自动记录创建人
+    
+       cn.simplifydb.test.TestCreateUserFn
+       
+### 自动记录数据修改时间
+
+    cn.simplifydb.test.TestUpdateTimeFn
+    
+### 自动记录数据修改人
+
+    cn.simplifydb.test.TestUpdateUserFn
+    
+
+    
+ 
 

@@ -1,6 +1,6 @@
 package cn.simplifydb.database.util;
 
-import cn.simplifydb.database.base.ReadBase;
+import cn.simplifydb.database.base.BaseRead;
 import cn.simplifydb.database.config.DatabaseContextHolder;
 import cn.simplifydb.database.config.SystemColumn;
 import cn.simplifydb.system.DbLog;
@@ -31,7 +31,7 @@ public class Util {
      * @throws Exception 异常
      * @author jiangzeyin
      */
-    public static <T> List<T> convertList(ReadBase<T> reBase, List<Map<String, Object>> list) throws Exception {
+    public static <T> List<T> convertList(BaseRead<T> reBase, List<Map<String, Object>> list) throws Exception {
         Objects.requireNonNull(list, "list map");
         Objects.requireNonNull(reBase, "reBase");
         List<T> listR = new ArrayList<>();
@@ -49,7 +49,7 @@ public class Util {
      * @return 实体
      * @throws Exception 异常
      */
-    private static <T> T convertMap(ReadBase<T> read, Map<String, Object> map, Class<?> refClass) throws Exception {
+    private static <T> T convertMap(BaseRead<T> read, Map<String, Object> map, Class<?> refClass) throws Exception {
         if (refClass == null) {
             refClass = read.getTclass();
         }

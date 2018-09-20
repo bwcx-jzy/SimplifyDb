@@ -3,10 +3,9 @@ package cn.simplifydb.database.base;
 
 import cn.simplifydb.database.config.SystemColumn;
 import cn.simplifydb.system.DbLog;
+import cn.simplifydb.system.SystemSessionInfo;
 
 import java.sql.Connection;
-import java.util.HashMap;
-import java.util.Set;
 
 /**
  * 写入数据
@@ -14,9 +13,13 @@ import java.util.Set;
  * @author jiangzeyin
  */
 @SuppressWarnings("unchecked")
-public abstract class WriteBase<T> extends Base<T> {
+public abstract class BaseWrite<T> extends Base<T> {
+    /**
+     * 操作人
+     */
+    private int optUserId;
     private Callback callback;
-    private T data;
+    protected T data;
     private Throwable throwable;
     private boolean isAsync;
     /**
@@ -24,13 +27,21 @@ public abstract class WriteBase<T> extends Base<T> {
      */
     protected Connection transactionConnection;
 
+    public int getOptUserId() {
+        return optUserId;
+    }
+
+    public void setOptUserId(int optUserId) {
+        this.optUserId = optUserId;
+    }
+
     /**
      * 设置回调事件监听
      *
      * @param callback 事件
-     * @return WriteBase
+     * @return BaseWrite
      */
-    public WriteBase setCallback(Callback callback) {
+    public BaseWrite setCallback(Callback callback) {
         this.callback = callback;
         return this;
     }
@@ -55,12 +66,10 @@ public abstract class WriteBase<T> extends Base<T> {
         this.isAsync = true;
     }
 
-    protected WriteBase(Connection transactionConnection) {
+    protected BaseWrite(T data, Connection transactionConnection) {
         this.transactionConnection = transactionConnection;
-    }
-
-    protected WriteBase() {
-
+        this.data = data;
+        setOptUserId(SystemSessionInfo.getUserId());
     }
 
     /**
@@ -70,19 +79,30 @@ public abstract class WriteBase<T> extends Base<T> {
      */
     public abstract void run();
 
-    /**
-     * @param data 对应实体
-     */
-    public WriteBase(T data) {
-        // TODO Auto-generated constructor stub
-        this.data = data;
-    }
-
     public T getData() {
         return data;
     }
 
-    public WriteBase setData(T data) {
+    @Override
+    public Class<?> getTclass() {
+        T t = getData();
+        if (t != null) {
+            return t.getClass();
+        }
+        return super.getTclass();
+    }
+
+    @Override
+    public Base<T> setKeyValue(Object keyValue) {
+        throw new IllegalArgumentException("error");
+    }
+
+    @Override
+    public Base<T> setKeyColumnAndValue(String column, Object keyValue) {
+        throw new IllegalArgumentException("error");
+    }
+
+    public BaseWrite setData(T data) {
         this.data = data;
         return this;
     }
@@ -116,6 +136,8 @@ public abstract class WriteBase<T> extends Base<T> {
         data = null;
         throwable = null;
         transactionConnection = null;
+        optUserId = 0;
+        callback = null;
     }
 
     public interface Event {
@@ -141,10 +163,20 @@ public abstract class WriteBase<T> extends Base<T> {
             private String desc;
             private int resultCode;
 
+            /**
+             * 返回的状态码
+             *
+             * @return int
+             */
             public int getResultCode() {
                 return resultCode;
             }
 
+            /**
+             * 描述
+             *
+             * @return desc
+             */
             public String getDesc() {
                 return desc;
             }
@@ -154,20 +186,15 @@ public abstract class WriteBase<T> extends Base<T> {
     /**
      * 效验update 是否合法
      *
-     * @param cls    cls
-     * @param update map
+     * @param cls     cls
+     * @param columns columns
      */
-    protected static void checkUpdate(Class cls, HashMap<String, Object> update) {
-        if (update != null) {
-            Set<String> set = update.keySet();
-            for (String item : set) {
-                if (SystemColumn.notCanUpdate(item)) {
-                    throw new IllegalArgumentException(item + " not update");
-                }
-                if (SystemColumn.isSequence(cls, item)) {
-                    throw new IllegalArgumentException(item + " not update sequence");
-                }
-            }
+    protected void checkUpdate(Class cls, String columns) {
+        if (SystemColumn.notCanUpdate(columns)) {
+            throw new IllegalArgumentException(columns + " not update");
+        }
+        if (SystemColumn.isSequence(cls, columns)) {
+            throw new IllegalArgumentException(columns + " not update sequence");
         }
     }
 
@@ -183,5 +210,4 @@ public abstract class WriteBase<T> extends Base<T> {
          */
         void success(Object key);
     }
-
 }

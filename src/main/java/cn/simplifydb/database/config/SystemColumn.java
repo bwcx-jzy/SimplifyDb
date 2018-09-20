@@ -94,6 +94,9 @@ public class SystemColumn {
         return StringUtils.isEmpty(name) || NOT_PUT_UPDATE.contains(name.toLowerCase());
     }
 
+    /**
+     * 逻辑删除
+     */
     public static class Active {
         public static final int NO_ACTIVE = -100;
         private static String column = "";
@@ -129,7 +132,13 @@ public class SystemColumn {
             return time;
         }
 
-        public static boolean isStatus() {
+        public static boolean isStatus(Class cls) {
+            if (status) {
+                Field field = DbReflectUtil.getField(cls, SystemColumn.Modify.getColumn());
+                if (field == null) {
+                    return false;
+                }
+            }
             return status;
         }
     }

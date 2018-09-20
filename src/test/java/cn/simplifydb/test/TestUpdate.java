@@ -43,4 +43,35 @@ public class TestUpdate {
         int count = update.syncRun();
         System.out.println("更新行数：" + count);
     }
+
+    @Test
+    public void update3() {
+        Update<Db2Test> update = new Update<Db2Test>() {
+        };
+        update.setKeyValue("1");
+        update.putUpdate("name", "#{1}");
+        int count = update.syncRun();
+        System.out.println("更新行数：" + count);
+    }
+
+    @Test
+    public void update4() {
+        Update<Db2Test> update = new Update<Db2Test>() {
+        };
+        update.setKeyValue("2");
+        update.putUpdate("name", "#{id+1}");
+        int count = update.syncRun();
+        System.out.println("更新行数：" + count);
+    }
+
+    @Test
+    public void update5() {
+        Update<Db2Test> update = new Update<Db2Test>() {
+        };
+        update.setKeyValue("1");
+        update.putUpdate("name", "#{id+1}");
+        update.putUpdate("sex", "1");
+        int count = update.syncRun();
+        System.out.println("更新行数：" + count);
+    }
 }

@@ -1,13 +1,13 @@
 package cn.simplifydb.entity.test1;
 
+import cn.simplifydb.entity.test1.base.BaseUpdateUser;
+
 /**
- * 2号数据库
- * Created by jiangzeyin on 2018/9/18.
+ * Created by jiangzeyin on 2018/9/20.
  */
-public class Db2Test {
+public class TestUpdateUser extends BaseUpdateUser {
     private int id;
     private String name;
-    private int sex;
 
     public int getId() {
         return id;
@@ -23,16 +23,5 @@ public class Db2Test {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public int getSex() {
-        return sex;
-    }
-
-    public void setSex(int sex) {
-        this.sex = sex;
-    }
-
-    public Db2Test() {
     }
 }
