@@ -103,7 +103,7 @@ public abstract class BaseUpdate<T> extends BaseWrite<T> implements SQLUpdateAnd
 
 
     /**
-     * sql 记录操作人
+     * sql 记录操作人和时间
      */
     protected void loadModifyUser() {
         int optUserId = getOptUserId();
@@ -112,8 +112,8 @@ public abstract class BaseUpdate<T> extends BaseWrite<T> implements SQLUpdateAnd
         }
         Class cls = getTclass();
         if (ModifyUser.Modify.isModifyClass(cls)) {
-            sqlUpdateBuilder.setValue(ModifyUser.Modify.getColumnUser(), optUserId);
-            sqlUpdateBuilder.setValue(ModifyUser.Modify.getColumnTime(), ModifyUser.Modify.getModifyTime());
+            sqlUpdateBuilder.set(ModifyUser.Modify.getColumnUser() + "=" + optUserId);
+            sqlUpdateBuilder.set(ModifyUser.Modify.getColumnTime() + "=" + ModifyUser.Modify.getModifyTime());
         }
     }
 
@@ -125,7 +125,7 @@ public abstract class BaseUpdate<T> extends BaseWrite<T> implements SQLUpdateAnd
             isLogUpdate = false;
         }
         if (isLogUpdate && SystemColumn.Modify.isStatus()) {
-            sqlUpdateBuilder.setValue(SystemColumn.Modify.getColumn(), SystemColumn.Modify.getTime());
+            sqlUpdateBuilder.set(SystemColumn.Modify.getColumn() + "=" + SystemColumn.Modify.getTime());
         }
     }
 
@@ -143,6 +143,7 @@ public abstract class BaseUpdate<T> extends BaseWrite<T> implements SQLUpdateAnd
         this.parameters = null;
         sqlUpdateBuilder = null;
         sqlAndParameters = null;
+        keyValue = null;
     }
 
     @Override
