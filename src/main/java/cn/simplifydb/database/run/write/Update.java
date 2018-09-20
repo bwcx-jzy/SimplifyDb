@@ -1,6 +1,5 @@
 package cn.simplifydb.database.run.write;
 
-import cn.simplifydb.database.DbWriteService;
 import cn.simplifydb.database.base.BaseUpdate;
 import cn.simplifydb.database.config.DatabaseContextHolder;
 import cn.simplifydb.database.event.UpdateEvent;
@@ -84,17 +83,8 @@ public class Update<T> extends BaseUpdate<T> {
         try {
             Callback callback = getCallback();
             T data = getData();
-            String tag;
-            if (data == null) {
-                Class<?> tClass = getTclass();
-                tag = DbWriteService.getInstance().getDatabaseName(tClass);
-                if (UpdateEvent.class.isAssignableFrom(tClass)) {
-                    event = (UpdateEvent) tClass.newInstance();
-                }
-            } else {
-                tag = DbWriteService.getInstance().getDatabaseName(data.getClass());
-                event = getEvent(data);
-            }
+            String tag = getTag();
+            event = getEvent(data);
             if (event != null) {
                 Event.BeforeCode beforeCode = event.beforeUpdate(this, data);
                 if (beforeCode == Event.BeforeCode.END) {

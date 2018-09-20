@@ -2,6 +2,8 @@ package cn.simplifydb.database.base;
 
 
 import cn.jiangzeyin.StringUtil;
+import cn.jiangzeyin.SystemClock;
+import cn.simplifydb.database.DbWriteService;
 import cn.simplifydb.database.config.DataSourceConfig;
 import cn.simplifydb.database.config.DatabaseContextHolder;
 import cn.simplifydb.database.config.SystemColumn;
@@ -164,7 +166,7 @@ public abstract class Base<T> {
         if (DataSourceConfig.SQL_TIMEOUT <= 0) {
             return;
         }
-        long time = System.currentTimeMillis() - runTime;
+        long time = SystemClock.now() - runTime;
         if (time > DataSourceConfig.SQL_TIMEOUT) {
             String tagName = getTagName();
             DbLog.getInstance().warn(tagName + "执行时间过长：" + time + "  " + runSql);
@@ -199,6 +201,13 @@ public abstract class Base<T> {
     }
 
     public String getTag() {
+        return getTag(getTclass());
+    }
+
+    public String getTag(Class cls) {
+        if (StringUtil.isEmpty(tag)) {
+            tag = DbWriteService.getInstance().getDatabaseName(cls);
+        }
         return tag;
     }
 

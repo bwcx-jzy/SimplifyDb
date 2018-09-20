@@ -1,6 +1,5 @@
 package cn.simplifydb.database.run.write;
 
-import cn.simplifydb.database.DbWriteService;
 import cn.simplifydb.database.base.BaseUpdate;
 import cn.simplifydb.database.base.BaseWrite;
 import cn.simplifydb.database.base.SQLUpdateAndDeleteBuilder;
@@ -117,7 +116,7 @@ public class Remove<T> extends BaseUpdate<T> {
         }
         try {
             BaseWrite.Callback callback = getCallback();
-            String tag = DbWriteService.getInstance().getDatabaseName(getTclass());
+            String tag = getTag();
             String sql = builder();
             DbLog.getInstance().info(getTransferLog() + getRunSql());
             int up;

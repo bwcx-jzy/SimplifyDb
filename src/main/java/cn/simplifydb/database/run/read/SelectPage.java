@@ -1,6 +1,5 @@
 package cn.simplifydb.database.run.read;
 
-import cn.simplifydb.database.DbWriteService;
 import cn.simplifydb.database.base.BaseRead;
 import cn.simplifydb.database.config.DatabaseContextHolder;
 import cn.simplifydb.database.util.Util;
@@ -8,7 +7,6 @@ import cn.simplifydb.system.DbLog;
 import com.alibaba.druid.sql.PagerUtils;
 import com.alibaba.druid.util.JdbcConstants;
 import com.alibaba.druid.util.JdbcUtils;
-import com.alibaba.druid.util.StringUtils;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 
@@ -135,10 +133,6 @@ public class SelectPage<T> extends BaseRead<T> {
         String countSql = null;
         try {
             String tag = getTag();
-            if (StringUtils.isEmpty(tag)) {
-                tag = DbWriteService.getInstance().getDatabaseName(getTclass());
-                setTag(tag);
-            }
             String sql = builder();
             countSql = PagerUtils.count(sql, JdbcConstants.MYSQL);
             DataSource dataSource = DatabaseContextHolder.getReadDataSource(tag);
