@@ -14,7 +14,6 @@ import java.sql.Connection;
  */
 @SuppressWarnings("unchecked")
 public abstract class BaseWrite<T> extends Base<T> {
-
     /**
      * 操作人
      */
@@ -80,7 +79,6 @@ public abstract class BaseWrite<T> extends Base<T> {
      */
     public abstract void run();
 
-
     public T getData() {
         return data;
     }
@@ -139,6 +137,7 @@ public abstract class BaseWrite<T> extends Base<T> {
         throwable = null;
         transactionConnection = null;
         optUserId = 0;
+        callback = null;
     }
 
     public interface Event {

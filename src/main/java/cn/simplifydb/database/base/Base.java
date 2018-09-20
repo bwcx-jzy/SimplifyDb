@@ -72,8 +72,22 @@ public abstract class Base<T> {
         return keyColumn;
     }
 
+    /**
+     * 查询的主键
+     *
+     * @param keyValue 主键值
+     * @return this
+     */
+
     public abstract Base<T> setKeyValue(Object keyValue);
 
+    /**
+     * 查询的主键值和列名
+     *
+     * @param column   列名
+     * @param keyValue 值
+     * @return this
+     */
     public abstract Base<T> setKeyColumnAndValue(String column, Object keyValue);
 
     public List<Object> getParameters() throws Exception {
@@ -206,8 +220,6 @@ public abstract class Base<T> {
         if (remove == null) {
             return;
         }
-//        List<String> remove = this.remove;
-        //getRemove();
         if (this.remove == null) {
             this.remove = new LinkedList<>();
         }
