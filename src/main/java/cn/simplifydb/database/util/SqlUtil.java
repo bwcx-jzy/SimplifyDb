@@ -145,8 +145,6 @@ public final class SqlUtil {
                         }
                         values.add(val);
                         DbReflectUtil.setFieldValue(data, name, val);
-                        // field.set(data, val);
-//                        DbReflectUtil.setFieldValue(data, name, val);
                         continue;
                     }
                 }
@@ -170,7 +168,6 @@ public final class SqlUtil {
             // 判断是否为系统字段
             String value1 = SystemColumn.getDefaultValue(name);
             if (value1 == null) {
-                // DbReflectUtil.getFieldValue(data, name);
                 Object va = field.get(data);
                 // 密码字段
                 if (SystemColumn.getPwdColumn().equalsIgnoreCase(name)) {
@@ -179,9 +176,6 @@ public final class SqlUtil {
                 } else {
                     // 读取外键
                     if (refMap != null && refMap.containsKey(name.toLowerCase())) {
-                        //Object refData = DbReflectUtil.getFieldValue(data, field.getName());
-                        //if (refData == null)
-                        //  throw new RuntimeException(name + " 为null");
                         va = DbReflectUtil.getFieldValue(va, write.getRefKey());
                     }
                     values.add(va);
