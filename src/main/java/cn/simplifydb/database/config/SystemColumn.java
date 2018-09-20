@@ -134,7 +134,7 @@ public class SystemColumn {
 
         public static boolean isStatus(Class cls) {
             if (status) {
-                Field field = DbReflectUtil.getField(cls, SystemColumn.Active.getColumn());
+                Field field = DbReflectUtil.getField(cls, SystemColumn.Modify.getColumn());
                 if (field == null) {
                     return false;
                 }
