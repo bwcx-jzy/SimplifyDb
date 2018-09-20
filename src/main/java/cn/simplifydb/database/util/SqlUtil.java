@@ -57,7 +57,7 @@ public final class SqlUtil {
 
         List<String> columns = new ArrayList<>(20);
         List<Object> values = new ArrayList<>(20);
-        HashMap<String, String> systemMap = new HashMap<>();
+        HashMap<String, String> systemMap = new HashMap<>(20);
 
         List<String> remove = write.getRemove();
         HashMap<String, Class<?>> refMap = write.getRefMap();
