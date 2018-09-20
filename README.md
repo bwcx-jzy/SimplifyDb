@@ -36,9 +36,15 @@ SimplifyDb 是一个Java基于druid的一款简化写sql语句操作mysql的框�
 
 ## 文档 
 
+[参考文档](https://gitee.com/jiangzeyin/dbutil/wikis)
+
 [参考API](https://apidoc.gitee.com/jiangzeyin/dbutil/)
 
+[示例代码](/src/test/java/cn/simplifydb/README.md)
+
 [博客专栏](http://blog.csdn.net/column/details/17021.html)
+
+
 
 
 ## 安装
