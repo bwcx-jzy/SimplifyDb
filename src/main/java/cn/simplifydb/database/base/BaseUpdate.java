@@ -187,7 +187,7 @@ public abstract class BaseUpdate<T> extends BaseWrite<T> implements SQLUpdateAnd
         }
         String sql = sqlUpdateBuilder.toString();
         if (keyValue != null) {
-            sql = sql.replaceAll("!keyValue", keyValue.toString());
+            sql = sql.replaceAll("!keyValue", "'" + keyValue.toString() + "'");
         }
         setRunSql(sql);
         return sql;

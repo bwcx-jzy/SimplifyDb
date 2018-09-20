@@ -240,7 +240,7 @@ public abstract class BaseRead<T> extends Base<T> implements SQLSelectBuilder {
         }
         String sql = sqlSelectBuilder.toString();
         if (keyValue != null) {
-            sql = sql.replaceAll("!keyValue", keyValue.toString());
+            sql = sql.replaceAll("!keyValue", "'" + keyValue.toString() + "'");
         }
         setRunSql(sql);
         return sql;
@@ -303,16 +303,25 @@ public abstract class BaseRead<T> extends Base<T> implements SQLSelectBuilder {
 
     @Override
     public SQLSelectBuilder where(String sql) {
+        if (sql == null) {
+            return this;
+        }
         return sqlSelectBuilder.where(sql);
     }
 
     @Override
     public SQLSelectBuilder whereAnd(String sql) {
+        if (sql == null) {
+            return this;
+        }
         return sqlSelectBuilder.whereAnd(sql);
     }
 
     @Override
     public SQLSelectBuilder whereOr(String sql) {
+        if (sql == null) {
+            return this;
+        }
         return sqlSelectBuilder.whereOr(sql);
     }
 }
