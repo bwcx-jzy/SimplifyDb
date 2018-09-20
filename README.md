@@ -57,7 +57,8 @@ SimplifyDb 是一个Java基于druid的一款简化写sql语句操作mysql的框�
 
 ## 版本变更
 
-- [Release版本变更说明](https://gitee.com/jiangzeyin/dbutil/blob/master/CHANGELOG.md)
+- [Release版本变更说明](/CHANGELOG.md)
+- [1.x版本变更说明](/CHANGELOG-1.x.md)
 
 ### 提供bug反馈或建议
 
