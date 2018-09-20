@@ -101,7 +101,6 @@ public abstract class BaseUpdate<T> extends BaseWrite<T> implements SQLUpdateAnd
         if (parameters != null) {
             newList.addAll(parameters);
         }
-        System.out.println(newList);
         return newList;
     }
 
