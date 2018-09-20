@@ -59,11 +59,26 @@ public final class SystemSessionInfo {
      * @author jiangzeyin
      */
     public interface SessionUser {
-
+        /**
+         * 返回当前操作的用户名
+         *
+         * @return name
+         */
         String getUserName();
 
+        /**
+         * 返回当前操作的用户Id
+         *
+         * @return 必反
+         */
         int getUserId();
 
+        /**
+         * 根据用户id 获取用户名
+         *
+         * @param userId id
+         * @return name
+         */
         String userIdGetName(int userId);
     }
 }

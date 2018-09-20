@@ -11,6 +11,7 @@ public final class DbWriteService {
     private volatile static WriteInterface writeInterface;
 
     private DbWriteService() {
+        throw new AssertionError("No SystemSessionInfo instances for you!");
     }
 
     /**

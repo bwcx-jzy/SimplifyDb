@@ -8,6 +8,7 @@ package cn.simplifydb.system;
  */
 public final class DbLog {
     private DbLog() {
+        throw new AssertionError("No SystemSessionInfo instances for you!");
     }
 
     private volatile static DbLogInterface dbLogInterface;
