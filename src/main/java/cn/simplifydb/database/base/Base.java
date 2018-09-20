@@ -67,7 +67,6 @@ public abstract class Base<T> {
     }
 
 
-
     private String getTagName() {
         if (tagName == null) {
             return DatabaseContextHolder.getConnectionTagName();
@@ -91,6 +90,13 @@ public abstract class Base<T> {
         // TODO Auto-generated constructor stub
         runTime = System.currentTimeMillis();
     }
+
+    /**
+     * 生成sql
+     *
+     * @return sql
+     */
+    protected abstract String builder() throws Exception;
 
     protected void setRunSql(String runSql) {
         if (!StringUtil.isEmpty(runSql)) {

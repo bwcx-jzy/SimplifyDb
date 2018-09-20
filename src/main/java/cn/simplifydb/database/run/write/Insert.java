@@ -3,6 +3,7 @@ package cn.simplifydb.database.run.write;
 import cn.simplifydb.database.DbWriteService;
 import cn.simplifydb.database.base.BaseWrite;
 import cn.simplifydb.database.config.DatabaseContextHolder;
+import cn.simplifydb.database.config.ModifyUser;
 import cn.simplifydb.database.config.SystemColumn;
 import cn.simplifydb.database.event.InsertEvent;
 import cn.simplifydb.database.util.JdbcUtil;
@@ -11,11 +12,18 @@ import cn.simplifydb.database.util.SqlUtil;
 import cn.simplifydb.system.DBExecutorService;
 import cn.simplifydb.system.DbLog;
 import cn.simplifydb.util.DbReflectUtil;
+import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
+import com.alibaba.druid.sql.ast.statement.SQLInsertStatement;
+import com.alibaba.druid.sql.builder.impl.SQLBuilderImpl;
+import com.alibaba.druid.sql.parser.SQLExprParser;
+import com.alibaba.druid.sql.parser.SQLParserUtils;
+import com.alibaba.druid.util.JdbcConstants;
 import com.alibaba.druid.util.JdbcUtils;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
-import java.util.Collections;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -24,7 +32,6 @@ import java.util.List;
  * @author jiangzeyin
  */
 public class Insert<T> extends BaseWrite<T> {
-
     private List<T> list;
     /**
      * 是否批量执行插入操作
@@ -67,11 +74,13 @@ public class Insert<T> extends BaseWrite<T> {
      */
     public Insert(T data) {
         // TODO Auto-generated constructor stub
-        super(data, null);
+        super(null, null);
+        list = new ArrayList<>();
+        list.add(data);
     }
 
     public Insert(List<T> list) {
-        super((T) null, null);
+        super(null, null);
         this.list = list;
     }
 
@@ -87,9 +96,16 @@ public class Insert<T> extends BaseWrite<T> {
     }
 
     public Insert(List<T> list, boolean isThrows) {
-        super((T) null, null);
+        super(null, null);
         this.list = list;
         setThrows(isThrows);
+    }
+
+    @Override
+    public Insert<T> setData(T data) {
+        list = new ArrayList<>();
+        list.add(data);
+        return this;
     }
 
     /**
@@ -114,6 +130,10 @@ public class Insert<T> extends BaseWrite<T> {
         });
     }
 
+    @Override
+    public String builder() {
+        return null;
+    }
 
     /**
      * 执行添加数据操作
@@ -123,64 +143,25 @@ public class Insert<T> extends BaseWrite<T> {
      */
     public Object syncRun() {
         // TODO Auto-generated method stub
-        InsertEvent event = null;
+        if (this.list == null || this.list.size() <= 0) {
+            throw new RuntimeException("please add data");
+        }
+        int size = this.list.size();
         try {
             Callback callback = getCallback();
-            // 单个对象添加
-            T data = getData();
-            if (data != null) {
-                // 加载事件
-                event = getEvent(data);
-                if (event != null) {
-                    Event.BeforeCode beforeCode = event.beforeInsert(this, data);
-                    if (beforeCode == Event.BeforeCode.END) {
-                        DbLog.getInstance().info("本次执行取消：" + data);
-                        return beforeCode.getResultCode();
-                    }
-                }
-                String tag = DbWriteService.getInstance().getDatabaseName(data.getClass());
-                SqlAndParameters sqlAndParameters = SqlUtil.getInsertSql(this);
-                setRunSql(sqlAndParameters.getSql());
-                DbLog.getInstance().info(getTransferLog() + sqlAndParameters.getSql());
-                Object key;
-                if (transactionConnection == null) {
-                    DataSource dataSource = DatabaseContextHolder.getWriteDataSource(tag);
-                    key = JdbcUtil.executeInsert(dataSource, sqlAndParameters.getSql(), sqlAndParameters.getParameters());
-                } else {
-                    key = JdbcUtil.executeInsert(transactionConnection, sqlAndParameters.getSql(), sqlAndParameters.getParameters());
-                }
-                if (key == null) {
-                    key = DbReflectUtil.getFieldValue(data, SystemColumn.getDefaultKeyName());
-                } else {
-                    DbReflectUtil.setFieldValue(data, SystemColumn.getDefaultKeyName(), key);
-                }
-                //T data = getData();
-
-                // 实体事件
-                if (event != null) {
-                    event.completeInsert(key);
-                }
-                //  util
-                if (callback != null) {
-                    callback.success(key);
-                }
-                return key;
-            }
             // 添加集合（多个对象）
-            if (this.list != null && this.list.size() > 0) {
-                if (batch) {
-                    return batchRun(callback);
-                }
-                // 挨个执行
-                return itemRun(callback);
+            if (batch) {
+                return batchRun(callback);
             }
-            throw new RuntimeException("please add data");
+            // 挨个执行
+            Object[] result = itemRun(callback);
+            if (size == 1) {
+                return result[1];
+            }
+            return result[0];
         } catch (Exception e) {
             // TODO: handle exception
             isThrows(e);
-            if (event != null) {
-                event.errorInsert(e);
-            }
         } finally {
             runEnd();
             recycling();
@@ -188,53 +169,72 @@ public class Insert<T> extends BaseWrite<T> {
         return null;
     }
 
+    @Override
+    protected void recycling() {
+        super.recycling();
+        this.list = null;
+    }
+
     private int batchRun(Callback callback) throws Exception {
         SqlAndParameters[] sqlAndParameters = SqlUtil.getInsertSqls(this);
-        String sqlFirst = null;
-        String sql;
-        int valuesIndex;
-        StringBuilder values = new StringBuilder();
-        String valuesSql;
-        int valueIndex;
-        StringBuilder showSql = new StringBuilder();
-        for (SqlAndParameters item : sqlAndParameters) {
-            sql = item.getSql();
-            valuesIndex = sql.indexOf("values");
-            if (valuesIndex <= -1) {
-                throw new RuntimeException("sql error not find values[" + sql + "]");
-            }
-            valuesIndex += 6;
-            if (sqlFirst == null) {
-                sqlFirst = sql.substring(0, valuesIndex);
-            }
-            valuesSql = sql.substring(valuesIndex);
-            valueIndex = 0;
-            if (values.length() > 0) {
-                values.append(",");
-                showSql.append(",");
-            }
-            for (char ch : valuesSql.toCharArray()) {
-                if (ch == '?') {
-                    values.append("'").append(item.getParameters().get(valueIndex++)).append("'");
-                } else {
-                    values.append(ch);
+        int createUser = getOptUserId();
+        Class cls = list.get(0).getClass();
+        SQLInsertStatement sqlInsertStatement = new SQLInsertStatement();
+        String tableName = SqlUtil.getTableName(null, cls);
+        sqlInsertStatement.setTableName(new SQLIdentifierExpr(tableName));
+
+        List<Object> par = new ArrayList<>();
+        for (int i = 0, size = sqlAndParameters.length; i < size; i++) {
+            SqlAndParameters sqlAndParameter = sqlAndParameters[i];
+            HashMap<String, String> map = sqlAndParameter.getSystemMap();
+            List<String> columns = sqlAndParameter.getColumns();
+            if (columns != null) {
+                SQLInsertStatement.ValuesClause valuesClause = new SQLInsertStatement.ValuesClause();
+                for (String item : columns) {
+                    if (i == 0) {
+                        sqlInsertStatement.addColumn(SQLParserUtils.createExprParser(item, JdbcConstants.MYSQL).expr());
+                    }
+                    Object val = null;
+                    if (map != null) {
+                        val = map.get(item);
+                    }
+                    if (val == null) {
+                        SQLExprParser sqlExpr = SQLParserUtils.createExprParser("?", JdbcConstants.MYSQL);
+                        valuesClause.addValue(sqlExpr.additive());
+                    } else {
+                        valuesClause.addValue(SQLBuilderImpl.toSQLExpr(val, JdbcConstants.MYSQL));
+                    }
                 }
-                showSql.append(ch);
+                // 数据创建人
+                if (createUser != -1 && ModifyUser.Create.isCreateClass(cls)) {
+                    if (i == 0) {
+                        sqlInsertStatement.addColumn(SQLParserUtils.createExprParser(ModifyUser.Create.getColumnUser(), JdbcConstants.MYSQL).expr());
+                    }
+                    valuesClause.addValue(SQLBuilderImpl.toSQLExpr(createUser, JdbcConstants.MYSQL));
+                }
+                int isDeleteValue = sqlAndParameter.getIsDelete();
+                // 处理插入默认状态值
+                if (isDeleteValue != SystemColumn.Active.NO_ACTIVE) {
+                    if (i == 0) {
+                        sqlInsertStatement.addColumn(SQLParserUtils.createExprParser(SystemColumn.Active.getColumn(), JdbcConstants.MYSQL).expr());
+                    }
+                    valuesClause.addValue(SQLBuilderImpl.toSQLExpr(isDeleteValue, JdbcConstants.MYSQL));
+                }
+                sqlInsertStatement.addValueCause(valuesClause);
+                //
+                par.addAll(sqlAndParameter.getParameters());
             }
         }
-        values.insert(0, sqlFirst);
-        values.append(";");
-        showSql.insert(0, sqlFirst);
-        showSql.append(";");
-        setRunSql(showSql.toString());
+        String sql = sqlInsertStatement.toString();
+        setRunSql(sql);
         DbLog.getInstance().info(getTransferLog() + getRunSql());
         int count;
         if (transactionConnection == null) {
-            String tag = DbWriteService.getInstance().getDatabaseName(list.get(0).getClass());
+            String tag = DbWriteService.getInstance().getDatabaseName(cls);
             DataSource dataSource = DatabaseContextHolder.getWriteDataSource(tag);
-            count = JdbcUtils.executeUpdate(dataSource, values.toString());
+            count = JdbcUtils.executeUpdate(dataSource, sql, par);
         } else {
-            count = JdbcUtils.executeUpdate(transactionConnection, values.toString(), Collections.EMPTY_LIST);
+            count = JdbcUtils.executeUpdate(transactionConnection, sql, par);
         }
         if (callback != null) {
             callback.success(count);
@@ -242,19 +242,70 @@ public class Insert<T> extends BaseWrite<T> {
         return count;
     }
 
-    private int itemRun(Callback callback) throws Exception {
+    private void doInfo(Class class1, SQLInsertStatement sqlInsertStatement, int isDeleteValue) {
+        int createUser = getOptUserId();
+        SQLInsertStatement.ValuesClause valuesClause = sqlInsertStatement.getValues();
+        // 获取修改数据的操作人
+        if (createUser != -1 && ModifyUser.Create.isCreateClass(class1)) {
+            sqlInsertStatement.addColumn(SQLParserUtils.createExprParser(ModifyUser.Create.getColumnUser(), JdbcConstants.MYSQL).expr());
+
+            valuesClause.addValue(SQLBuilderImpl.toSQLExpr(createUser, JdbcConstants.MYSQL));
+        }
+        // 处理插入默认状态值
+        if (isDeleteValue != SystemColumn.Active.NO_ACTIVE) {
+            sqlInsertStatement.addColumn(SQLParserUtils.createExprParser(SystemColumn.Active.getColumn(), JdbcConstants.MYSQL).expr());
+            valuesClause.addValue(SQLBuilderImpl.toSQLExpr(isDeleteValue, JdbcConstants.MYSQL));
+        }
+    }
+
+    private String builderSql(SqlAndParameters sqlAndParameter, T data) {
+        SQLInsertStatement sqlInsertStatement = new SQLInsertStatement();
+        Class cls = data.getClass();
+        String tableName = SqlUtil.getTableName(null, cls);
+        sqlInsertStatement.setTableName(new SQLIdentifierExpr(tableName));
+        //
+        List<String> columns = sqlAndParameter.getColumns();
+        if (columns != null) {
+            SQLInsertStatement.ValuesClause valuesClause = new SQLInsertStatement.ValuesClause();
+            HashMap<String, String> map = sqlAndParameter.getSystemMap();
+            for (String item : columns) {
+                Object val = null;
+                if (map != null) {
+                    val = map.get(item);
+                }
+                sqlInsertStatement.addColumn(SQLParserUtils.createExprParser(item, JdbcConstants.MYSQL).expr());
+                if (val == null) {
+                    SQLExprParser sqlExpr = SQLParserUtils.createExprParser("?", JdbcConstants.MYSQL);
+                    valuesClause.addValue(sqlExpr.additive());
+                } else {
+                    valuesClause.addValue(SQLBuilderImpl.toSQLExpr(val, JdbcConstants.MYSQL));
+                }
+            }
+            sqlInsertStatement.setValues(valuesClause);
+            //
+            doInfo(cls, sqlInsertStatement, sqlAndParameter.getIsDelete());
+        }
+        return sqlInsertStatement.toString();
+    }
+
+    private Object[] itemRun(Callback callback) throws Exception {
         Connection connection = null;
         T data;
-        InsertEvent event;
+        InsertEvent event = null;
         int successCount = 0;
+        Object key = null;
         try {
             SqlAndParameters[] sqlAndParameters = SqlUtil.getInsertSqls(this);
-            setRunSql("more:" + sqlAndParameters[0].getSql());
+            SqlAndParameters sqlAndParameter;
+            String sql;
             for (int i = 0; i < sqlAndParameters.length; i++) {
                 data = this.list.get(i);
                 if (data == null) {
                     continue;
                 }
+                sqlAndParameter = sqlAndParameters[i];
+                sql = builderSql(sqlAndParameter, data);
+                setRunSql(sql);
                 if (transactionConnection == null) {
                     String tag = DbWriteService.getInstance().getDatabaseName(data.getClass());
                     connection = DatabaseContextHolder.getWriteConnection(tag);
@@ -269,8 +320,8 @@ public class Insert<T> extends BaseWrite<T> {
                         continue;
                     }
                 }
-                DbLog.getInstance().info(sqlAndParameters[i].getSql());
-                Object key = JdbcUtil.executeInsert(connection, sqlAndParameters[i].getSql(), sqlAndParameters[i].getParameters());
+                DbLog.getInstance().info(getTransferLog() + getRunSql());
+                key = JdbcUtil.executeInsert(connection, sql, sqlAndParameter.getParameters());
                 if (key == null) {
                     key = DbReflectUtil.getFieldValue(data, SystemColumn.getDefaultKeyName());
                 } else {
@@ -288,6 +339,11 @@ public class Insert<T> extends BaseWrite<T> {
                 }
                 successCount++;
             }
+        } catch (Exception e) {
+            if (event != null) {
+                event.errorInsert(e);
+            }
+            throw e;
         } finally {
             // TODO: handle exception
             if (transactionConnection == null) {
@@ -295,6 +351,6 @@ public class Insert<T> extends BaseWrite<T> {
                 JdbcUtils.close(connection);
             }
         }
-        return successCount;
+        return new Object[]{successCount, key};
     }
 }

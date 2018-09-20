@@ -3,7 +3,8 @@ package test;
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.statement.SQLInsertStatement;
 import com.alibaba.druid.sql.builder.impl.SQLBuilderImpl;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlInsertStatement;
+import com.alibaba.druid.sql.parser.SQLExprParser;
+import com.alibaba.druid.sql.parser.SQLParserUtils;
 import com.alibaba.druid.util.JdbcConstants;
 
 /**
@@ -11,7 +12,7 @@ import com.alibaba.druid.util.JdbcConstants;
  */
 public class InsertTest {
     public static void main(String[] args) {
-        MySqlInsertStatement mySqlInsertStatement = new MySqlInsertStatement();
+        SQLInsertStatement mySqlInsertStatement = new SQLInsertStatement();
         mySqlInsertStatement.setTableName(new SQLIdentifierExpr("sss"));
 //        mySqlInsertStatement.putAttribute("ss", "sss");
 
@@ -20,9 +21,14 @@ public class InsertTest {
 
         SQLInsertStatement.ValuesClause valuesClause = new SQLInsertStatement.ValuesClause();
         valuesClause.addValue(SQLBuilderImpl.toSQLExpr(1, JdbcConstants.MYSQL));
-        mySqlInsertStatement.setValues(valuesClause);
+        SQLExprParser sqlExpr = SQLParserUtils.createExprParser("?", JdbcConstants.MYSQL);
+//        public static SQLExprParser createExprParser(String sql, String dbType)
+        valuesClause.addValue(sqlExpr.additive());
 
-        mySqlInsertStatement.setValues(valuesClause.clone());
+//        valuesClause.addValue();
+        mySqlInsertStatement.addValueCause(valuesClause);
+
+        mySqlInsertStatement.addValueCause(valuesClause.clone());
         System.out.println(mySqlInsertStatement);
     }
 }

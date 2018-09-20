@@ -10,14 +10,22 @@ import java.util.List;
  */
 public final class SqlAndParameters {
 
-    private String sql;
+    //    private String sql;
     private List<Object> parameters;
     private List<String> columns;
     private HashMap<String, String> systemMap;
+    private int isDelete;
 
-    public void setSql(String sql) {
-        this.sql = sql;
+    public int getIsDelete() {
+        return isDelete;
     }
+
+    public void setIsDelete(int isDelete) {
+        this.isDelete = isDelete;
+    }
+    //    public void setSql(String sql) {
+//        this.sql = sql;
+//    }
 
     public List<String> getColumns() {
         return columns;
@@ -35,13 +43,6 @@ public final class SqlAndParameters {
         this.systemMap = systemMap;
     }
 
-    public String getSql() {
-        return sql;
-    }
-
-    public void setSql(CharSequence sql) {
-        this.sql = sql.toString();
-    }
 
     public List<Object> getParameters() {
         return parameters;
@@ -54,7 +55,6 @@ public final class SqlAndParameters {
     @Override
     public String toString() {
         return "SqlAndParameters{" +
-                "sql='" + sql + '\'' +
                 ", parameters=" + parameters +
                 ", columns=" + columns +
                 ", systemMap=" + systemMap +

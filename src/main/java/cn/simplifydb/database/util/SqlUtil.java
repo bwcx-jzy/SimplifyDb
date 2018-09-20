@@ -210,28 +210,29 @@ public final class SqlUtil {
         return getWriteSql(write, null);
     }
 
-    /**
-     * 获取添加对象信息
-     *
-     * @param insert 对象
-     * @return 结果
-     * @throws IllegalArgumentException y
-     * @throws IllegalAccessException   y
-     * @author jiangzeyin
-     */
-    public static SqlAndParameters getInsertSql(Insert<?> insert) throws Exception {
-        SqlAndParameters sqlAndParameters = getWriteSql(insert);
-        int isDelete = SystemColumn.Active.NO_ACTIVE;
-        if (!StringUtils.isEmpty(SystemColumn.Active.getColumn())) {
-            EntityConfig entityConfig = insert.getData().getClass().getAnnotation(EntityConfig.class);
-            if (entityConfig == null || entityConfig.active()) {
-                Object isDeleteF = DbReflectUtil.getFieldValue(insert.getData(), SystemColumn.Active.getColumn());
-                isDelete = isDeleteF == null ? SystemColumn.Active.getActiveValue() : Integer.parseInt(isDeleteF.toString());
-            }
-        }
-        sqlAndParameters.setSql(makeInsertToTableSql(insert.getData().getClass(), insert.getOptUserId(), sqlAndParameters.getColumns(), sqlAndParameters.getSystemMap(), isDelete));
-        return sqlAndParameters;
-    }
+//    /**
+//     * 获取添加对象信息
+//     *
+//     * @param insert 对象
+//     * @return 结果
+//     * @throws IllegalArgumentException y
+//     * @throws IllegalAccessException   y
+//     * @author jiangzeyin
+//     */
+//    public static SqlAndParameters getInsertSql(Insert<?> insert) throws Exception {
+//        SqlAndParameters sqlAndParameters = getWriteSql(insert);
+//        int isDelete = SystemColumn.Active.NO_ACTIVE;
+//        if (!StringUtils.isEmpty(SystemColumn.Active.getColumn())) {
+//            EntityConfig entityConfig = insert.getData().getClass().getAnnotation(EntityConfig.class);
+//            if (entityConfig == null || entityConfig.active()) {
+//                Object isDeleteF = DbReflectUtil.getFieldValue(insert.getData(), SystemColumn.Active.getColumn());
+//                isDelete = isDeleteF == null ? SystemColumn.Active.getActiveValue() : Integer.parseInt(isDeleteF.toString());
+//            }
+//        }
+//        sqlAndParameters.setIsDelete(isDelete);
+//        //sqlAndParameters.setSql(makeInsertToTableSql(insert.getData().getClass(), insert.getOptUserId(), sqlAndParameters.getColumns(), sqlAndParameters.getSystemMap(), isDelete));
+//        return sqlAndParameters;
+//    }
 
     /**
      * @param insert 对象
@@ -257,7 +258,8 @@ public final class SqlUtil {
                     isDelete = isDeleteF == null ? SystemColumn.Active.getActiveValue() : Integer.parseInt(isDeleteF.toString());
                 }
             }
-            sqlAndParameters.setSql(makeInsertToTableSql(object.getClass(), insert.getOptUserId(), sqlAndParameters.getColumns(), sqlAndParameters.getSystemMap(), isDelete));
+            sqlAndParameters.setIsDelete(isDelete);
+            // sqlAndParameters.setSql(makeInsertToTableSql(object.getClass(), insert.getOptUserId(), sqlAndParameters.getColumns(), sqlAndParameters.getSystemMap(), isDelete));
             andParameters[i] = sqlAndParameters;
         }
         return andParameters;
@@ -598,7 +600,6 @@ public final class SqlUtil {
      * @author jiangzeyin
      */
     public static String getTableName(Base base, Class cls) {
-        String tableName;
         if (base != null) {
             // 读取索引信息
             boolean isIndex = false;
@@ -608,10 +609,9 @@ public final class SqlUtil {
                 index = baseRead.getIndex();
                 isIndex = baseRead.isUseIndex();
             }
-            tableName = DbWriteService.getInstance().getTableName(base.getTclass(), isIndex, index, base.isUseDataBaseName());
+            return DbWriteService.getInstance().getTableName(base.getTclass(), isIndex, index, base.isUseDataBaseName());
         }
-        tableName = DbWriteService.getInstance().getTableName(cls, false, null, false);
-        return tableName;
+        return DbWriteService.getInstance().getTableName(cls, false, null, false);
     }
 
     /**

@@ -259,6 +259,7 @@ public abstract class BaseRead<T> extends Base<T> implements SQLSelectBuilder {
     }
 
 
+    @Override
     protected String builder() {
         SQLSelectQueryBlock sqlSelectQueryBlock = sqlSelectBuilder.getSQLSelect().getFirstQueryBlock();
 
