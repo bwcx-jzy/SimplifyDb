@@ -21,13 +21,16 @@ import java.util.*;
  */
 public abstract class BaseUpdate<T> extends BaseWrite<T> implements SQLUpdateAndDeleteBuilder {
     protected SQLUpdateBuilderImpl sqlUpdateBuilder;
-
     protected String ids;
     private List<Object> parameters = new LinkedList<>();
     private Object keyValue;
-
     private SqlAndParameters sqlAndParameters;
 
+
+    protected BaseUpdate(T data, Connection transactionConnection) {
+        super(data, transactionConnection);
+        sqlUpdateBuilder = new SQLUpdateBuilderImpl(JdbcConstants.MYSQL);
+    }
 
     public void setIds(String ids) {
         this.ids = ids;
@@ -52,7 +55,6 @@ public abstract class BaseUpdate<T> extends BaseWrite<T> implements SQLUpdateAnd
     }
 
     public BaseUpdate<T> setUpdate(HashMap<String, Object> update) {
-        checkUpdate(getTclass(), update);
         if (update != null) {
             Set<Map.Entry<String, Object>> set = update.entrySet();
             for (Map.Entry<String, Object> entry : set) {
@@ -70,17 +72,11 @@ public abstract class BaseUpdate<T> extends BaseWrite<T> implements SQLUpdateAnd
      * @author jiangzeyin
      */
     public BaseUpdate<T> putUpdate(String column, Object value) {
-        // 判断对应字段是否可以被修改
-        if (SystemColumn.notCanUpdate(column)) {
-            throw new IllegalArgumentException(column + " not update");
-        }
-        if (SystemColumn.isSequence(getTclass(), column)) {
-            throw new IllegalArgumentException(column + " not update sequence");
-        }
+        checkUpdate(getTclass(), column);
         String strValue = StringUtil.convertNULL(value);
         if (strValue.startsWith("#{") && strValue.endsWith("}")) {
             strValue = strValue.substring(strValue.indexOf("#{") + 2, strValue.indexOf("}"));
-            sqlUpdateBuilder.setValue(column, strValue);
+            sqlUpdateBuilder.set(column + "=" + strValue);
         } else {
             parameters.add(value);
             sqlUpdateBuilder.set(column + "=?");
@@ -100,18 +96,11 @@ public abstract class BaseUpdate<T> extends BaseWrite<T> implements SQLUpdateAnd
         return newList;
     }
 
-
-    protected BaseUpdate(T data, Connection transactionConnection) {
-        super(data, transactionConnection);
-        sqlUpdateBuilder = new SQLUpdateBuilderImpl(JdbcConstants.MYSQL);
+    public BaseUpdate<T> addParameters(Object object) {
+        parameters.add(object);
+        return this;
     }
 
-
-//    @Override
-//    public String builder() {
-//
-//        return super.builder();
-//    }
 
     /**
      * sql 记录操作人
@@ -140,7 +129,7 @@ public abstract class BaseUpdate<T> extends BaseWrite<T> implements SQLUpdateAnd
         }
     }
 
-    public SqlAndParameters getSqlAndParameters() throws Exception {
+    private SqlAndParameters getSqlAndParameters() throws Exception {
         if (sqlAndParameters == null && data != null) {
             sqlAndParameters = SqlUtil.getWriteSql(this, data);
         }
@@ -152,6 +141,8 @@ public abstract class BaseUpdate<T> extends BaseWrite<T> implements SQLUpdateAnd
         super.recycling();
         ids = null;
         this.parameters = null;
+        sqlUpdateBuilder = null;
+        sqlAndParameters = null;
     }
 
     @Override

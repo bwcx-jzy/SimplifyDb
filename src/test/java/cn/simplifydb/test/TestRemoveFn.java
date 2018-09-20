@@ -60,4 +60,15 @@ public class TestRemoveFn {
         removeRemove.syncRun();
     }
 
+
+    @Test
+    public void remove5() {
+        Remove<TestRemove> removeRemove = new Remove<TestRemove>(Remove.Type.recovery) {
+        };
+        removeRemove.putUpdate("name", "测试删除recovery");
+        removeRemove.setIds(5);
+        removeRemove.where("name=?");
+        removeRemove.addParameters("测试");
+        removeRemove.syncRun();
+    }
 }

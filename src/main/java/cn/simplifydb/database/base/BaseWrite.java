@@ -6,8 +6,6 @@ import cn.simplifydb.system.DbLog;
 import cn.simplifydb.system.SystemSessionInfo;
 
 import java.sql.Connection;
-import java.util.HashMap;
-import java.util.Set;
 
 /**
  * 写入数据
@@ -179,20 +177,15 @@ public abstract class BaseWrite<T> extends Base<T> {
     /**
      * 效验update 是否合法
      *
-     * @param cls    cls
-     * @param update map
+     * @param cls     cls
+     * @param columns columns
      */
-    static void checkUpdate(Class cls, HashMap<String, Object> update) {
-        if (update != null) {
-            Set<String> set = update.keySet();
-            for (String item : set) {
-                if (SystemColumn.notCanUpdate(item)) {
-                    throw new IllegalArgumentException(item + " not update");
-                }
-                if (SystemColumn.isSequence(cls, item)) {
-                    throw new IllegalArgumentException(item + " not update sequence");
-                }
-            }
+    protected void checkUpdate(Class cls, String columns) {
+        if (SystemColumn.notCanUpdate(columns)) {
+            throw new IllegalArgumentException(columns + " not update");
+        }
+        if (SystemColumn.isSequence(cls, columns)) {
+            throw new IllegalArgumentException(columns + " not update sequence");
         }
     }
 

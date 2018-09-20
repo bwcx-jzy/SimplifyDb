@@ -16,7 +16,6 @@ import com.alibaba.druid.util.JdbcUtils;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
-import java.util.HashMap;
 
 /**
  * 移除数据 即更改isDelete 状态
@@ -73,26 +72,12 @@ public class Remove<T> extends BaseUpdate<T> {
         setThrows(isThrows);
     }
 
-
     @Override
-    public BaseUpdate<T> setUpdate(HashMap<String, Object> update) {
-        checkUpdate();
-        return super.setUpdate(update);
-    }
-
-    @Override
-    public BaseUpdate<T> putUpdate(String column, Object value) {
-        checkUpdate();
-        return super.putUpdate(column, value);
-    }
-
-    /**
-     * 验证update 的类型是否正确
-     */
-    private void checkUpdate() {
+    protected void checkUpdate(Class cls, String columns) {
         if (type == Type.delete) {
             throw new IllegalArgumentException("type error " + Type.delete);
         }
+        super.checkUpdate(cls, columns);
     }
 
     private void setType(Type type) {
