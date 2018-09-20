@@ -1,6 +1,5 @@
 package cn.simplifydb.database.run.read;
 
-import cn.simplifydb.database.DbWriteService;
 import cn.simplifydb.database.base.BaseRead;
 import cn.simplifydb.database.config.DatabaseContextHolder;
 import cn.simplifydb.database.config.SystemColumn;
@@ -48,8 +47,7 @@ public class Select<T> extends BaseRead<T> {
             if (getResultType() == Result.JsonObject) {
                 limit(1);
             }
-            String tag = getTag() == null ? DbWriteService.getInstance().getDatabaseName(getTclass()) : getTag();
-            setTag(tag);
+            String tag = getTag();
             DataSource dataSource = DatabaseContextHolder.getReadDataSource(tag);
             String runSql = builder();
             DbLog.getInstance().info(getTransferLog() + getRunSql());
@@ -122,6 +120,7 @@ public class Select<T> extends BaseRead<T> {
      */
     public T runOne() {
         limit(1);
+        setResultType(Result.Entity);
         List<T> list = run();
         if (list == null) {
             return null;

@@ -1,5 +1,6 @@
 package cn.simplifydb.database.run.read;
 
+import cn.jiangzeyin.StringUtil;
 import cn.simplifydb.database.base.BaseRead;
 import cn.simplifydb.database.config.DatabaseContextHolder;
 import cn.simplifydb.database.util.SqlUtil;
@@ -28,6 +29,9 @@ public class SelectFunction<T> extends BaseRead<T> {
     }
 
     public String getName() {
+        if (StringUtil.isEmpty(name)) {
+            throw new IllegalArgumentException("function Empty");
+        }
         return name;
     }
 
