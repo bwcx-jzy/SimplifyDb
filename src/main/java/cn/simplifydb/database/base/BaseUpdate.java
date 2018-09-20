@@ -24,7 +24,9 @@ public abstract class BaseUpdate<T> extends BaseWrite<T> implements SQLUpdateAnd
     protected String ids;
     private List<Object> parameters = new LinkedList<>();
     private Object keyValue;
+    private String keyColumn;
     private SqlAndParameters sqlAndParameters;
+    private HashMap<String, Object> update = new HashMap<>();
 
 
     protected BaseUpdate(T data, Connection transactionConnection) {
@@ -40,12 +42,21 @@ public abstract class BaseUpdate<T> extends BaseWrite<T> implements SQLUpdateAnd
         setIds(String.valueOf(id));
     }
 
+    public HashMap<String, Object> getUpdate() {
+        return update;
+    }
+
+    public String getKeyColumn() {
+        return keyColumn;
+    }
+
     public BaseUpdate<T> setKeyValue(Object keyValue) {
         return setKeyColumn(SystemColumn.getDefaultKeyName(), keyValue);
     }
 
     public BaseUpdate<T> setKeyColumn(String column, Object keyValue) {
         this.keyValue = keyValue;
+        this.keyColumn = column;
         sqlUpdateBuilder.whereAnd(column + "=!keyValue");
         return this;
     }
@@ -81,6 +92,7 @@ public abstract class BaseUpdate<T> extends BaseWrite<T> implements SQLUpdateAnd
             parameters.add(value);
             sqlUpdateBuilder.set(column + "=?");
         }
+        update.put(column, value);
         return this;
     }
 
@@ -144,6 +156,8 @@ public abstract class BaseUpdate<T> extends BaseWrite<T> implements SQLUpdateAnd
         sqlUpdateBuilder = null;
         sqlAndParameters = null;
         keyValue = null;
+        keyColumn = null;
+        update = null;
     }
 
     @Override
