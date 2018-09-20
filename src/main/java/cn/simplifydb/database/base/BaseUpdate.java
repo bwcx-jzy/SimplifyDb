@@ -23,7 +23,7 @@ public abstract class BaseUpdate<T> extends BaseWrite<T> implements SQLUpdateAnd
     protected SQLUpdateBuilderImpl sqlUpdateBuilder;
     protected String ids;
     private Object keyValue;
-    private String keyColumn;
+
     private SqlAndParameters sqlAndParameters;
     private HashMap<String, Object> update = new HashMap<>();
 
@@ -45,23 +45,17 @@ public abstract class BaseUpdate<T> extends BaseWrite<T> implements SQLUpdateAnd
         return update;
     }
 
-    public String getKeyColumn() {
-        return keyColumn;
-    }
-
+    @Override
     public BaseUpdate<T> setKeyValue(Object keyValue) {
-        return setKeyColumn(SystemColumn.getDefaultKeyName(), keyValue);
+        return setKeyColumnAndValue(SystemColumn.getDefaultKeyName(), keyValue);
     }
 
-    public BaseUpdate<T> setKeyColumn(String column, Object keyValue) {
+    @Override
+    public BaseUpdate<T> setKeyColumnAndValue(String column, Object keyValue) {
         this.keyValue = keyValue;
         this.keyColumn = column;
         sqlUpdateBuilder.whereAnd(column + "=!keyValue");
         return this;
-    }
-
-    public Object getKeyValue() {
-        return keyValue;
     }
 
     public BaseUpdate<T> setUpdate(HashMap<String, Object> update) {

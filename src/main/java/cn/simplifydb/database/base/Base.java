@@ -18,6 +18,10 @@ import java.util.*;
  */
 public abstract class Base<T> {
     /**
+     * 参数
+     */
+    private List<Object> parameters = new ArrayList<>();
+    /**
      * 异常是否抛出
      */
     private boolean isThrows;
@@ -54,11 +58,23 @@ public abstract class Base<T> {
      * 是否使用数据库名
      */
     private boolean useDataBaseName;
-
     /**
-     * 参数
+     * 主键值
      */
-    private List<Object> parameters = new ArrayList<>();
+    protected Object keyValue;
+    protected String keyColumn;
+
+    public Object getKeyValue() {
+        return keyValue;
+    }
+
+    public String getKeyColumn() {
+        return keyColumn;
+    }
+
+    public abstract Base<T> setKeyValue(Object keyValue);
+
+    public abstract Base<T> setKeyColumnAndValue(String column, Object keyValue);
 
     public List<Object> getParameters() throws Exception {
         return parameters;
@@ -110,6 +126,7 @@ public abstract class Base<T> {
      * 生成sql
      *
      * @return sql
+     * @throws Exception 实体读取
      */
     protected abstract String builder() throws Exception;
 

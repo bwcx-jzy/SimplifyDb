@@ -91,6 +91,12 @@ public class SelectPage<T> extends BaseRead<T> {
         this.pageSize = pageSize;
     }
 
+    public SelectPage setPageNoAndSize(int pageNo, int pageSize) {
+        this.pageNo = pageNo;
+        this.pageSize = pageSize;
+        return this;
+    }
+
     public SelectPage setDisplayPage(int start, int length) {
         int pageNo = 1;
         if (start >= length) {

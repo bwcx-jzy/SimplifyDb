@@ -104,7 +104,11 @@ public class Insert<T> extends BaseWrite<T> {
 
     @Override
     public Insert<T> setData(T data) {
-        list = new ArrayList<>();
+        if (list == null) {
+            list = new ArrayList<>();
+        } else {
+            list.clear();
+        }
         list.add(data);
         return this;
     }

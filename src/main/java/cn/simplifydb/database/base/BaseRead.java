@@ -76,10 +76,7 @@ public abstract class BaseRead<T> extends Base<T> implements SQLSelectBuilder {
      * 返回值类型
      */
     private Result resultType = Result.Entity;
-    /**
-     * 主键值
-     */
-    private Object keyValue;
+
     /**
      * 是否使用索引
      */
@@ -105,6 +102,11 @@ public abstract class BaseRead<T> extends Base<T> implements SQLSelectBuilder {
         return this;
     }
 
+    @Override
+    public Base<T> setKeyValue(Object keyValue) {
+        return setKeyColumnAndValue(SystemColumn.getDefaultKeyName(), keyValue);
+    }
+
     /**
      * 设置主键列名
      * <p>
@@ -115,7 +117,8 @@ public abstract class BaseRead<T> extends Base<T> implements SQLSelectBuilder {
      * @return this
      * @author jiangzeyin
      */
-    public BaseRead setKeyColumn(String keyColumn, Object keyValue) {
+    @Override
+    public BaseRead setKeyColumnAndValue(String keyColumn, Object keyValue) {
         sqlSelectBuilder.whereAnd(keyColumn + "=!keyValue");
         this.keyValue = keyValue;
         return this;

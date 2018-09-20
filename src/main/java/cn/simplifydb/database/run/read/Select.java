@@ -23,6 +23,13 @@ import java.util.Map;
 @SuppressWarnings("unchecked")
 public class Select<T> extends BaseRead<T> {
 
+    public Select() {
+    }
+
+    public Select(int isDelete) {
+        sqlSelectBuilder.where(SystemColumn.Active.getColumn() + "=" + isDelete);
+    }
+
 
     public <t> t run(Result resultType) {
         setResultType(resultType);

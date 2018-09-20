@@ -94,6 +94,16 @@ public abstract class BaseWrite<T> extends Base<T> {
         return super.getTclass();
     }
 
+    @Override
+    public Base<T> setKeyValue(Object keyValue) {
+        throw new IllegalArgumentException("error");
+    }
+
+    @Override
+    public Base<T> setKeyColumnAndValue(String column, Object keyValue) {
+        throw new IllegalArgumentException("error");
+    }
+
     public BaseWrite setData(T data) {
         this.data = data;
         return this;
