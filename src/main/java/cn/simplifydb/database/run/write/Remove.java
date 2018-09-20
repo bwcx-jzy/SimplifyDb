@@ -133,9 +133,8 @@ public class Remove<T> extends BaseUpdate<T> {
         try {
             BaseWrite.Callback callback = getCallback();
             String tag = DbWriteService.getInstance().getDatabaseName(getTclass());
-            String sql = SqlUtil.getRemoveSql(this);
-            DbLog.getInstance().info(getTransferLog() + sql);
-            setRunSql(sql);
+            String sql = builder();
+            DbLog.getInstance().info(getTransferLog() + getRunSql());
             int up;
             if (transactionConnection != null) {
                 up = JdbcUtils.executeUpdate(transactionConnection, sql, getParameters());
@@ -169,6 +168,9 @@ public class Remove<T> extends BaseUpdate<T> {
         if (sqlDeleteStatement == null || sqlDeleteStatement.getFrom() == null) {
             String tableName = SqlUtil.getTableName(this, getTclass());
             sqlDeleteBuilder.from(tableName);
+        }
+        if (ids != null) {
+            sqlDeleteBuilder.whereAnd(SystemColumn.getDefaultKeyName() + " in(" + ids + ")");
         }
         String sql = sqlDeleteBuilder.toString();
         setRunSql(sql);
