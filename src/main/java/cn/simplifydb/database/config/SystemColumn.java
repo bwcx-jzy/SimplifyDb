@@ -132,7 +132,13 @@ public class SystemColumn {
             return time;
         }
 
-        public static boolean isStatus() {
+        public static boolean isStatus(Class cls) {
+            if (status) {
+                Field field = DbReflectUtil.getField(cls, SystemColumn.Active.getColumn());
+                if (field == null) {
+                    return false;
+                }
+            }
             return status;
         }
     }

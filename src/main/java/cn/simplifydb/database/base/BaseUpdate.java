@@ -124,7 +124,7 @@ public abstract class BaseUpdate<T> extends BaseWrite<T> implements SQLUpdateAnd
         if (entityConfig != null && !entityConfig.update()) {
             isLogUpdate = false;
         }
-        if (isLogUpdate && SystemColumn.Modify.isStatus()) {
+        if (isLogUpdate && SystemColumn.Modify.isStatus(cls)) {
             sqlUpdateBuilder.set(SystemColumn.Modify.getColumn() + "=" + SystemColumn.Modify.getTime());
         }
     }
