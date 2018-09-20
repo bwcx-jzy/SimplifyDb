@@ -45,8 +45,6 @@ SimplifyDb 是一个Java基于druid的一款简化写sql语句操作mysql的框�
 [博客专栏](http://blog.csdn.net/column/details/17021.html)
 
 
-
-
 ## 安装
 
 ### Maven
