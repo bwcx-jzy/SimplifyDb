@@ -1,7 +1,6 @@
 package cn.simplifydb.database.run.write;
 
 import cn.jiangzeyin.StringUtil;
-import cn.simplifydb.database.DbWriteService;
 import cn.simplifydb.database.base.BaseWrite;
 import cn.simplifydb.database.config.DatabaseContextHolder;
 import cn.simplifydb.database.config.ModifyUser;
@@ -49,6 +48,9 @@ public class Insert<T> extends BaseWrite<T> {
 
     public Insert setList(List<T> list) {
         this.list = list;
+        if (list != null && list.size() > 1) {
+            super.setData(list.get(0));
+        }
         return this;
     }
 
@@ -76,13 +78,12 @@ public class Insert<T> extends BaseWrite<T> {
     public Insert(T data) {
         // TODO Auto-generated constructor stub
         super(null, null);
-        list = new ArrayList<>();
-        list.add(data);
+        setData(data);
     }
 
     public Insert(List<T> list) {
         super(null, null);
-        this.list = list;
+        setList(list);
     }
 
     /**
@@ -98,7 +99,7 @@ public class Insert<T> extends BaseWrite<T> {
 
     public Insert(List<T> list, boolean isThrows) {
         super(null, null);
-        this.list = list;
+        setList(list);
         setThrows(isThrows);
     }
 
@@ -184,7 +185,7 @@ public class Insert<T> extends BaseWrite<T> {
     private int batchRun(Callback callback) throws Exception {
         SqlAndParameters[] sqlAndParameters = SqlUtil.getInsertSqls(this);
         int createUser = getOptUserId();
-        Class cls = list.get(0).getClass();
+        Class cls = getTclass();
         SQLInsertStatement sqlInsertStatement = new SQLInsertStatement();
         String tableName = SqlUtil.getTableName(null, cls);
         sqlInsertStatement.setTableName(new SQLIdentifierExpr(tableName));
@@ -236,7 +237,7 @@ public class Insert<T> extends BaseWrite<T> {
         DbLog.getInstance().info(getTransferLog() + getRunSql());
         int count;
         if (transactionConnection == null) {
-            String tag = DbWriteService.getInstance().getDatabaseName(cls);
+            String tag = getTag();
             DataSource dataSource = DatabaseContextHolder.getWriteDataSource(tag);
             count = JdbcUtils.executeUpdate(dataSource, sql, par);
         } else {
@@ -264,9 +265,9 @@ public class Insert<T> extends BaseWrite<T> {
         }
     }
 
-    private String builderSql(SqlAndParameters sqlAndParameter, T data) {
+    private String builderSql(SqlAndParameters sqlAndParameter) {
         SQLInsertStatement sqlInsertStatement = new SQLInsertStatement();
-        Class cls = data.getClass();
+        Class cls = getTclass();
         String tableName = SqlUtil.getTableName(null, cls);
         sqlInsertStatement.setTableName(new SQLIdentifierExpr(tableName));
         //
@@ -311,10 +312,10 @@ public class Insert<T> extends BaseWrite<T> {
                     continue;
                 }
                 sqlAndParameter = sqlAndParameters[i];
-                sql = builderSql(sqlAndParameter, data);
+                sql = builderSql(sqlAndParameter);
                 setRunSql(sql);
                 if (transactionConnection == null) {
-                    String tag = DbWriteService.getInstance().getDatabaseName(data.getClass());
+                    String tag = getTag();
                     connection = DatabaseContextHolder.getWriteConnection(tag);
                 } else {
                     connection = transactionConnection;

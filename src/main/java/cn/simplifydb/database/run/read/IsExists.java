@@ -1,6 +1,5 @@
 package cn.simplifydb.database.run.read;
 
-import cn.simplifydb.database.DbWriteService;
 import cn.simplifydb.database.base.BaseRead;
 import cn.simplifydb.database.config.DatabaseContextHolder;
 import cn.simplifydb.system.DbLog;
@@ -8,7 +7,6 @@ import cn.simplifydb.util.KeyLock;
 import com.alibaba.druid.sql.ast.SQLLimit;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
 import com.alibaba.druid.util.JdbcUtils;
-import com.alibaba.druid.util.StringUtils;
 
 import javax.sql.DataSource;
 import java.util.List;
@@ -89,9 +87,6 @@ public class IsExists<T> extends BaseRead<T> {
         }
         try {
             String tag = getTag();
-            if (StringUtils.isEmpty(tag)) {
-                tag = DbWriteService.getInstance().getDatabaseName(runClass);
-            }
             String sql = builder();
             DbLog.getInstance().info(getTransferLog() + getRunSql());
             DataSource dataSource = DatabaseContextHolder.getReadDataSource(tag);

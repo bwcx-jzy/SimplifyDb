@@ -68,7 +68,7 @@ public abstract class BaseWrite<T> extends Base<T> {
 
     protected BaseWrite(T data, Connection transactionConnection) {
         this.transactionConnection = transactionConnection;
-        this.data = data;
+        setData(data);
         setOptUserId(SystemSessionInfo.getUserId());
     }
 
