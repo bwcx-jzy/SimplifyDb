@@ -94,7 +94,7 @@ public class TestInsert {
         insert.run();
         // 等待异步执行 防止程序关闭，实际代码不需要
         try {
-            Thread.sleep(10000);
+            Thread.sleep(3000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }

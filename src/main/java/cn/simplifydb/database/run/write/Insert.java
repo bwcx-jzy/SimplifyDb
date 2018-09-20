@@ -317,7 +317,7 @@ public class Insert<T> extends BaseWrite<T> {
                 event = getEvent(data);
                 if (event != null) {
                     Event.BeforeCode beforeCode = event.beforeInsert(this, data);
-                    if (beforeCode == InsertEvent.BeforeCode.END) {
+                    if (beforeCode == BaseWrite.Event.BeforeCode.END) {
                         DbLog.getInstance().info("本次执行取消：" + data + " " + list);
                         continue;
                     }

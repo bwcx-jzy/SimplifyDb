@@ -10,9 +10,6 @@ import com.alibaba.druid.sql.builder.SQLSelectBuilder;
 import com.alibaba.druid.sql.builder.impl.SQLSelectBuilderImpl;
 import com.alibaba.druid.util.JdbcConstants;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -74,10 +71,7 @@ public abstract class BaseRead<T> extends Base<T> implements SQLSelectBuilder {
      * 查询索引
      */
     private String index;
-    /**
-     * 参数
-     */
-    private List<Object> parameters;
+
     /**
      * 返回值类型
      */
@@ -139,33 +133,6 @@ public abstract class BaseRead<T> extends Base<T> implements SQLSelectBuilder {
 
     public BaseRead setResultType(Result resultType) {
         this.resultType = resultType;
-        return this;
-    }
-
-    public List<Object> getParameters() {
-        if (parameters == null) {
-            return new ArrayList<>();
-        }
-        return parameters;
-    }
-
-    /**
-     * @param parameters 参数
-     * @return this
-     * @author jiangzeyin
-     */
-    public BaseRead setParameters(Object... parameters) {
-        if (this.parameters == null) {
-            this.parameters = new LinkedList<>();
-        }
-        if (parameters != null) {
-            Collections.addAll(this.parameters, parameters);
-        }
-        return this;
-    }
-
-    public BaseRead setParameters(List<Object> whereParameters) {
-        this.parameters = whereParameters;
         return this;
     }
 
@@ -251,8 +218,6 @@ public abstract class BaseRead<T> extends Base<T> implements SQLSelectBuilder {
     protected void recycling() {
         // TODO Auto-generated method stub
         super.recycling();
-        //connection = null;
-        parameters = null;
         resultType = null;
         index = null;
         sqlSelectBuilder = null;

@@ -9,7 +9,7 @@ import cn.simplifydb.database.run.write.Update;
  *
  * @author jiangzeyin
  */
-public interface UpdateEvent extends BaseWrite.Event {
+public interface UpdateEvent {
 
     /**
      * 开始事件之前
@@ -19,7 +19,7 @@ public interface UpdateEvent extends BaseWrite.Event {
      * @return 验证结果
      * @author jiangzeyin
      */
-    BeforeCode beforeUpdate(Update<?> update, Object object);
+    BaseWrite.Event.BeforeCode beforeUpdate(Update<?> update, Object object);
 
     /**
      * 操作成功

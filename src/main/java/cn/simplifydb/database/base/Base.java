@@ -9,9 +9,7 @@ import cn.simplifydb.system.DbLog;
 import cn.simplifydb.util.DbReflectUtil;
 import com.alibaba.druid.util.StringUtils;
 
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 /**
  * 数据库操作公共
@@ -57,6 +55,24 @@ public abstract class Base<T> {
      */
     private boolean useDataBaseName;
 
+    /**
+     * 参数
+     */
+    private List<Object> parameters = new ArrayList<>();
+
+    public List<Object> getParameters() throws Exception {
+        return parameters;
+    }
+
+    public Base<T> addParameters(Object... object) {
+        parameters.addAll(Arrays.asList(object));
+        return this;
+    }
+
+    public Base<T> setParameters(List<Object> whereParameters) {
+        this.parameters = whereParameters;
+        return this;
+    }
 
     public boolean isUseDataBaseName() {
         return useDataBaseName;
@@ -268,6 +284,7 @@ public abstract class Base<T> {
         runSql = null;
         runTime = 0L;
         tagName = null;
+        this.parameters = null;
         // tag 标记
         DatabaseContextHolder.recycling();
     }

@@ -22,7 +22,6 @@ import java.util.*;
 public abstract class BaseUpdate<T> extends BaseWrite<T> implements SQLUpdateAndDeleteBuilder {
     protected SQLUpdateBuilderImpl sqlUpdateBuilder;
     protected String ids;
-    private List<Object> parameters = new LinkedList<>();
     private Object keyValue;
     private String keyColumn;
     private SqlAndParameters sqlAndParameters;
@@ -89,28 +88,26 @@ public abstract class BaseUpdate<T> extends BaseWrite<T> implements SQLUpdateAnd
             strValue = strValue.substring(strValue.indexOf("#{") + 2, strValue.indexOf("}"));
             sqlUpdateBuilder.set(column + "=" + strValue);
         } else {
-            parameters.add(value);
+            addParameters(value);
             sqlUpdateBuilder.set(column + "=?");
         }
         update.put(column, value);
         return this;
     }
 
+    @Override
     public List<Object> getParameters() throws Exception {
         List<Object> newList = new LinkedList<>();
         SqlAndParameters sqlAndParameters = getSqlAndParameters();
         if (sqlAndParameters != null) {
             newList.addAll(0, sqlAndParameters.getParameters());
         }
+        List<Object> parameters = super.getParameters();
         if (parameters != null) {
             newList.addAll(parameters);
         }
+        System.out.println(newList);
         return newList;
-    }
-
-    public BaseUpdate<T> addParameters(Object object) {
-        parameters.add(object);
-        return this;
     }
 
 
@@ -152,7 +149,6 @@ public abstract class BaseUpdate<T> extends BaseWrite<T> implements SQLUpdateAnd
     protected void recycling() {
         super.recycling();
         ids = null;
-        this.parameters = null;
         sqlUpdateBuilder = null;
         sqlAndParameters = null;
         keyValue = null;

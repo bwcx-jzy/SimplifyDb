@@ -8,7 +8,7 @@ import cn.simplifydb.database.run.write.Insert;
  *
  * @author jiangzeyin
  */
-public interface InsertEvent extends BaseWrite.Event {
+public interface InsertEvent {
 
     /**
      * 开始事件之前
@@ -18,7 +18,7 @@ public interface InsertEvent extends BaseWrite.Event {
      * @return 验证结果
      * @author jiangzeyin
      */
-    BeforeCode beforeInsert(Insert<?> insert, Object object);
+    BaseWrite.Event.BeforeCode beforeInsert(Insert<?> insert, Object object);
 
     /**
      * 操作成功

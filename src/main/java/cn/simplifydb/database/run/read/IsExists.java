@@ -11,7 +11,6 @@ import com.alibaba.druid.util.JdbcUtils;
 import com.alibaba.druid.util.StringUtils;
 
 import javax.sql.DataSource;
-import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 
@@ -83,7 +82,7 @@ public class IsExists<T> extends BaseRead<T> {
         return super.builder();
     }
 
-    private List<Map<String, Object>> doData() throws SQLException {
+    private List<Map<String, Object>> doData() throws Exception {
         Class runClass = getTclass();
         if (useLock) {
             LOCK.lock(runClass);
