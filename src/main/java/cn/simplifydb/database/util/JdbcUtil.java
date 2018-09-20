@@ -2,7 +2,6 @@ package cn.simplifydb.database.util;
 
 import com.alibaba.druid.util.JdbcUtils;
 
-import javax.sql.DataSource;
 import java.sql.*;
 import java.util.List;
 
@@ -12,26 +11,6 @@ import java.util.List;
  * @author jiangzeyin
  */
 public class JdbcUtil {
-
-    /**
-     * 添加操作 返回主键
-     *
-     * @param dataSource 数据源
-     * @param sql        sql
-     * @param parameters 参数
-     * @return 主键
-     * @throws SQLException 异常
-     * @author jiangzeyin
-     */
-    public static Object executeInsert(DataSource dataSource, String sql, List<Object> parameters) throws SQLException {
-        Connection conn = null;
-        try {
-            conn = dataSource.getConnection();
-            return executeInsert(conn, sql, parameters);
-        } finally {
-            JdbcUtils.close(conn);
-        }
-    }
 
     /**
      * 添加操作 返回主键
