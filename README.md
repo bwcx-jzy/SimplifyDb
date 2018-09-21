@@ -58,6 +58,8 @@ SimplifyDb 是一个Java基于druid的一款Builder简化写sql语句操作的�
 </dependency>
 ```
 注：VERSION 请更换为公共maven库最新的版本号
+ 
+ [https://mvnrepository.com/artifact/cn.simplifydb/simplifydb](https://mvnrepository.com/artifact/cn.simplifydb/simplifydb)
 
 ## 版本变更
 
