@@ -9,6 +9,7 @@ import java.util.Arrays;
  */
 public class Ran {
     public static void main(String[] args) {
+        System.out.println("测试 webide");
         System.out.println(Arrays.toString(StringUtil.stringToArray("1     2", " ")));
     }
 }
