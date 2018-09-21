@@ -50,6 +50,9 @@ public abstract class BaseUpdate<T> extends BaseWrite<T> implements SQLUpdateAnd
 
     @Override
     public BaseUpdate<T> setKeyColumnAndValue(String column, Object keyValue) {
+        if (this.keyColumn != null) {
+            throw new ConcurrentModificationException(keyColumn);
+        }
         this.keyValue = keyValue;
         this.keyColumn = column;
         sqlUpdateBuilder.whereAnd(column + "=!keyValue");
