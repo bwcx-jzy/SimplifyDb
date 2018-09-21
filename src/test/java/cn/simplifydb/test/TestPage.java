@@ -68,15 +68,28 @@ public class TestPage {
 
     @Test
     public void page4() {
-
         SelectPage<cn.simplifydb.entity.test.Test> testSelect = new SelectPage<cn.simplifydb.entity.test.Test>(3, 2) {
         };
-
         testSelect.setSql("select * from test where id>2");
         testSelect.orderBy("id desc");
         testSelect.where("id>1");
 
         testSelect.whereAnd("id>1");
+        testSelect.setTclass(cn.simplifydb.entity.test.Test.class);
+        testSelect.setResultType(BaseRead.Result.JsonArray);
+        JSONArray jsonArray = testSelect.run();
+        System.out.println(jsonArray);
+    }
+
+    @Test
+    public void page5() {
+        SelectPage<cn.simplifydb.entity.test.Test> testSelect = new SelectPage<cn.simplifydb.entity.test.Test>(3, 2) {
+        };
+        testSelect.setSql("select * from test where id>2");
+        testSelect.orderBy("id desc");
+        testSelect.where("id>1");
+
+        testSelect.whereAnd("id>1000");
         testSelect.setTclass(cn.simplifydb.entity.test.Test.class);
         testSelect.setResultType(BaseRead.Result.JsonArray);
         JSONArray jsonArray = testSelect.run();

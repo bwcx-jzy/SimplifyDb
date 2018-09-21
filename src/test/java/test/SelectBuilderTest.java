@@ -1,6 +1,8 @@
 package test;
 
 import com.alibaba.druid.sql.builder.impl.SQLSelectBuilderImpl;
+import com.alibaba.druid.sql.dialect.mysql.parser.MySqlSelectParser;
+import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.util.JdbcConstants;
 
 /**
@@ -9,12 +11,11 @@ import com.alibaba.druid.util.JdbcConstants;
 public class SelectBuilderTest {
     public static void main(String[] args) {
         SQLSelectBuilderImpl sqlSelectBuilder = new SQLSelectBuilderImpl(JdbcConstants.MYSQL);
-        sqlSelectBuilder.orderBy("sss desc").whereAnd("sss").whereOr("sss").selectWithAlias("a", "aaa");
-        System.out.println(sqlSelectBuilder.getSQLSelect().getFirstQueryBlock().getSelectList());
-        System.out.println(sqlSelectBuilder.getSQLSelect().getFirstQueryBlock().getFrom());
-//        sqlSelectBuilder.limit(1);
+        sqlSelectBuilder.from("test").orderBy("test desc");
 
-        System.out.println(sqlSelectBuilder.getSQLSelect().getFirstQueryBlock().getLimit().getRowCount());
-        System.out.println(sqlSelectBuilder.toString());
+        MySqlSelectParser mySqlStatementParser = new MySqlSelectParser(sqlSelectBuilder.toString());
+
+        System.out.println(sqlSelectBuilder);
+        System.out.println(mySqlStatementParser.parseTableSource());
     }
 }

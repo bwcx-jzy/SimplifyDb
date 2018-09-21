@@ -323,6 +323,9 @@ public abstract class Base<T> {
         runTime = 0L;
         tagName = null;
         this.parameters = null;
+        keyValue = null;
+        keyColumn = null;
+        tempTransferLog = null;
         // tag 标记
         DatabaseContextHolder.recycling();
     }

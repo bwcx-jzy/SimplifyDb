@@ -83,6 +83,11 @@ public abstract class BaseWrite<T> extends Base<T> {
         return data;
     }
 
+    public BaseWrite setData(T data) {
+        this.data = data;
+        return this;
+    }
+
     @Override
     public Class<?> getTclass() {
         T t = getData();
@@ -102,10 +107,6 @@ public abstract class BaseWrite<T> extends Base<T> {
         throw new IllegalArgumentException("error");
     }
 
-    public BaseWrite setData(T data) {
-        this.data = data;
-        return this;
-    }
 
     /**
      * @param t 异常

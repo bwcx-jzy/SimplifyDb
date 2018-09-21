@@ -21,13 +21,10 @@ import java.util.*;
  * @author jiangzeyin
  */
 public abstract class BaseUpdate<T> extends BaseWrite<T> implements SQLUpdateAndDeleteBuilder {
+    private HashMap<String, Object> update = new HashMap<>(20);
     protected SQLUpdateBuilderImpl sqlUpdateBuilder;
     protected String ids;
-    private Object keyValue;
-
     private SqlAndParameters sqlAndParameters;
-    private HashMap<String, Object> update = new HashMap<>();
-
 
     protected BaseUpdate(T data, Connection transactionConnection) {
         super(data, transactionConnection);
@@ -145,8 +142,6 @@ public abstract class BaseUpdate<T> extends BaseWrite<T> implements SQLUpdateAnd
         ids = null;
         sqlUpdateBuilder = null;
         sqlAndParameters = null;
-        keyValue = null;
-        keyColumn = null;
         update = null;
     }
 
@@ -237,7 +232,11 @@ public abstract class BaseUpdate<T> extends BaseWrite<T> implements SQLUpdateAnd
 
     @Override
     public SQLUpdateAndDeleteBuilder set(String... items) {
-        sqlUpdateBuilder.set(items);
+        if (data == null) {
+            sqlUpdateBuilder.set(items);
+        } else {
+            throw new IllegalArgumentException("update entity not set");
+        }
         return this;
     }
 }
