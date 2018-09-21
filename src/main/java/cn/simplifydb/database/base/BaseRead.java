@@ -10,6 +10,7 @@ import com.alibaba.druid.sql.builder.SQLSelectBuilder;
 import com.alibaba.druid.sql.builder.impl.SQLSelectBuilderImpl;
 import com.alibaba.druid.util.JdbcConstants;
 
+import java.util.ConcurrentModificationException;
 import java.util.List;
 
 /**
@@ -119,8 +120,12 @@ public abstract class BaseRead<T> extends Base<T> implements SQLSelectBuilder {
      */
     @Override
     public BaseRead setKeyColumnAndValue(String keyColumn, Object keyValue) {
+        if (this.keyColumn != null) {
+            throw new ConcurrentModificationException(keyColumn);
+        }
         sqlSelectBuilder.whereAnd(keyColumn + "=!keyValue");
         this.keyValue = keyValue;
+        this.keyColumn = keyColumn;
         return this;
     }
 
