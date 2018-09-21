@@ -300,7 +300,7 @@ public abstract class Base<T> {
      * @param t 异常信息
      * @author jiangzeyin
      */
-    public void isThrows(Throwable t) {
+    protected void isThrows(Throwable t) {
         if (isThrows) {
             throw new RuntimeException(t);
         }

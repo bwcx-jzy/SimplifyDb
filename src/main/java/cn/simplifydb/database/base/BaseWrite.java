@@ -31,8 +31,9 @@ public abstract class BaseWrite<T> extends Base<T> {
         return optUserId;
     }
 
-    public void setOptUserId(int optUserId) {
+    public BaseWrite<T> setOptUserId(int optUserId) {
         this.optUserId = optUserId;
+        return this;
     }
 
     /**
@@ -83,7 +84,7 @@ public abstract class BaseWrite<T> extends Base<T> {
         return data;
     }
 
-    public BaseWrite setData(T data) {
+    public BaseWrite<T> setData(T data) {
         this.data = data;
         return this;
     }
@@ -98,12 +99,12 @@ public abstract class BaseWrite<T> extends Base<T> {
     }
 
     @Override
-    public Base<T> setKeyValue(Object keyValue) {
+    public BaseWrite<T> setKeyValue(Object keyValue) {
         throw new IllegalArgumentException("error");
     }
 
     @Override
-    public Base<T> setKeyColumnAndValue(String column, Object keyValue) {
+    public BaseWrite<T> setKeyColumnAndValue(String column, Object keyValue) {
         throw new IllegalArgumentException("error");
     }
 
@@ -113,7 +114,7 @@ public abstract class BaseWrite<T> extends Base<T> {
      * @author jiangzeyin
      */
     @Override
-    public void isThrows(Throwable t) {
+    protected void isThrows(Throwable t) {
         // TODO Auto-generated method stub
         if (isAsync()) {
             t.addSuppressed(getThrowable());

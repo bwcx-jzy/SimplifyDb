@@ -5,12 +5,13 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>cn.simplifydb</groupId>
     <artifactId>simplifydb</artifactId>
-    <version>2.0.0</version>
+    <version>2.0.1</version>
     <name>SimplifyDb</name>
     <url>https://gitee.com/jiangzeyin/dbutil</url>
     <description>
         SimplifyDb
-        是一个Java基于druid的一款简化写sql语句操作mysql的框架。本项目主要采用反射读写需要操作的实体和表，同时项目还是提供多种主键生成器和自定义主键生成器接口方便用户根据实际业务扩展主键生成器
+        是一个Java基于druid的一款简化写sql语句操作mysql的框架。本项目主要使用druid的Builder来生成sql，
+        同时项目还是提供多种主键生成器和自定义主键生成器接口方便用户根据实际业务扩展主键生成器
     </description>
     <inceptionYear>2017</inceptionYear>
     <properties>
@@ -21,7 +22,7 @@
         <druid.version>[1.1.0,1.1.99]</druid.version>
         <fastjson.version>[1.2.0,1.2.99]</fastjson.version>
         <simple-util.version>1.0.11</simple-util.version>
-        <simple-des.vesion>1.0.0</simple-des.vesion>
+        <simple-des.vesion>1.0.1</simple-des.vesion>
         <argLine>-Dfile.encoding=UTF-8</argLine>
     </properties>
 
@@ -70,6 +71,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.8.0</version>
                 <configuration>
                     <source>${java.version}</source>
                     <target>${java.version}</target>
