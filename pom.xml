@@ -78,24 +78,6 @@
                 </configuration>
             </plugin>
         </plugins>
-
-        <!-- 包含资源文件 -->
-        <resources>
-
-            <resource>
-                <directory>src/test/java</directory>
-                <includes>
-                    <include>**/*.xml</include>
-                    <include>**/*.properties</include>
-                </includes>
-            </resource>
-            <resource>
-                <directory>src/main/resources</directory>
-                <includes>
-                    <include>**/*</include>
-                </includes>
-            </resource>
-        </resources>
     </build>
 
     <profiles>
