@@ -1,3 +1,3 @@
 cd ../
 
-mvn clean install deploy -Prelease
+mvn clean install -DskipTests=true deploy -Prelease
