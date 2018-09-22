@@ -1,6 +1,5 @@
 package test;
 
-import auto.OrderedProperties;
 import cn.simplifydb.sequence.ISequence;
 import cn.simplifydb.sequence.impl.IdSequence;
 
