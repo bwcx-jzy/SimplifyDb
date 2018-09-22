@@ -11,8 +11,8 @@
 	<a target="_blank" href="https://www.oracle.com/technetwork/java/javase/downloads/index.html">
 		<img src="https://img.shields.io/badge/JDK-1.8+-green.svg" ></img>
 	</a>
-	<a target="_blank" href="https://travis-ci.org/jiangzeyin/dbutil">
-    	<img src="https://travis-ci.org/jiangzeyin/dbutil.svg?branch=master" ></img>
+	<a target="_blank" href="https://travis-ci.org/jiangzeyin/SimplifyDb">
+    	<img src="https://travis-ci.org/jiangzeyin/SimplifyDb.svg?branch=master" ></img>
     </a>
 </p>
 
@@ -72,7 +72,7 @@ SimplifyDb 是一个Java基于druid的一款Builder简化写sql语句操作的�
 ### 提供bug反馈或建议
 
 - [码云](https://gitee.com/iangzeyin/dbutil/issues)
-- [Github](https://github.com/jiangzeyin/dbutil/issues)
+- [Github](https://github.com/jiangzeyin/SimplifyDb/issues)
 
 
 ## 项目特点描述：(使用druid 连接池)
