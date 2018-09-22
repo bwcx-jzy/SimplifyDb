@@ -1,6 +1,6 @@
 language: java
 
-script: "mvn clean install -DskipTests=true -Dgpg.skip=true -B -V"
+script: "mvn install -DskipTests=true -Dmaven.javadoc.skip=true -Dgpg.skip=true -B -V"
 
 notifications:
   email: true
