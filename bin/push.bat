@@ -1,3 +1,3 @@
-git pull gitee master
+git push gitee master
 
-git pull github dev
+git push github dev
