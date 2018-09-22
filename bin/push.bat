@@ -6,3 +6,5 @@ git merge dev
 git push gitee master
 
 git push github dev
+
+git checkout dev
