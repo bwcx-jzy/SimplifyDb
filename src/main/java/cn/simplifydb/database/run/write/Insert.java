@@ -205,12 +205,7 @@ public class Insert<T> extends BaseWrite<T> {
                     if (map != null) {
                         val = map.get(item);
                     }
-                    if (val == null) {
-                        SQLExprParser sqlExpr = SQLParserUtils.createExprParser("?", JdbcConstants.MYSQL);
-                        valuesClause.addValue(sqlExpr.additive());
-                    } else {
-                        valuesClause.addValue(SQLBuilderImpl.toSQLExpr(val, JdbcConstants.MYSQL));
-                    }
+                    addSystemColumns(val, valuesClause);
                 }
                 // 数据创建人
                 if (createUser != -1 && ModifyUser.Create.isCreateClass(cls)) {
@@ -265,6 +260,22 @@ public class Insert<T> extends BaseWrite<T> {
         }
     }
 
+    /**
+     * 系统默认字段
+     *
+     * @param val          val
+     * @param valuesClause values
+     */
+    private void addSystemColumns(Object val, SQLInsertStatement.ValuesClause valuesClause) {
+        if (val == null) {
+            SQLExprParser sqlExpr = SQLParserUtils.createExprParser("?", JdbcConstants.MYSQL);
+            valuesClause.addValue(sqlExpr.additive());
+        } else {
+            SQLExprParser sqlExpr = SQLParserUtils.createExprParser(StringUtil.convertNULL(val), JdbcConstants.MYSQL);
+            valuesClause.addValue(sqlExpr.additive());
+        }
+    }
+
     private String builderSql(SqlAndParameters sqlAndParameter) {
         SQLInsertStatement sqlInsertStatement = new SQLInsertStatement();
         Class cls = getTclass();
@@ -281,13 +292,7 @@ public class Insert<T> extends BaseWrite<T> {
                     val = map.get(item);
                 }
                 sqlInsertStatement.addColumn(SQLParserUtils.createExprParser(item, JdbcConstants.MYSQL).expr());
-                if (val == null) {
-                    SQLExprParser sqlExpr = SQLParserUtils.createExprParser("?", JdbcConstants.MYSQL);
-                    valuesClause.addValue(sqlExpr.additive());
-                } else {
-                    SQLExprParser sqlExpr = SQLParserUtils.createExprParser(StringUtil.convertNULL(val), JdbcConstants.MYSQL);
-                    valuesClause.addValue(sqlExpr.additive());
-                }
+                addSystemColumns(val, valuesClause);
             }
             sqlInsertStatement.setValues(valuesClause);
             //
@@ -296,6 +301,13 @@ public class Insert<T> extends BaseWrite<T> {
         return sqlInsertStatement.toString();
     }
 
+    /**
+     * 按个执行
+     *
+     * @param callback 回调
+     * @return 成功的个数  和 最后一次主键
+     * @throws Exception e
+     */
     private Object[] itemRun(Callback callback) throws Exception {
         Connection connection = null;
         T data;
