@@ -55,7 +55,6 @@ public abstract class BaseUpdate<T> extends BaseWrite<T> implements SQLUpdateAnd
         }
         this.keyValue = keyValue;
         this.keyColumn = column;
-        sqlUpdateBuilder.whereAnd(column + "=!keyValue");
         return this;
     }
 
@@ -183,10 +182,15 @@ public abstract class BaseUpdate<T> extends BaseWrite<T> implements SQLUpdateAnd
             String tableName = SqlUtil.getTableName(this, getTclass());
             sqlUpdateBuilder.from(tableName);
         }
-        String sql = sqlUpdateBuilder.toString();
-        if (keyValue != null) {
-            sql = sql.replaceAll("!keyValue", "'" + keyValue.toString() + "'");
+        // key and value
+        if (keyColumn != null) {
+            if (keyValue == null) {
+                sqlUpdateBuilder.whereAnd(keyColumn + " = null");
+            } else {
+                sqlUpdateBuilder.whereAnd(String.format("%s='%s'", keyColumn, keyValue));
+            }
         }
+        String sql = sqlUpdateBuilder.toString();
         setRunSql(sql);
         return sql;
     }

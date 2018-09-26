@@ -1,6 +1,5 @@
 package cn.simplifydb.database.base;
 
-
 import cn.jiangzeyin.StringUtil;
 import cn.jiangzeyin.SystemClock;
 import cn.simplifydb.database.DbWriteService;
@@ -80,7 +79,6 @@ public abstract class Base<T> {
      * @param keyValue 主键值
      * @return this
      */
-
     public abstract Base<T> setKeyValue(Object keyValue);
 
     /**

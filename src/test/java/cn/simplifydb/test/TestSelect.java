@@ -80,4 +80,17 @@ public class TestSelect {
         JSONArray jsonArray = testSelect.run();
         System.out.println(jsonArray);
     }
+
+
+    @Test
+    public void selectEntity6() {
+        Select<cn.simplifydb.entity.test.Test> testSelect = new Select<cn.simplifydb.entity.test.Test>() {
+        };
+        testSelect.setResultType(BaseRead.Result.JsonArray);
+        testSelect.setColumns("name");
+        testSelect.where("id>2");
+        testSelect.orderBy("id desc");
+        cn.simplifydb.entity.test.Test test = testSelect.runOne();
+        System.out.println(test);
+    }
 }

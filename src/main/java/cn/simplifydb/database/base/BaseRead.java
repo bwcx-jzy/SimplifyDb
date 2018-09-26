@@ -8,6 +8,7 @@ import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import com.alibaba.druid.sql.builder.SQLSelectBuilder;
 import com.alibaba.druid.sql.builder.impl.SQLSelectBuilderImpl;
+import com.alibaba.druid.sql.parser.Token;
 import com.alibaba.druid.util.JdbcConstants;
 
 import java.util.ConcurrentModificationException;
@@ -22,6 +23,8 @@ import java.util.List;
 public abstract class BaseRead<T> extends Base<T> implements SQLSelectBuilder {
 
     protected SQLSelectBuilderImpl sqlSelectBuilder = new SQLSelectBuilderImpl(JdbcConstants.MYSQL);
+    private int rowCount = -1;
+    private int offset = -1;
 
     /**
      * 返回值类型
@@ -123,7 +126,6 @@ public abstract class BaseRead<T> extends Base<T> implements SQLSelectBuilder {
         if (this.keyColumn != null) {
             throw new ConcurrentModificationException(keyColumn);
         }
-        sqlSelectBuilder.whereAnd(keyColumn + "=!keyValue");
         this.keyValue = keyValue;
         this.keyColumn = keyColumn;
         return this;
@@ -243,9 +245,21 @@ public abstract class BaseRead<T> extends Base<T> implements SQLSelectBuilder {
         if (sqlSelectQueryBlock == null || sqlSelectQueryBlock.getSelectList().size() <= 0) {
             sqlSelectBuilder.select(SystemColumn.getDefaultSelectColumns());
         }
+        // key and value
+        if (keyColumn != null) {
+            if (keyValue == null) {
+                sqlSelectBuilder.whereAnd(keyColumn + " = null");
+            } else {
+                sqlSelectBuilder.whereAnd(String.format("%s='%s'", keyColumn, keyValue));
+            }
+        }
         String sql = sqlSelectBuilder.toString();
-        if (keyValue != null) {
-            sql = sql.replaceAll("!keyValue", "'" + keyValue.toString() + "'");
+        if (rowCount > 0) {
+            if (offset <= 0) {
+                sql += " " + Token.LIMIT.name + " " + rowCount;
+            } else {
+                sql += " " + Token.LIMIT.name + " " + offset + "," + rowCount;
+            }
         }
         setRunSql(sql);
         return sql;
@@ -298,12 +312,16 @@ public abstract class BaseRead<T> extends Base<T> implements SQLSelectBuilder {
 
     @Override
     public SQLSelectBuilder limit(int rowCount) {
-        return sqlSelectBuilder.limit(rowCount);
+        //  return sqlSelectBuilder.limit(rowCount);
+        return limit(rowCount, -1);
     }
 
     @Override
     public SQLSelectBuilder limit(int rowCount, int offset) {
-        return sqlSelectBuilder.limit(rowCount, offset);
+        //  return sqlSelectBuilder.limit(rowCount, offset);
+        this.rowCount = rowCount;
+        this.offset = offset;
+        return this;
     }
 
     @Override
