@@ -70,6 +70,13 @@ public class Update<T> extends BaseUpdate<T> {
         if (data != null && UpdateEvent.class.isAssignableFrom(data.getClass())) {
             return (UpdateEvent) data;
         }
+        Class tCls = getTclass();
+        if (UpdateEvent.class.isAssignableFrom(tCls)) {
+            try {
+                return (UpdateEvent) tCls.newInstance();
+            } catch (InstantiationException | IllegalAccessException ignored) {
+            }
+        }
         return null;
     }
 
