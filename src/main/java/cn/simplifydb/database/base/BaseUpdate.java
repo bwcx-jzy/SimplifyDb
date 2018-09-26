@@ -21,7 +21,7 @@ import java.util.*;
  * @author jiangzeyin
  */
 public abstract class BaseUpdate<T> extends BaseWrite<T> implements SQLUpdateAndDeleteBuilder {
-    private HashMap<String, Object> update = new HashMap<>(20);
+    private Map<String, Object> update = new LinkedHashMap<>(20);
     protected SQLUpdateBuilderImpl sqlUpdateBuilder;
     protected String ids;
     private SqlAndParameters sqlAndParameters;
@@ -39,7 +39,7 @@ public abstract class BaseUpdate<T> extends BaseWrite<T> implements SQLUpdateAnd
         setIds(String.valueOf(id));
     }
 
-    public HashMap<String, Object> getUpdate() {
+    public Map<String, Object> getUpdate() {
         return update;
     }
 
@@ -82,7 +82,7 @@ public abstract class BaseUpdate<T> extends BaseWrite<T> implements SQLUpdateAnd
             strValue = strValue.substring(strValue.indexOf("#{") + 2, strValue.indexOf("}"));
             sqlUpdateBuilder.set(column + "=" + strValue);
         } else {
-            addParameters(value);
+            // addParameters(value);
             sqlUpdateBuilder.set(column + "=?");
         }
         update.put(column, value);
@@ -96,6 +96,9 @@ public abstract class BaseUpdate<T> extends BaseWrite<T> implements SQLUpdateAnd
         if (sqlAndParameters != null) {
             newList.addAll(0, sqlAndParameters.getParameters());
         }
+        //  putUpdate
+        newList.addAll(update.values());
+        // where
         List<Object> parameters = super.getParameters();
         if (parameters != null) {
             newList.addAll(parameters);
