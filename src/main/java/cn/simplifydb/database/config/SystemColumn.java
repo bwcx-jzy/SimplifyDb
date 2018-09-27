@@ -15,6 +15,16 @@ import java.util.*;
  * @author jiangzeyin
  */
 public class SystemColumn {
+    /**
+     * putUpdate 时sql 执行  字符串开始标记
+     */
+    public static String SQL_FUNCTION_VAL_PREFIX = "#{";
+    /**
+     * putUpdate 时sql 执行  字符串结尾标记
+     */
+    public static String SQL_FUNCTION_VAL_SUFFIX = "}";
+
+
     private static String pwdColumn = "";
     private static final List<String> NOT_PUT_UPDATE = new ArrayList<>();
     private static final HashMap<String, String> COLUMN_DEFAULT_VALUE = new HashMap<>();

@@ -1,6 +1,5 @@
 package cn.simplifydb.database.base;
 
-import cn.jiangzeyin.StringUtil;
 import cn.simplifydb.database.annotation.EntityConfig;
 import cn.simplifydb.database.config.ModifyUser;
 import cn.simplifydb.database.config.SystemColumn;
@@ -77,16 +76,32 @@ public abstract class BaseUpdate<T> extends BaseWrite<T> implements SQLUpdateAnd
      */
     public BaseUpdate<T> putUpdate(String column, Object value) {
         checkUpdate(getTclass(), column);
-        String strValue = StringUtil.convertNULL(value);
-        if (strValue.startsWith("#{") && strValue.endsWith("}")) {
-            strValue = strValue.substring(strValue.indexOf("#{") + 2, strValue.indexOf("}"));
-            sqlUpdateBuilder.set(column + "=" + strValue);
+        String fnVal = getFunctionVal(value);
+        if (fnVal != null) {
+            sqlUpdateBuilder.set(column + "=" + fnVal);
         } else {
-            // addParameters(value);
             sqlUpdateBuilder.set(column + "=?");
         }
         update.put(column, value);
         return this;
+    }
+
+    /**
+     * 判断是否是sql 执行
+     *
+     * @param value 值
+     * @return null 不是sql 执行
+     */
+    private String getFunctionVal(Object value) {
+        if (!(value instanceof String)) {
+            return null;
+        }
+        String strValue = (String) value;
+        if (strValue.startsWith(SystemColumn.SQL_FUNCTION_VAL_PREFIX) && strValue.endsWith(SystemColumn.SQL_FUNCTION_VAL_SUFFIX)) {
+            int start = strValue.indexOf(SystemColumn.SQL_FUNCTION_VAL_PREFIX) + SystemColumn.SQL_FUNCTION_VAL_PREFIX.length();
+            return strValue.substring(start, strValue.indexOf(SystemColumn.SQL_FUNCTION_VAL_SUFFIX));
+        }
+        return null;
     }
 
     @Override
@@ -96,8 +111,14 @@ public abstract class BaseUpdate<T> extends BaseWrite<T> implements SQLUpdateAnd
         if (sqlAndParameters != null) {
             newList.addAll(0, sqlAndParameters.getParameters());
         }
-        //  putUpdate
-        newList.addAll(update.values());
+        Collection<Object> collection = update.values();
+        for (Object object : collection) {
+            String strValue = getFunctionVal(object);
+            if (strValue == null) {
+                //  putUpdate
+                newList.add(object);
+            }
+        }
         // where
         List<Object> parameters = super.getParameters();
         if (parameters != null) {
