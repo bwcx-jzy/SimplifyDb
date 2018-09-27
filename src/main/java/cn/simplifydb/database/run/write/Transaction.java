@@ -189,10 +189,11 @@ public class Transaction {
         /**
          * 获取事务的update 操作对象
          *
+         * @param cls 要操作的class
          * @return update
          */
-        public Update getUpdate() {
-            return new Update(transaction.connection);
+        public Update getUpdate(Class cls) {
+            return new Update(transaction.connection, cls);
         }
 
         /**

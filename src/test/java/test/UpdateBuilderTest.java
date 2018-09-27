@@ -13,6 +13,7 @@ public class UpdateBuilderTest {
         SQLUpdateBuilderImpl sqlUpdateBuilder = new SQLUpdateBuilderImpl(JdbcConstants.MYSQL);
         sqlUpdateBuilder.from("sss");
         sqlUpdateBuilder.setValue("sss", 11);
+        sqlUpdateBuilder.setValue("sssa", "sss");
         sqlUpdateBuilder.set("ssss=?");
 
         HashMap<String, Object> map = new HashMap<>();

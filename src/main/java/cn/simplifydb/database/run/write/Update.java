@@ -29,9 +29,10 @@ public class Update<T> extends BaseUpdate<T> {
      *
      * @param connection 连接信息
      */
-    Update(Connection connection) {
+    Update(Connection connection, Class cls) {
         super(null, connection);
         setThrows(true);
+        setTclass(cls);
     }
 
     public Update(T data, boolean isThrows) {
