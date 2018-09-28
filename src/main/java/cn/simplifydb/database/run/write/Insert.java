@@ -47,10 +47,12 @@ public class Insert<T> extends BaseWrite<T> {
     }
 
     public Insert setList(List<T> list) {
-        this.list = list;
-        if (list != null && list.size() > 1) {
+        if (list != null && list.size() > 0) {
             super.setData(list.get(0));
+        } else {
+            throw new IllegalArgumentException("list empty");
         }
+        this.list = list;
         return this;
     }
 
