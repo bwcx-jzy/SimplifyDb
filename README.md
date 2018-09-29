@@ -71,8 +71,8 @@ SimplifyDb 是一个Java基于druid的一款Builder简化写sql语句操作的�
 
 ### 提供bug反馈或建议
 
-- [码云](https://gitee.com/iangzeyin/dbutil/issues)
-- [Github](https://github.com/jiangzeyin/SimplifyDb/issues)
+- [码云](https://gitee.com/iangzeyin/dbutil) -> [issues](https://gitee.com/iangzeyin/dbutil/issues)
+- [Github](https://github.com/jiangzeyin/SimplifyDb) -> [issues](https://github.com/jiangzeyin/SimplifyDb/issues)
 
 
 ## 项目特点描述：(使用druid 连接池)
