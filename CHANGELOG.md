@@ -4,6 +4,7 @@
 
 *  insert 批量执行List 只有一条数据时异常
 *  update sql 执行参数异常
+*  update sql 执行的标识前缀于后缀支持自定义 cn.simplifydb.database.config.SystemColumn.SQL_FUNCTION_VAL_PREFIX
 
 -------------------------------------------------------------------------------------------------------------
 
