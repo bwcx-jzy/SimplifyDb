@@ -1,14 +1,27 @@
+@echo off
 
-git checkout master
+chcp 65001
 
-git merge dev
+cd ../
 
-git push gitee master
+echo 拉取主分支
 
-git fetch github master:master
+call git fetch github master:master
 
-git push github dev
+call git fetch gitee master:master
 
-git push github master
+echo 开始切换分支
+call git checkout master
 
-git checkout dev
+echo 开始合并分支
+call git merge dev
+
+echo 推送到gitee
+call git push gitee master
+
+echo 推送到github
+call git push github dev
+
+call git push github master
+
+call git checkout dev
