@@ -66,8 +66,16 @@ public abstract class Base<T> {
     /**
      * 主键值
      */
-    protected Object keyValue;
-    protected String keyColumn;
+    Object keyValue;
+    String keyColumn;
+
+    /**
+     * 创建时生成开始运行时间
+     */
+    Base() {
+        // TODO Auto-generated constructor stub
+        runTime = System.currentTimeMillis();
+    }
 
     public Object getKeyValue() {
         return keyValue;
@@ -131,14 +139,6 @@ public abstract class Base<T> {
         return refWhere;
     }
 
-
-    /**
-     * 创建时就获取操作人
-     */
-    Base() {
-        // TODO Auto-generated constructor stub
-        runTime = System.currentTimeMillis();
-    }
 
     /**
      * 生成sql
