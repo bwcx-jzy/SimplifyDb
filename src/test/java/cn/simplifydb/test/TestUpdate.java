@@ -79,7 +79,6 @@ public class TestUpdate {
     public void update6() {
         Update<Db2Test> update = new Update<Db2Test>() {
         };
-//        update.setKeyValue("1");
         update.putUpdate("name", "#{id+1}");
         update.putUpdate("sex", "1");
         update.where("1=1");
