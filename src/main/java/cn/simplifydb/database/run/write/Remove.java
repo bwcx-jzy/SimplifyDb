@@ -153,9 +153,8 @@ public class Remove<T> extends BaseUpdate<T> {
             String tableName = SqlUtil.getTableName(this, getTclass());
             sqlDeleteBuilder.from(tableName);
         }
-        if (ids != null) {
-            sqlDeleteBuilder.whereAnd(SystemColumn.getDefaultKeyName() + " in(" + ids + ")");
-        }
+        // 检查
+        securityCheck(sqlDeleteBuilder);
         String sql = sqlDeleteBuilder.toString();
         setRunSql(sql);
         return sql;

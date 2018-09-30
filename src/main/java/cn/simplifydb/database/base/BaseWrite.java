@@ -42,7 +42,7 @@ public abstract class BaseWrite<T> extends Base<T> {
      * @param callback 事件
      * @return BaseWrite
      */
-    public BaseWrite setCallback(Callback callback) {
+    public BaseWrite<T> setCallback(Callback callback) {
         this.callback = callback;
         return this;
     }

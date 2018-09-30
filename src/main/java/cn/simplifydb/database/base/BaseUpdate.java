@@ -7,6 +7,7 @@ import cn.simplifydb.database.util.SqlAndParameters;
 import cn.simplifydb.database.util.SqlUtil;
 import cn.simplifydb.util.DbReflectUtil;
 import com.alibaba.druid.sql.ast.statement.SQLUpdateStatement;
+import com.alibaba.druid.sql.builder.impl.SQLDeleteBuilderImpl;
 import com.alibaba.druid.sql.builder.impl.SQLUpdateBuilderImpl;
 import com.alibaba.druid.util.JdbcConstants;
 
@@ -30,12 +31,13 @@ public abstract class BaseUpdate<T> extends BaseWrite<T> implements SQLUpdateAnd
         sqlUpdateBuilder = new SQLUpdateBuilderImpl(JdbcConstants.MYSQL);
     }
 
-    public void setIds(String ids) {
+    public BaseUpdate<T> setIds(String ids) {
         this.ids = ids;
+        return this;
     }
 
-    public void setIds(int id) {
-        setIds(String.valueOf(id));
+    public BaseUpdate<T> setIds(Object id) {
+        return setIds(String.valueOf(id));
     }
 
     public Map<String, Object> getUpdate() {
@@ -172,6 +174,20 @@ public abstract class BaseUpdate<T> extends BaseWrite<T> implements SQLUpdateAnd
     }
 
     @Override
+    protected void securityCheck(Object object) {
+        if (ids != null) {
+            if (object instanceof SQLUpdateBuilderImpl) {
+                SQLUpdateBuilderImpl sqlUpdateBuilder = (SQLUpdateBuilderImpl) object;
+                sqlUpdateBuilder.whereAnd(SystemColumn.getDefaultKeyName() + " in(" + ids + ")");
+            } else if (object instanceof SQLDeleteBuilderImpl) {
+                SQLDeleteBuilderImpl sqlDeleteBuilder = (SQLDeleteBuilderImpl) object;
+                sqlDeleteBuilder.whereAnd(SystemColumn.getDefaultKeyName() + " in(" + ids + ")");
+            }
+        }
+        super.securityCheck(object);
+    }
+
+    @Override
     public String builder() throws Exception {
         SqlAndParameters sqlAndParameters = getSqlAndParameters();
         if (sqlAndParameters != null) {
@@ -191,12 +207,8 @@ public abstract class BaseUpdate<T> extends BaseWrite<T> implements SQLUpdateAnd
                 }
             }
             Object objId = DbReflectUtil.getFieldValue(data, SystemColumn.getDefaultKeyName());
-            //   防止整表更新
-            Objects.requireNonNull(objId, "没有找到任何更新条件");
-            sqlUpdateBuilder.whereAnd(SystemColumn.getDefaultKeyName() + "='" + objId.toString() + "'");
-        } else {
-            if (ids != null) {
-                sqlUpdateBuilder.whereAnd(SystemColumn.getDefaultKeyName() + " in(" + ids + ")");
+            if (objId != null) {
+                sqlUpdateBuilder.whereAnd(SystemColumn.getDefaultKeyName() + "='" + objId.toString() + "'");
             }
         }
         loadModify();
@@ -206,14 +218,8 @@ public abstract class BaseUpdate<T> extends BaseWrite<T> implements SQLUpdateAnd
             String tableName = SqlUtil.getTableName(this, getTclass());
             sqlUpdateBuilder.from(tableName);
         }
-        // key and value
-        if (keyColumn != null) {
-            if (keyValue == null) {
-                sqlUpdateBuilder.whereAnd(keyColumn + " = null");
-            } else {
-                sqlUpdateBuilder.whereAnd(String.format("%s='%s'", keyColumn, keyValue));
-            }
-        }
+        //
+        securityCheck(sqlUpdateBuilder);
         String sql = sqlUpdateBuilder.toString();
         setRunSql(sql);
         return sql;
