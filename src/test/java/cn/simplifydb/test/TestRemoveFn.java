@@ -71,4 +71,13 @@ public class TestRemoveFn {
         removeRemove.addParameters("测试");
         removeRemove.syncRun();
     }
+
+    @Test
+    public void remove6() {
+        Remove<TestRemove> removeRemove = new Remove<TestRemove>(Remove.Type.delete) {
+        };
+        removeRemove.setKeyColumnAndValue("name", 1);
+//        removeRemove.setIds(22);
+        removeRemove.syncRun();
+    }
 }
