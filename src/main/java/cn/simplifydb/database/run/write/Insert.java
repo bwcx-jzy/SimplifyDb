@@ -46,7 +46,7 @@ public class Insert<T> extends BaseWrite<T> {
         return list;
     }
 
-    public Insert setList(List<T> list) {
+    public Insert<T> setList(List<T> list) {
         if (list != null && list.size() > 0) {
             super.setData(list.get(0));
         } else {
@@ -339,6 +339,8 @@ public class Insert<T> extends BaseWrite<T> {
                     Event.BeforeCode beforeCode = event.beforeInsert(this, data);
                     if (beforeCode == BaseWrite.Event.BeforeCode.END) {
                         DbLog.getInstance().info("本次执行取消：" + data + " " + list);
+                        // 标记取消的返回码
+                        key = beforeCode.getResultCode();
                         continue;
                     }
                 }

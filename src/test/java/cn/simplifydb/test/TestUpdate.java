@@ -74,4 +74,15 @@ public class TestUpdate {
         int count = update.syncRun();
         System.out.println("更新行数：" + count);
     }
+
+    @Test
+    public void update6() {
+        Update<Db2Test> update = new Update<Db2Test>() {
+        };
+        update.putUpdate("name", "#{id+1}");
+        update.putUpdate("sex", "1");
+        update.where("1=1");
+        int count = update.syncRun();
+        System.out.println("更新行数：" + count);
+    }
 }

@@ -8,6 +8,10 @@ import cn.simplifydb.database.config.DatabaseContextHolder;
 import cn.simplifydb.database.config.SystemColumn;
 import cn.simplifydb.system.DbLog;
 import cn.simplifydb.util.DbReflectUtil;
+import com.alibaba.druid.sql.ast.statement.SQLDeleteStatement;
+import com.alibaba.druid.sql.ast.statement.SQLUpdateStatement;
+import com.alibaba.druid.sql.builder.impl.SQLDeleteBuilderImpl;
+import com.alibaba.druid.sql.builder.impl.SQLUpdateBuilderImpl;
 import com.alibaba.druid.util.StringUtils;
 
 import java.util.*;
@@ -62,8 +66,16 @@ public abstract class Base<T> {
     /**
      * 主键值
      */
-    protected Object keyValue;
-    protected String keyColumn;
+    Object keyValue;
+    String keyColumn;
+
+    /**
+     * 创建时生成开始运行时间
+     */
+    Base() {
+        // TODO Auto-generated constructor stub
+        runTime = System.currentTimeMillis();
+    }
 
     public Object getKeyValue() {
         return keyValue;
@@ -129,14 +141,6 @@ public abstract class Base<T> {
 
 
     /**
-     * 创建时就获取操作人
-     */
-    Base() {
-        // TODO Auto-generated constructor stub
-        runTime = System.currentTimeMillis();
-    }
-
-    /**
      * 生成sql
      *
      * @return sql
@@ -194,12 +198,16 @@ public abstract class Base<T> {
         return tclass;
     }
 
-    public void setTclass(Class<?> tclass) {
+    public Base<T> setTclass(Class<?> tclass) {
         this.tclass = tclass;
+        return this;
     }
 
     public String getTag() {
-        return getTag(getTclass());
+        if (StringUtil.isEmpty(tag)) {
+            return getTag(getTclass());
+        }
+        return tag;
     }
 
     public String getTag(Class cls) {
@@ -209,8 +217,9 @@ public abstract class Base<T> {
         return tag;
     }
 
-    public void setTag(String tag) {
+    public Base<T> setTag(String tag) {
         this.tag = tag;
+        return this;
     }
 
     public List<String> getRemove() {
@@ -223,9 +232,9 @@ public abstract class Base<T> {
      * @param remove 要移除的字段
      * @author jiangzeyin
      */
-    public void setRemove(String... remove) {
+    public Base<T> setRemove(String... remove) {
         if (remove == null) {
-            return;
+            return this;
         }
         if (this.remove == null) {
             this.remove = new LinkedList<>();
@@ -235,6 +244,7 @@ public abstract class Base<T> {
                 this.remove.add(item.toLowerCase());
             }
         }
+        return this;
     }
 
     public String getRefKey() {
@@ -250,8 +260,9 @@ public abstract class Base<T> {
      * @param refKey 外键的列
      * @author jiangzeyin
      */
-    public void setRefKey(String refKey) {
+    public Base<T> setRefKey(String refKey) {
         this.refKey = refKey;
+        return this;
     }
 
     public HashMap<String, Class<?>> getRefMap() {
@@ -266,14 +277,15 @@ public abstract class Base<T> {
      * @param refClass 外键类
      * @author jiangzeyin
      */
-    public void putRefClass(String name, Class<?> refClass) {
+    public Base<T> putRefClass(String name, Class<?> refClass) {
         if (refMap == null) {
             refMap = new HashMap<>(5);
         }
         refMap.put(name.toLowerCase(), refClass);
+        return this;
     }
 
-    public void putRefClass(String name, Class<?> refClass, String where) {
+    public Base<T> putRefClass(String name, Class<?> refClass, String where) {
         if (refMap == null) {
             refMap = new HashMap<>(5);
         }
@@ -282,14 +294,16 @@ public abstract class Base<T> {
         }
         refMap.put(name, refClass);
         refWhere.put(name, where);
+        return this;
     }
 
     public boolean isThrows() {
         return isThrows;
     }
 
-    public void setThrows(boolean isThrows) {
+    public Base<T> setThrows(boolean isThrows) {
         this.isThrows = isThrows;
+        return this;
     }
 
     /**
@@ -303,6 +317,45 @@ public abstract class Base<T> {
             throw new RuntimeException(t);
         }
         DbLog.getInstance().error("执行数据库操作", t);
+    }
+
+    /**
+     * keyValue 和防止整表更新操作
+     *
+     * @param object object
+     */
+    protected void securityCheck(Object object) {
+        if (object instanceof SQLUpdateBuilderImpl) {
+            SQLUpdateBuilderImpl sqlUpdateBuilder = (SQLUpdateBuilderImpl) object;
+            // key and value
+            if (keyColumn != null) {
+                if (keyValue == null) {
+                    sqlUpdateBuilder.whereAnd(keyColumn + " = null");
+                } else {
+                    sqlUpdateBuilder.whereAnd(String.format("%s='%s'", keyColumn, keyValue));
+                }
+            }
+            SQLUpdateStatement sqlUpdateStatement = sqlUpdateBuilder.getSQLUpdateStatement();
+            // 防止整表更新
+            if (sqlUpdateStatement == null || sqlUpdateStatement.getWhere() == null) {
+                throw new RuntimeException("没有任何条件");
+            }
+        } else if (object instanceof SQLDeleteBuilderImpl) {
+            SQLDeleteBuilderImpl sqlDeleteBuilder = (SQLDeleteBuilderImpl) object;
+            // key and value
+            if (keyColumn != null) {
+                if (keyValue == null) {
+                    sqlDeleteBuilder.whereAnd(keyColumn + " = null");
+                } else {
+                    sqlDeleteBuilder.whereAnd(String.format("%s='%s'", keyColumn, keyValue));
+                }
+            }
+            SQLDeleteStatement sqlDeleteStatement = sqlDeleteBuilder.getSQLDeleteStatement();
+            // 防止整表删除
+            if (sqlDeleteStatement == null || sqlDeleteStatement.getWhere() == null) {
+                throw new RuntimeException("没有任何条件");
+            }
+        }
     }
 
     /**
