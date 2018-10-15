@@ -22,6 +22,26 @@ import java.util.*;
  * @author jiangzeyin
  */
 public abstract class Base<T> {
+    private static final Map<Class, Object> OBJECT_MAP = new HashMap<>();
+
+    /**
+     * 事件接口的单利对象
+     *
+     * @param tclass class
+     * @return object
+     */
+    public static Object getObject(Class tclass) {
+        Object object = OBJECT_MAP.computeIfAbsent(tclass, aClass -> {
+            try {
+                return aClass.newInstance();
+            } catch (InstantiationException | IllegalAccessException ignored) {
+            }
+            return null;
+        });
+        Objects.requireNonNull(object, tclass + " newInstance error");
+        return object;
+    }
+
     /**
      * 参数
      */
@@ -396,5 +416,26 @@ public abstract class Base<T> {
     protected void getAsyncLog() {
         tempTransferLog = getLine();
         setTagName(DatabaseContextHolder.getConnectionTagName());
+    }
+
+    @Override
+    public String toString() {
+        return "Base{" +
+                "parameters=" + parameters +
+                ", isThrows=" + isThrows +
+                ", refMap=" + refMap +
+                ", refWhere=" + refWhere +
+                ", refKey='" + refKey + '\'' +
+                ", remove=" + remove +
+                ", tag='" + tag + '\'' +
+                ", tclass=" + tclass +
+                ", runTime=" + runTime +
+                ", runSql='" + runSql + '\'' +
+                ", tempTransferLog='" + tempTransferLog + '\'' +
+                ", tagName='" + tagName + '\'' +
+                ", useDataBaseName=" + useDataBaseName +
+                ", keyValue=" + keyValue +
+                ", keyColumn='" + keyColumn + '\'' +
+                '}';
     }
 }

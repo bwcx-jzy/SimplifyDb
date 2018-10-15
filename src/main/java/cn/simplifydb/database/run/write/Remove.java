@@ -1,10 +1,12 @@
 package cn.simplifydb.database.run.write;
 
+import cn.simplifydb.database.base.Base;
 import cn.simplifydb.database.base.BaseUpdate;
 import cn.simplifydb.database.base.BaseWrite;
 import cn.simplifydb.database.base.SQLUpdateAndDeleteBuilder;
 import cn.simplifydb.database.config.DatabaseContextHolder;
 import cn.simplifydb.database.config.SystemColumn;
+import cn.simplifydb.database.event.RemoveEvent;
 import cn.simplifydb.database.util.SqlUtil;
 import cn.simplifydb.system.DBExecutorService;
 import cn.simplifydb.system.DbLog;
@@ -114,10 +116,20 @@ public class Remove<T> extends BaseUpdate<T> {
         if (type == null) {
             throw new IllegalArgumentException("type null");
         }
+        RemoveEvent removeEvent = null;
         try {
             BaseWrite.Callback callback = getCallback();
             String tag = getTag();
             String sql = builder();
+            Class tCls = getTclass();
+            if (RemoveEvent.class.isAssignableFrom(tCls)) {
+                removeEvent = (RemoveEvent) Base.getObject(tCls);
+                Event.BeforeCode beforeCode = removeEvent.beforeRemove(this);
+                if (beforeCode == Event.BeforeCode.END) {
+                    DbLog.getInstance().info("本次执行取消：" + this);
+                    return beforeCode.getResultCode();
+                }
+            }
             DbLog.getInstance().info(getTransferLog() + getRunSql());
             int up;
             if (transactionConnection != null) {
@@ -133,6 +145,9 @@ public class Remove<T> extends BaseUpdate<T> {
         } catch (Exception e) {
             // TODO: handle exception
             isThrows(e);
+            if (removeEvent != null) {
+                removeEvent.errorRemove(e);
+            }
         } finally {
             runEnd();
             recycling();
@@ -238,5 +253,13 @@ public class Remove<T> extends BaseUpdate<T> {
             throw new IllegalArgumentException("not set");
         }
         return this;
+    }
+
+    @Override
+    public String toString() {
+        return super.toString() + "Remove{" +
+                "sqlDeleteBuilder=" + sqlDeleteBuilder +
+                ", type=" + type +
+                '}';
     }
 }

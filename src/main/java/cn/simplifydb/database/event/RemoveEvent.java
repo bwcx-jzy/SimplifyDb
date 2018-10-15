@@ -1,6 +1,9 @@
 package cn.simplifydb.database.event;
 
 
+import cn.simplifydb.database.base.BaseWrite;
+import cn.simplifydb.database.run.write.Remove;
+
 /**
  * 删除数据事件
  *
@@ -10,10 +13,11 @@ public interface RemoveEvent {
     /**
      * 操作成功
      *
-     * @param dataId 结果id
+     * @param remove remove
+     * @return BaseWrite.Event.BeforeCode 是否继续执行
      * @author jiangzeyin
      */
-    void completeR(long dataId);
+    BaseWrite.Event.BeforeCode beforeRemove(Remove<?> remove);
 
     /**
      * 出现异常
@@ -21,5 +25,5 @@ public interface RemoveEvent {
      * @param throwable 异常
      * @author jiangzeyin
      */
-    void errorR(Throwable throwable);
+    void errorRemove(Throwable throwable);
 }

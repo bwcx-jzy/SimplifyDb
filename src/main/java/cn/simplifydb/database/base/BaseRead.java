@@ -347,4 +347,16 @@ public abstract class BaseRead<T> extends Base<T> implements SQLSelectBuilder {
         }
         return sqlSelectBuilder.whereOr(sql);
     }
+
+    @Override
+    public String toString() {
+        return super.toString() + "BaseRead{" +
+                "sqlSelectBuilder=" + sqlSelectBuilder +
+                ", rowCount=" + rowCount +
+                ", offset=" + offset +
+                ", index='" + index + '\'' +
+                ", resultType=" + resultType +
+                ", useIndex=" + useIndex +
+                '}';
+    }
 }
