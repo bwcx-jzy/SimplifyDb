@@ -26,6 +26,7 @@ import java.sql.Connection;
 public class Remove<T> extends BaseUpdate<T> {
 
     private SQLDeleteBuilderImpl sqlDeleteBuilder;
+    private Type type;
 
     public enum Type {
         /**
@@ -42,9 +43,9 @@ public class Remove<T> extends BaseUpdate<T> {
         remove
     }
 
-
-    private Type type;
-
+    public Type getType() {
+        return type;
+    }
 
     /**
      * 事物模式
@@ -63,7 +64,6 @@ public class Remove<T> extends BaseUpdate<T> {
         super(null, null);
         // TODO Auto-generated constructor stub
         setType(type);
-
     }
 
     public Remove(Type type, boolean isThrows) {

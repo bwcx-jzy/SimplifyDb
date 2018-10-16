@@ -40,6 +40,10 @@ public abstract class BaseUpdate<T> extends BaseWrite<T> implements SQLUpdateAnd
         return setIds(String.valueOf(id));
     }
 
+    public String getIds() {
+        return ids;
+    }
+
     public Map<String, Object> getUpdate() {
         return update;
     }
