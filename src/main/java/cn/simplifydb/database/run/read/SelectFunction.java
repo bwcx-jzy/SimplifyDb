@@ -67,4 +67,11 @@ public class SelectFunction<T> extends BaseRead<T> {
         }
         return null;
     }
+
+    @Override
+    public String toString() {
+        return super.toString() + "SelectFunction{" +
+                "name='" + name + '\'' +
+                '}';
+    }
 }

@@ -166,4 +166,11 @@ public class IsExists<T> extends BaseRead<T> {
         }
         return true;
     }
+
+    @Override
+    public String toString() {
+        return super.toString() + "IsExists{" +
+                "useLock=" + useLock +
+                '}';
+    }
 }

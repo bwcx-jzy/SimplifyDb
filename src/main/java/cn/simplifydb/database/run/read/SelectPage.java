@@ -44,16 +44,24 @@ public class SelectPage<T> extends BaseRead<T> {
         return pageNo;
     }
 
-    public void setPageNo(int pageNo) {
+    public SelectPage<T> setPageNo(int pageNo) {
+        if (pageNo <= 0) {
+            throw new IllegalArgumentException(String.valueOf(pageNo));
+        }
         this.pageNo = pageNo;
+        return this;
     }
 
     public int getPageSize() {
         return pageSize;
     }
 
-    public void setPageSize(int pageSize) {
+    public SelectPage<T> setPageSize(int pageSize) {
+        if (pageSize <= 0) {
+            throw new IllegalArgumentException(String.valueOf(pageSize));
+        }
         this.pageSize = pageSize;
+        return this;
     }
 
     public int getTotalRecord() {
@@ -85,13 +93,12 @@ public class SelectPage<T> extends BaseRead<T> {
      */
     public SelectPage(int pageNo, int pageSize) {
         // TODO Auto-generated constructor stub
-        this.pageNo = pageNo;
-        this.pageSize = pageSize;
+        setPageNoAndSize(pageNo, pageSize);
     }
 
     public SelectPage setPageNoAndSize(int pageNo, int pageSize) {
         if (pageNo <= 0 || pageSize <= 0) {
-
+            throw new IllegalArgumentException(pageNo + "  " + pageSize);
         }
         this.pageNo = pageNo;
         this.pageSize = pageSize;
@@ -99,6 +106,9 @@ public class SelectPage<T> extends BaseRead<T> {
     }
 
     public SelectPage setDisplayPage(int start, int length) {
+        if (start <= 0 || length <= 0) {
+            throw new IllegalArgumentException(start + "  " + length);
+        }
         int pageNo = 1;
         if (start >= length) {
             pageNo += start / length;
@@ -131,7 +141,7 @@ public class SelectPage<T> extends BaseRead<T> {
      */
     @SuppressWarnings({"hiding", "unchecked"})
     @Override
-    public <T> T run() {
+    public <t> t run() {
         // TODO Auto-generated method stub
         String countSql = null;
         try {
@@ -163,7 +173,7 @@ public class SelectPage<T> extends BaseRead<T> {
             }
             {
                 if (getResultType() == Result.JsonArray) {
-                    return (T) JSON.toJSON(list);
+                    return (t) JSON.toJSON(list);
                 }
                 // 结果是分页数据
                 if (getResultType() == Result.PageResultType) {
@@ -173,10 +183,10 @@ public class SelectPage<T> extends BaseRead<T> {
                     data.put("pageSize", pageSize);
                     data.put("totalPage", totalPage);
                     data.put("totalRecord", totalRecord);
-                    return (T) data;
+                    return (t) data;
                 }
                 List<?> resultList = Util.convertList(this, list);
-                return (T) resultList;
+                return (t) resultList;
             }
         } catch (Exception e) {
             // TODO: handle exception
@@ -189,5 +199,15 @@ public class SelectPage<T> extends BaseRead<T> {
             recycling();
         }
         return null;
+    }
+
+    @Override
+    public String toString() {
+        return super.toString() + "SelectPage{" +
+                "pageNo=" + pageNo +
+                ", pageSize=" + pageSize +
+                ", totalRecord=" + totalRecord +
+                ", totalPage=" + totalPage +
+                '}';
     }
 }
