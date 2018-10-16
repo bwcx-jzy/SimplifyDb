@@ -39,6 +39,7 @@ CREATE TABLE `testcreateuser` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(255) DEFAULT NULL,
   `createUser` int(11) DEFAULT NULL,
+  `createTime` int(11) DEFAULT NULL,
   `userCreateTime` bigint(20) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8mb4;

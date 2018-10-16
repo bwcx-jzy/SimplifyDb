@@ -377,4 +377,12 @@ public class Insert<T> extends BaseWrite<T> {
         }
         return new Object[]{successCount, key};
     }
+
+    @Override
+    public String toString() {
+        return super.toString() + "Insert{" +
+                "list=" + list +
+                ", batch=" + batch +
+                '}';
+    }
 }

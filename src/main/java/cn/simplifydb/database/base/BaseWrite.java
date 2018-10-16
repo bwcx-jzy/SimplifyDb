@@ -200,6 +200,18 @@ public abstract class BaseWrite<T> extends Base<T> {
         }
     }
 
+    @Override
+    public String toString() {
+        return super.toString() + "BaseWrite{" +
+                "optUserId=" + optUserId +
+                ", callback=" + callback +
+                ", data=" + data +
+                ", throwable=" + throwable +
+                ", isAsync=" + isAsync +
+                ", transactionConnection=" + transactionConnection +
+                '}';
+    }
+
     /**
      * 事件回调
      */

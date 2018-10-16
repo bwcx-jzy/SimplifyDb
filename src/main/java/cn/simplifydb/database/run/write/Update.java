@@ -1,5 +1,6 @@
 package cn.simplifydb.database.run.write;
 
+import cn.simplifydb.database.base.Base;
 import cn.simplifydb.database.base.BaseUpdate;
 import cn.simplifydb.database.config.DatabaseContextHolder;
 import cn.simplifydb.database.event.UpdateEvent;
@@ -73,10 +74,7 @@ public class Update<T> extends BaseUpdate<T> {
         }
         Class tCls = getTclass();
         if (UpdateEvent.class.isAssignableFrom(tCls)) {
-            try {
-                return (UpdateEvent) tCls.newInstance();
-            } catch (InstantiationException | IllegalAccessException ignored) {
-            }
+            return (UpdateEvent) Base.getObject(tCls);
         }
         return null;
     }
@@ -134,4 +132,6 @@ public class Update<T> extends BaseUpdate<T> {
         }
         return -1;
     }
+
+
 }
