@@ -2,6 +2,7 @@ package cn.simplifydb.database.run.write;
 
 import cn.jiangzeyin.StringUtil;
 import cn.simplifydb.database.base.BaseWrite;
+import cn.simplifydb.database.config.DataSourceConfig;
 import cn.simplifydb.database.config.DatabaseContextHolder;
 import cn.simplifydb.database.config.ModifyUser;
 import cn.simplifydb.database.config.SystemColumn;
@@ -338,7 +339,9 @@ public class Insert<T> extends BaseWrite<T> {
                 if (event != null) {
                     Event.BeforeCode beforeCode = event.beforeInsert(this, data);
                     if (beforeCode == BaseWrite.Event.BeforeCode.END) {
-                        DbLog.getInstance().info("本次执行取消：" + data + " " + list);
+                        if (!DataSourceConfig.isActive()) {
+                            DbLog.getInstance().info("本次执行取消：" + data + " " + list);
+                        }
                         // 标记取消的返回码
                         key = beforeCode.getResultCode();
                         continue;

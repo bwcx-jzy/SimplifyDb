@@ -2,6 +2,7 @@ package cn.simplifydb.database.run.write;
 
 import cn.simplifydb.database.base.Base;
 import cn.simplifydb.database.base.BaseUpdate;
+import cn.simplifydb.database.config.DataSourceConfig;
 import cn.simplifydb.database.config.DatabaseContextHolder;
 import cn.simplifydb.database.event.UpdateEvent;
 import cn.simplifydb.system.DBExecutorService;
@@ -94,7 +95,9 @@ public class Update<T> extends BaseUpdate<T> {
             if (event != null) {
                 Event.BeforeCode beforeCode = event.beforeUpdate(this, data);
                 if (beforeCode == Event.BeforeCode.END) {
-                    DbLog.getInstance().info("本次执行取消：" + data);
+                    if (!DataSourceConfig.isActive()) {
+                        DbLog.getInstance().info("本次执行取消：" + data);
+                    }
                     return beforeCode.getResultCode();
                 }
             }
