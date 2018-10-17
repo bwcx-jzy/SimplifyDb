@@ -1,6 +1,5 @@
 package cn.simplifydb.database.event;
 
-
 import cn.simplifydb.database.base.BaseWrite;
 import cn.simplifydb.database.run.write.Remove;
 
