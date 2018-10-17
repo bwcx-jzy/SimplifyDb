@@ -23,7 +23,7 @@ import java.util.*;
 public abstract class BaseUpdate<T> extends BaseWrite<T> implements SQLUpdateAndDeleteBuilder {
     private Map<String, Object> update = new LinkedHashMap<>(20);
     protected SQLUpdateBuilderImpl sqlUpdateBuilder;
-    protected String ids;
+    private String ids;
     private SqlAndParameters sqlAndParameters;
 
     protected BaseUpdate(T data, Connection transactionConnection) {
