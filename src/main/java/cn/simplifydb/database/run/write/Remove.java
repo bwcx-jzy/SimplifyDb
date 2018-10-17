@@ -122,6 +122,7 @@ public class Remove<T> extends BaseUpdate<T> {
             String tag = getTag();
             String sql = builder();
             Class tCls = getTclass();
+            // 事件
             if (RemoveEvent.class.isAssignableFrom(tCls)) {
                 removeEvent = (RemoveEvent) Base.getObject(tCls);
                 Event.BeforeCode beforeCode = removeEvent.beforeRemove(this);

@@ -1,6 +1,7 @@
 package cn.simplifydb.database.base;
 
 
+import cn.jiangzeyin.StringUtil;
 import cn.simplifydb.database.config.SystemColumn;
 import cn.simplifydb.system.DbLog;
 import cn.simplifydb.system.SystemSessionInfo;
@@ -22,6 +23,10 @@ public abstract class BaseWrite<T> extends Base<T> {
     protected T data;
     private Throwable throwable;
     private boolean isAsync;
+    /**
+     * before 事件结束消息
+     */
+    private String eventMsg;
     /**
      * 事务的链接信息
      */
@@ -135,11 +140,28 @@ public abstract class BaseWrite<T> extends Base<T> {
     protected void recycling() {
         // TODO Auto-generated method stub
         super.recycling();
-        data = null;
+        this.data = null;
         throwable = null;
-        transactionConnection = null;
+        this.transactionConnection = null;
         optUserId = 0;
-        callback = null;
+        this.callback = null;
+        this.eventMsg = null;
+    }
+
+    public String getEventMsg() {
+        if (StringUtil.isEmpty(this.eventMsg)) {
+            return "Before END";
+        }
+        return this.eventMsg;
+    }
+
+    /**
+     * 添加事件结束原因
+     *
+     * @param eventMsg 事件不再执行原因
+     */
+    public void setEventMsg(String eventMsg) {
+        this.eventMsg = eventMsg;
     }
 
     public interface Event {
@@ -154,6 +176,9 @@ public abstract class BaseWrite<T> extends Base<T> {
             CONTINUE("继续", 0),
             /**
              * 结束执行
+             * 请调用事件消息方法
+             *
+             * @see BaseWrite#setEventMsg(java.lang.String)
              */
             END("结束", -100);
 
@@ -208,6 +233,7 @@ public abstract class BaseWrite<T> extends Base<T> {
                 ", data=" + data +
                 ", throwable=" + throwable +
                 ", isAsync=" + isAsync +
+                ", eventMsg='" + eventMsg + '\'' +
                 ", transactionConnection=" + transactionConnection +
                 '}';
     }
