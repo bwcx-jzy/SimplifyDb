@@ -23,7 +23,7 @@ import java.util.*;
 public abstract class BaseUpdate<T> extends BaseWrite<T> implements SQLUpdateAndDeleteBuilder {
     private Map<String, Object> update = new LinkedHashMap<>(20);
     protected SQLUpdateBuilderImpl sqlUpdateBuilder;
-    protected String ids;
+    private String ids;
     private SqlAndParameters sqlAndParameters;
 
     protected BaseUpdate(T data, Connection transactionConnection) {
@@ -283,9 +283,15 @@ public abstract class BaseUpdate<T> extends BaseWrite<T> implements SQLUpdateAnd
 
     @Override
     public String toString() {
+        String updateSql;
+        try {
+            updateSql = sqlUpdateBuilder.toString();
+        } catch (Exception e) {
+            updateSql = "";
+        }
         return super.toString() + "BaseUpdate{" +
                 "update=" + update +
-                ", sqlUpdateBuilder=" + sqlUpdateBuilder +
+                ", sqlUpdateBuilder=" + updateSql +
                 ", ids='" + ids + '\'' +
                 ", sqlAndParameters=" + sqlAndParameters +
                 '}';

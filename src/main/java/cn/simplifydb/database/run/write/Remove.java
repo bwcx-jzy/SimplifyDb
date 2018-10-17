@@ -4,6 +4,7 @@ import cn.simplifydb.database.base.Base;
 import cn.simplifydb.database.base.BaseUpdate;
 import cn.simplifydb.database.base.BaseWrite;
 import cn.simplifydb.database.base.SQLUpdateAndDeleteBuilder;
+import cn.simplifydb.database.config.DataSourceConfig;
 import cn.simplifydb.database.config.DatabaseContextHolder;
 import cn.simplifydb.database.config.SystemColumn;
 import cn.simplifydb.database.event.RemoveEvent;
@@ -127,7 +128,9 @@ public class Remove<T> extends BaseUpdate<T> {
                 removeEvent = (RemoveEvent) Base.getObject(tCls);
                 Event.BeforeCode beforeCode = removeEvent.beforeRemove(this);
                 if (beforeCode == Event.BeforeCode.END) {
-                    DbLog.getInstance().info("本次执行取消：" + this);
+                    if (!DataSourceConfig.isActive()) {
+                        DbLog.getInstance().info("本次执行取消：" + this);
+                    }
                     return beforeCode.getResultCode();
                 }
             }
