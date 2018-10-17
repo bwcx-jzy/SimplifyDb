@@ -127,7 +127,7 @@ public class Remove<T> extends BaseUpdate<T> {
                 removeEvent = (RemoveEvent) Base.getObject(tCls);
                 Event.BeforeCode beforeCode = removeEvent.beforeRemove(this);
                 if (beforeCode == Event.BeforeCode.END) {
-                    DbLog.getInstance().info("本次执行取消：" + this);
+                    DbLog.getInstance().info("本次执行取消：" + getTclass() + "  " + ids);
                     return beforeCode.getResultCode();
                 }
             }
