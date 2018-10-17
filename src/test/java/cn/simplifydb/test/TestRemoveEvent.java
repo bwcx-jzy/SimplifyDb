@@ -17,7 +17,6 @@ public class TestRemoveEvent {
 
     @Test
     public void test() {
-
         Remove<Db2Test> remove = new Remove<Db2Test>(Remove.Type.remove) {
         };
         remove.setIds(1);

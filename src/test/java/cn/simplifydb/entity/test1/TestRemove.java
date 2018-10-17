@@ -32,6 +32,7 @@ public class TestRemove extends BaseRemove implements RemoveEvent {
     @Override
     public BaseWrite.Event.BeforeCode beforeRemove(Remove<?> remove) {
         return BaseWrite.Event.BeforeCode.END;
+//        return null;
     }
 
     @Override

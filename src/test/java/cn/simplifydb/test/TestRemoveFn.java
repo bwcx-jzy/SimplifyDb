@@ -79,5 +79,6 @@ public class TestRemoveFn {
         removeRemove.setKeyColumnAndValue("name", 1);
 //        removeRemove.setIds(22);
         removeRemove.syncRun();
+        System.out.println(removeRemove);
     }
 }

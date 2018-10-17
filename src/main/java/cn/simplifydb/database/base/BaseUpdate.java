@@ -283,9 +283,15 @@ public abstract class BaseUpdate<T> extends BaseWrite<T> implements SQLUpdateAnd
 
     @Override
     public String toString() {
+        String updateSql;
+        try {
+            updateSql = sqlUpdateBuilder.toString();
+        } catch (Exception e) {
+            updateSql = "";
+        }
         return super.toString() + "BaseUpdate{" +
                 "update=" + update +
-                ", sqlUpdateBuilder=" + sqlUpdateBuilder +
+                ", sqlUpdateBuilder=" + updateSql +
                 ", ids='" + ids + '\'' +
                 ", sqlAndParameters=" + sqlAndParameters +
                 '}';

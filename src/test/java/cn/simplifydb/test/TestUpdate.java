@@ -30,6 +30,8 @@ public class TestUpdate {
         Update<Db2Test> update = new Update<>(db2Test);
         int count = update.syncRun();
         System.out.println("更新行数：" + count);
+
+        System.out.println(update);
     }
 
 

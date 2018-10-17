@@ -1,10 +1,14 @@
 package cn.simplifydb.entity.test1;
 
+import cn.simplifydb.database.base.BaseWrite;
+import cn.simplifydb.database.event.UpdateEvent;
+import cn.simplifydb.database.run.write.Update;
+
 /**
  * 2号数据库
  * Created by jiangzeyin on 2018/9/18.
  */
-public class Db2Test {
+public class Db2Test implements UpdateEvent {
     private int id;
     private String name;
     private int sex;
@@ -34,5 +38,20 @@ public class Db2Test {
     }
 
     public Db2Test() {
+    }
+
+    @Override
+    public BaseWrite.Event.BeforeCode beforeUpdate(Update<?> update, Object object) {
+        return BaseWrite.Event.BeforeCode.END;
+    }
+
+    @Override
+    public void completeUpdate(Object keyValue) {
+
+    }
+
+    @Override
+    public void errorUpdate(Throwable throwable) {
+
     }
 }
