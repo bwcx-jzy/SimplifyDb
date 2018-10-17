@@ -185,6 +185,13 @@ public class Insert<T> extends BaseWrite<T> {
         this.list = null;
     }
 
+    /**
+     * 批量插入
+     *
+     * @param callback callback
+     * @return 成功的个数
+     * @throws Exception e
+     */
     private int batchRun(Callback callback) throws Exception {
         SqlAndParameters[] sqlAndParameters = SqlUtil.getInsertSqls(this);
         int createUser = getOptUserId();
@@ -192,7 +199,7 @@ public class Insert<T> extends BaseWrite<T> {
         SQLInsertStatement sqlInsertStatement = new SQLInsertStatement();
         String tableName = SqlUtil.getTableName(null, cls);
         sqlInsertStatement.setTableName(new SQLIdentifierExpr(tableName));
-
+        //
         List<Object> par = new ArrayList<>();
         for (int i = 0, size = sqlAndParameters.length; i < size; i++) {
             SqlAndParameters sqlAndParameter = sqlAndParameters[i];
