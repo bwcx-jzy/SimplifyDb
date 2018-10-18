@@ -106,8 +106,8 @@ public class SelectPage<T> extends BaseRead<T> {
     }
 
     public SelectPage setDisplayPage(int start, int length) {
-        if (start <= 0 || length <= 0) {
-            throw new IllegalArgumentException(start + "  " + length);
+        if (length <= 0) {
+            throw new IllegalArgumentException("  " + length);
         }
         int pageNo = 1;
         if (start >= length) {
