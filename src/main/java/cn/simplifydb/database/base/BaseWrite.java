@@ -141,11 +141,11 @@ public abstract class BaseWrite<T> extends Base<T> {
         // TODO Auto-generated method stub
         super.recycling();
         this.data = null;
-        throwable = null;
+        this.throwable = null;
         this.transactionConnection = null;
-        optUserId = 0;
+        this.optUserId = 0;
         this.callback = null;
-        this.eventMsg = null;
+//        this.eventMsg = null;
     }
 
     public String getEventMsg() {
