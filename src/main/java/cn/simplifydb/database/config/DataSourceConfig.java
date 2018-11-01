@@ -43,7 +43,7 @@ public final class DataSourceConfig {
         Objects.requireNonNull(props);
         systemPropertiesParser = new PropertiesParser(props);
         String active = systemPropertiesParser.getStringProperty(ConfigProperties.ACTIVE, "dev");
-        DataSourceConfig.active = "prod".equals(active);
+        DataSourceConfig.active = "prod".equalsIgnoreCase(active);
         String[] sourceTags = systemPropertiesParser.getStringArrayProperty(ConfigProperties.PROP_SOURCE_TAG);
         Objects.requireNonNull(sourceTags, "sourceTag is blank");
         if (sourceTags.length < 1) {
