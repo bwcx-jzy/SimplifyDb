@@ -1,7 +1,7 @@
 package cn.simplifydb.database.run.write;
 
 import cn.simplifydb.database.DbWriteService;
-import cn.simplifydb.database.TransactionError;
+import cn.simplifydb.database.TransactionException;
 import cn.simplifydb.database.config.DatabaseContextHolder;
 import cn.simplifydb.database.run.TransactionLevel;
 import cn.simplifydb.system.DbLog;
@@ -78,7 +78,7 @@ public class Transaction {
         try {
             connection = DatabaseContextHolder.getWriteConnection(tag);
             if (connection == null) {
-                throw new TransactionError("Transaction init getConnection error");
+                throw new TransactionException("Transaction init getConnection error");
             }
             // 检查
             checkTransactionSupported(connection);
@@ -92,7 +92,7 @@ public class Transaction {
             connection.setAutoCommit(false);
         } catch (SQLException e) {
             callback.error(e);
-            throw new TransactionError("Transaction init error:" + e.getMessage());
+            throw new TransactionException("Transaction init error:" + e.getMessage());
         }
         Operate operate = new Operate(this);
         try {
@@ -100,7 +100,7 @@ public class Transaction {
         } catch (Exception e) {
             rollback();
             callback.error(e);
-            throw new TransactionError("Transaction error:" + e.getMessage());
+            throw new TransactionException("Transaction error:" + e.getMessage());
         }
     }
 
@@ -115,7 +115,7 @@ public class Transaction {
             isSupportTransaction = conn.getMetaData().supportsTransactions();
         }
         if (!isSupportTransaction) {
-            throw new TransactionError("Transaction not supported for current database!");
+            throw new TransactionException("Transaction not supported for current database!");
         }
     }
 

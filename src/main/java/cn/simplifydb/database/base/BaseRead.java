@@ -88,6 +88,8 @@ public abstract class BaseRead<T> extends Base<T> implements SQLSelectBuilder {
     private boolean useIndex;
     /**
      * 是否自动还原html 实体
+     *
+     * @since 2.0.10
      */
     private boolean unescapeHtml = DataSourceConfig.UNESCAPE_HTML;
 
@@ -100,6 +102,7 @@ public abstract class BaseRead<T> extends Base<T> implements SQLSelectBuilder {
      *
      * @param unescapeHtml true 还原
      * @return this
+     * @since 2.0.10
      */
     public BaseRead setUnescapeHtml(boolean unescapeHtml) {
         this.unescapeHtml = unescapeHtml;

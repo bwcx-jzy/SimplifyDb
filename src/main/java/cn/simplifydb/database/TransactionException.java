@@ -2,15 +2,17 @@ package cn.simplifydb.database;
 
 /**
  * 事务异常
- * Created by jiangzeyin on 2018/6/21.
+ *
+ * @author jiangzeyin
+ * date 2018/6/21
  */
-public class TransactionError extends RuntimeException {
+public class TransactionException extends RuntimeException {
     /**
      * 异常信息
      *
      * @param message 消息
      */
-    public TransactionError(String message) {
+    public TransactionException(String message) {
         super(message);
     }
 }
