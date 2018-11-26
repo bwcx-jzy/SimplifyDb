@@ -1,7 +1,6 @@
 package cn.simplifydb.database.run.read;
 
 import cn.simplifydb.database.base.BaseRead;
-import cn.simplifydb.database.config.DataSourceConfig;
 import cn.simplifydb.database.config.DatabaseContextHolder;
 import cn.simplifydb.database.util.JdbcUtil;
 import cn.simplifydb.system.DbLog;
@@ -94,7 +93,7 @@ public class IsExists<T> extends BaseRead<T> {
             DataSource dataSource = DatabaseContextHolder.getReadDataSource(tag);
             List<Map<String, Object>> list = JdbcUtils.executeQuery(dataSource, sql, getParameters());
             // 判断是否开启还原
-            if (DataSourceConfig.UNESCAPE_HTML) {
+            if (isUnescapeHtml()) {
                 JdbcUtil.htmlUnescape(list);
             }
             return list;

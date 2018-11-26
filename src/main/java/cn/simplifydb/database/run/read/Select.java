@@ -1,7 +1,6 @@
 package cn.simplifydb.database.run.read;
 
 import cn.simplifydb.database.base.BaseRead;
-import cn.simplifydb.database.config.DataSourceConfig;
 import cn.simplifydb.database.config.DatabaseContextHolder;
 import cn.simplifydb.database.config.SystemColumn;
 import cn.simplifydb.database.util.JdbcUtil;
@@ -55,7 +54,7 @@ public class Select<T> extends BaseRead<T> {
             DbLog.getInstance().info(getTransferLog() + getRunSql());
             List<Map<String, Object>> result = JdbcUtils.executeQuery(dataSource, runSql, getParameters());
             // 判断是否开启还原
-            if (DataSourceConfig.UNESCAPE_HTML) {
+            if (isUnescapeHtml()) {
                 JdbcUtil.htmlUnescape(result);
             }
             switch (getResultType()) {

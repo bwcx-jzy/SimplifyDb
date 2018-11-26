@@ -1,7 +1,6 @@
 package cn.simplifydb.database.run.read;
 
 import cn.simplifydb.database.base.BaseRead;
-import cn.simplifydb.database.config.DataSourceConfig;
 import cn.simplifydb.database.config.DatabaseContextHolder;
 import cn.simplifydb.database.util.JdbcUtil;
 import cn.simplifydb.database.util.Util;
@@ -179,7 +178,7 @@ public class SelectPage<T> extends BaseRead<T> {
                 sql = PagerUtils.limit(sql, JdbcConstants.MYSQL, getOffset(), getPageSize());
                 list = JdbcUtils.executeQuery(dataSource, sql, getParameters());
                 // 判断是否开启还原
-                if (DataSourceConfig.UNESCAPE_HTML) {
+                if (isUnescapeHtml()) {
                     JdbcUtil.htmlUnescape(list);
                 }
             } else {
