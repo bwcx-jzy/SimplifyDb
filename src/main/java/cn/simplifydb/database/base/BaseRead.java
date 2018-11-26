@@ -175,7 +175,20 @@ public abstract class BaseRead<T> extends Base<T> implements SQLSelectBuilder {
      */
     public BaseRead setColumns(String columns) {
         String[] array = StringUtil.stringToArray(columns, ",");
-        sqlSelectBuilder.select(array);
+        return setColumns(array);
+    }
+
+    /**
+     * 设置查询列
+     * <p>
+     * 默认所有 （*）
+     *
+     * @param columns 查询列
+     * @return this
+     * @author jiangzeyin
+     */
+    public BaseRead setColumns(String... columns) {
+        sqlSelectBuilder.select(columns);
         return this;
     }
 
