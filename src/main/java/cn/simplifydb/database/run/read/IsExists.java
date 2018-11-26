@@ -1,7 +1,9 @@
 package cn.simplifydb.database.run.read;
 
 import cn.simplifydb.database.base.BaseRead;
+import cn.simplifydb.database.config.DataSourceConfig;
 import cn.simplifydb.database.config.DatabaseContextHolder;
+import cn.simplifydb.database.util.JdbcUtil;
 import cn.simplifydb.system.DbLog;
 import cn.simplifydb.util.KeyLock;
 import com.alibaba.druid.sql.ast.SQLLimit;
@@ -90,7 +92,12 @@ public class IsExists<T> extends BaseRead<T> {
             String sql = builder();
             DbLog.getInstance().info(getTransferLog() + getRunSql());
             DataSource dataSource = DatabaseContextHolder.getReadDataSource(tag);
-            return JdbcUtils.executeQuery(dataSource, sql, getParameters());
+            List<Map<String, Object>> list = JdbcUtils.executeQuery(dataSource, sql, getParameters());
+            // 判断是否开启还原
+            if (DataSourceConfig.UNESCAPE_HTML) {
+                JdbcUtil.htmlUnescape(list);
+            }
+            return list;
         } finally {
             LOCK.unlock(runClass);
         }

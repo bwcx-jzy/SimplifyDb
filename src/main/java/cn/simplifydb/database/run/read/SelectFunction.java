@@ -2,8 +2,11 @@ package cn.simplifydb.database.run.read;
 
 import cn.jiangzeyin.StringUtil;
 import cn.simplifydb.database.base.BaseRead;
+import cn.simplifydb.database.config.DataSourceConfig;
 import cn.simplifydb.database.config.DatabaseContextHolder;
+import cn.simplifydb.database.util.JdbcUtil;
 import cn.simplifydb.database.util.SqlUtil;
+import cn.simplifydb.database.util.Util;
 import cn.simplifydb.system.DbLog;
 import com.alibaba.druid.util.JdbcUtils;
 
@@ -49,13 +52,14 @@ public class SelectFunction<T> extends BaseRead<T> {
             setRunSql(sql);
             DbLog.getInstance().info(getTransferLog() + sql);
             List<Map<String, Object>> list = JdbcUtils.executeQuery(dataSource, sql, getParameters());
-            if (list.size() < 1) {
+            // 判断是否开启还原
+            if (DataSourceConfig.UNESCAPE_HTML) {
+                JdbcUtil.htmlUnescape(list);
+            }
+            if (Util.checkListMapNull(list)) {
                 return null;
             }
             Map<String, Object> map = list.get(0);
-            if (map == null) {
-                return null;
-            }
             Collection<Object> collection = map.values();
             return (T) collection.toArray()[0];
         } catch (Exception e) {

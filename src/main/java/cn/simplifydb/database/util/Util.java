@@ -114,4 +114,15 @@ public class Util {
         }
         return obj;
     }
+
+    public static boolean checkListMapNull(List<Map<String, Object>> list) {
+        if (list.size() < 1) {
+            return true;
+        }
+        Map<String, Object> map = list.get(0);
+        if (map == null) {
+            return true;
+        }
+        return map.size() <= 0;
+    }
 }

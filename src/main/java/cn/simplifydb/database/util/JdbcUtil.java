@@ -1,9 +1,11 @@
 package cn.simplifydb.database.util;
 
+import cn.jiangzeyin.StringUtil;
 import com.alibaba.druid.util.JdbcUtils;
 
 import java.sql.*;
 import java.util.List;
+import java.util.Map;
 
 /**
  * jdbc 操作util
@@ -57,5 +59,43 @@ public class JdbcUtil {
             Object param = parameters.get(i);
             stmt.setObject(i + 1, param);
         }
+    }
+
+    /**
+     * 还原 html 实体
+     *
+     * @param list list
+     */
+    public static void htmlUnescape(List<Map<String, Object>> list) {
+        if (list == null) {
+            return;
+        }
+        list.forEach(stringObjectMap -> {
+            for (Map.Entry<String, Object> entry : stringObjectMap.entrySet()) {
+                if (entry.getValue() instanceof String) {
+                    entry.setValue(unescape(entry.getValue().toString()));
+                }
+            }
+        });
+    }
+
+    /**
+     * 还原html 实体
+     *
+     * @param htmlStr 字符串
+     * @return 还原后的
+     */
+    public static String unescape(String htmlStr) {
+        if (StringUtil.isEmpty(htmlStr)) {
+            return htmlStr;
+        }
+        return htmlStr.replace("&apos;", "'")
+                .replace("&#039;", "'")
+                .replace("&#39;", "'")
+                .replace("&lt;", "<")
+                .replace("&gt;", ">")
+                .replace("&quot;", "\"")
+                .replace("&amp;", "&")
+                .replace("&nbsp;", " ");
     }
 }
