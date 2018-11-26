@@ -1,5 +1,12 @@
 # 版本日志
 
+## 2.0.10
+
+* 修正事物类命名 [cn.simplifydb.database.TransactionException]
+* 新增可配置自动全局还原html 实体 cn.simplifydb.database.config.ConfigProperties.UNESCAPE_HTML
+
+-------------------------------------------------------------------------------------------------------------
+
 ## 2.0.9
 
 * 事件消息不自动回收

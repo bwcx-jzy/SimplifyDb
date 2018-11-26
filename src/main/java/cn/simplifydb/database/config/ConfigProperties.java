@@ -23,6 +23,10 @@ public final class ConfigProperties {
      */
     public static final String ACTIVE = "active";
     /**
+     * 还原数据库查询结果的html实体
+     */
+    public static final String UNESCAPE_HTML = "unescape.html";
+    /**
      * 参与加密的字段
      */
     public static final String PROP_SYSTEM_KEY_COLUMN = "systemKeyColumn";

@@ -414,7 +414,11 @@ public abstract class Base<T> {
     }
 
     protected void getAsyncLog() {
-        tempTransferLog = getLine();
+        if (DataSourceConfig.isActive()) {
+            tempTransferLog = "";
+        } else {
+            tempTransferLog = getLine();
+        }
         setTagName(DatabaseContextHolder.getConnectionTagName());
     }
 

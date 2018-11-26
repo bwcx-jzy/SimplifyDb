@@ -1,6 +1,7 @@
 package cn.simplifydb.database.base;
 
 import cn.jiangzeyin.StringUtil;
+import cn.simplifydb.database.config.DataSourceConfig;
 import cn.simplifydb.database.config.SystemColumn;
 import cn.simplifydb.database.util.SqlUtil;
 import com.alibaba.druid.sql.ast.statement.SQLSelectItem;
@@ -85,6 +86,28 @@ public abstract class BaseRead<T> extends Base<T> implements SQLSelectBuilder {
      * 是否使用索引
      */
     private boolean useIndex;
+    /**
+     * 是否自动还原html 实体
+     *
+     * @since 2.0.10
+     */
+    private boolean unescapeHtml = DataSourceConfig.UNESCAPE_HTML;
+
+    public boolean isUnescapeHtml() {
+        return unescapeHtml;
+    }
+
+    /**
+     * 设置是否还原html 实体
+     *
+     * @param unescapeHtml true 还原
+     * @return this
+     * @since 2.0.10
+     */
+    public BaseRead setUnescapeHtml(boolean unescapeHtml) {
+        this.unescapeHtml = unescapeHtml;
+        return this;
+    }
 
     public boolean isUseIndex() {
         return useIndex;
@@ -175,7 +198,20 @@ public abstract class BaseRead<T> extends Base<T> implements SQLSelectBuilder {
      */
     public BaseRead setColumns(String columns) {
         String[] array = StringUtil.stringToArray(columns, ",");
-        sqlSelectBuilder.select(array);
+        return setColumns(array);
+    }
+
+    /**
+     * 设置查询列
+     * <p>
+     * 默认所有 （*）
+     *
+     * @param columns 查询列
+     * @return this
+     * @author jiangzeyin
+     */
+    public BaseRead setColumns(String... columns) {
+        sqlSelectBuilder.select(columns);
         return this;
     }
 

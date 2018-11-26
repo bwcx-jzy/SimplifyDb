@@ -2,6 +2,7 @@ package cn.simplifydb.database.run.read;
 
 import cn.simplifydb.database.base.BaseRead;
 import cn.simplifydb.database.config.DatabaseContextHolder;
+import cn.simplifydb.database.util.JdbcUtil;
 import cn.simplifydb.database.util.Util;
 import cn.simplifydb.system.DbLog;
 import com.alibaba.druid.sql.PagerUtils;
@@ -96,6 +97,13 @@ public class SelectPage<T> extends BaseRead<T> {
         setPageNoAndSize(pageNo, pageSize);
     }
 
+    /**
+     * 设置页码和每页个数
+     *
+     * @param pageNo   页码
+     * @param pageSize 每页个数
+     * @return this
+     */
     public SelectPage setPageNoAndSize(int pageNo, int pageSize) {
         if (pageNo <= 0 || pageSize <= 0) {
             throw new IllegalArgumentException(pageNo + "  " + pageSize);
@@ -105,6 +113,13 @@ public class SelectPage<T> extends BaseRead<T> {
         return this;
     }
 
+    /**
+     * 设置查看起始信息
+     *
+     * @param start  开始的下标
+     * @param length 长度
+     * @return this
+     */
     public SelectPage setDisplayPage(int start, int length) {
         if (length <= 0) {
             throw new IllegalArgumentException("  " + length);
@@ -118,17 +133,12 @@ public class SelectPage<T> extends BaseRead<T> {
         return this;
     }
 
-    private SelectPage<T> setTotalRecord(long totalRecord) {
+    private void setTotalRecord(long totalRecord) {
         this.totalRecord = (int) totalRecord;
         // 在设置总页数的时候计算出对应的总页数，在下面的三目运算中加法拥有更高的优先级，所以最后可以不加括号。
         long totalPage = totalRecord % pageSize == 0 ? totalRecord / pageSize : totalRecord / pageSize + 1;
-        this.setTotalPage((int) totalPage);
-        return this;
-    }
-
-    public SelectPage<T> setTotalPage(int totalPage) {
-        this.totalPage = totalPage;
-        return this;
+        //        this.setTotalPage((int) totalPage);
+        this.totalPage = (int) totalPage;
     }
 
     public int getOffset() {
@@ -151,16 +161,15 @@ public class SelectPage<T> extends BaseRead<T> {
             DataSource dataSource = DatabaseContextHolder.getReadDataSource(tag);
             List<Map<String, Object>> list;
             long count = 0;
-            { // 查询数据总数
+            {
+                // 查询数据总数
                 list = JdbcUtils.executeQuery(dataSource, countSql, getParameters());
-                if (list.size() > 0) {
+                if (!Util.checkListMapNull(list)) {
                     Map<String, Object> countMap = list.get(0);
-                    if (countMap != null) {
-                        Collection collection = countMap.values();
-                        count = (Long) collection.toArray()[0];
-                    }
+                    Collection collection = countMap.values();
+                    count = (Long) collection.toArray()[0];
+                    setTotalRecord(count);
                 }
-                setTotalRecord(count);
             }
             DbLog.getInstance().info(getTransferLog() + getRunSql());
             if (count > 0) {
@@ -168,6 +177,10 @@ public class SelectPage<T> extends BaseRead<T> {
                 countSql = null;
                 sql = PagerUtils.limit(sql, JdbcConstants.MYSQL, getOffset(), getPageSize());
                 list = JdbcUtils.executeQuery(dataSource, sql, getParameters());
+                // 判断是否开启还原
+                if (isUnescapeHtml()) {
+                    JdbcUtil.htmlUnescape(list);
+                }
             } else {
                 list = new ArrayList<>();
             }

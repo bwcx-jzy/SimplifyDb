@@ -53,7 +53,7 @@ public abstract class BaseSequence implements IQuietSequence {
         this.dataCenterIdBits = dataCenterIdBits;
 
         // 计算最大的值
-        long maxDataCenterId = -1L ^ (-1L << dataCenterIdBits);
+        long maxDataCenterId = ~(-1L << dataCenterIdBits);
         if (dataCenterId < 0) {
             dataCenterId = (int) getDataCenterId(maxDataCenterId);
         }
@@ -61,7 +61,7 @@ public abstract class BaseSequence implements IQuietSequence {
             throw new IllegalArgumentException(String.format("dataCenter Id can't be greater than %d or less than 0", maxDataCenterId));
         }
         // 机器编号
-        long maxWorkerId = -1L ^ (-1L << workerIdBits);
+        long maxWorkerId = ~(-1L << workerIdBits);
         if (workerId < 0) {
             workerId = (int) getWorkerId(dataCenterId, maxWorkerId);
         }
@@ -78,7 +78,7 @@ public abstract class BaseSequence implements IQuietSequence {
         this.workerIdShift = sequenceBits;
         this.dataCenterIdShift = sequenceBits + workerIdBits;
 
-        this.sequenceMask = -1L ^ (-1L << sequenceBits);
+        this.sequenceMask = ~(-1L << sequenceBits);
     }
 
     protected long tilNextMillis(long lastTimestamp) {

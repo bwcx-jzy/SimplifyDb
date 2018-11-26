@@ -3,6 +3,7 @@ package cn.simplifydb.database.run.read;
 import cn.simplifydb.database.base.BaseRead;
 import cn.simplifydb.database.config.DatabaseContextHolder;
 import cn.simplifydb.database.config.SystemColumn;
+import cn.simplifydb.database.util.JdbcUtil;
 import cn.simplifydb.database.util.Util;
 import cn.simplifydb.system.DbLog;
 import com.alibaba.druid.util.JdbcUtils;
@@ -52,6 +53,10 @@ public class Select<T> extends BaseRead<T> {
             String runSql = builder();
             DbLog.getInstance().info(getTransferLog() + getRunSql());
             List<Map<String, Object>> result = JdbcUtils.executeQuery(dataSource, runSql, getParameters());
+            // 判断是否开启还原
+            if (isUnescapeHtml()) {
+                JdbcUtil.htmlUnescape(result);
+            }
             switch (getResultType()) {
                 case JsonArray:
                     return (t) JSON.toJSON(result);
@@ -68,13 +73,10 @@ public class Select<T> extends BaseRead<T> {
                     return (t) result;
                 case String:
                 case Integer: {
-                    if (result.size() < 1) {
+                    if (Util.checkListMapNull(result)) {
                         return null;
                     }
                     Map<String, Object> map = result.get(0);
-                    if (map == null) {
-                        return null;
-                    }
                     String column = getColumns();
                     if (SystemColumn.getDefaultSelectColumns().equals(column)) {
                         // 默认取第一行一列数据

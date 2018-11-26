@@ -22,8 +22,8 @@ import java.util.*;
 public final class DataSourceConfig {
     private static boolean active;
     private static PropertiesParser systemPropertiesParser;
-
     public static long SQL_TIMEOUT = 2000L;
+    public static boolean UNESCAPE_HTML = false;
 
     public static boolean isActive() {
         return active;
@@ -42,8 +42,13 @@ public final class DataSourceConfig {
     public static void init(Properties props) throws Exception {
         Objects.requireNonNull(props);
         systemPropertiesParser = new PropertiesParser(props);
+        //
         String active = systemPropertiesParser.getStringProperty(ConfigProperties.ACTIVE, "dev");
-        DataSourceConfig.active = "prod".equals(active);
+        DataSourceConfig.active = "prod".equalsIgnoreCase(active);
+        //
+        String unescapeHtml = systemPropertiesParser.getStringProperty(ConfigProperties.UNESCAPE_HTML, "false");
+        UNESCAPE_HTML = Boolean.valueOf(unescapeHtml);
+        //
         String[] sourceTags = systemPropertiesParser.getStringArrayProperty(ConfigProperties.PROP_SOURCE_TAG);
         Objects.requireNonNull(sourceTags, "sourceTag is blank");
         if (sourceTags.length < 1) {
