@@ -33,6 +33,7 @@ SimplifyDb 是一个Java基于druid的一款Builder简化写sql语句操作的�
 > 4. 全局统一记录数据创建人和修改人
 > 5. 快速配置逻辑删除功能
 > 6. 写操作支持异步执行
+> 7. 全局还原html实体
 
 #### 使用示例：[src/test/java/cn/simplifydb](src/test/java/cn/simplifydb)
 
@@ -180,7 +181,7 @@ core.logAbandoned=true
  
 配置字段具体含义请 查看[https://github.com/alibaba/druid/wiki/DruidDataSource%E9%85%8D%E7%BD%AE%E5%B1%9E%E6%80%A7%E5%88%97%E8%A1%A8](https://github.com/alibaba/druid/wiki/DruidDataSource%E9%85%8D%E7%BD%AE%E5%B1%9E%E6%80%A7%E5%88%97%E8%A1%A8)
 
-#**初始化**：
+**初始化**：
 
 **`1.先设置日志接口`**
 
