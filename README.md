@@ -180,7 +180,7 @@ core.logAbandoned=true
  
 配置字段具体含义请 查看[https://github.com/alibaba/druid/wiki/DruidDataSource%E9%85%8D%E7%BD%AE%E5%B1%9E%E6%80%A7%E5%88%97%E8%A1%A8](https://github.com/alibaba/druid/wiki/DruidDataSource%E9%85%8D%E7%BD%AE%E5%B1%9E%E6%80%A7%E5%88%97%E8%A1%A8)
 
-#**初始化**：
+**初始化**：
 
 **`1.先设置日志接口`**
 
