@@ -34,4 +34,15 @@ public class TestIsExists {
         isExists.setColumns("name");
         System.out.println((String) isExists.run());
     }
+
+    @Test
+    public void exists3() {
+        IsExists<Db2Test> isExists = new IsExists<Db2Test>() {
+        };
+        isExists.setKeyColumnAndValue("id", 1);
+//        isExists.setKeyValue(1);
+        isExists.setColumns("name,sex");
+        Object object = isExists.run();
+        System.out.println(object);
+    }
 }

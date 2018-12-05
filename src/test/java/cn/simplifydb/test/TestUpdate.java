@@ -26,18 +26,28 @@ public class TestUpdate {
         db2Test.setId(1);
         db2Test.setName("修改后：" + RandomUtil.getRandomCode(2));
         db2Test.setSex(2);
-
         Update<Db2Test> update = new Update<>(db2Test);
         int count = update.syncRun();
         System.out.println("更新行数：" + count);
+        System.out.println(update);
+    }
 
+    @Test
+    public void updateRemove() {
+        Db2Test db2Test = new Db2Test();
+        db2Test.setId(1);
+        db2Test.setName("修改后：" + RandomUtil.getRandomCode(2));
+        db2Test.setSex(2);
+        Update<Db2Test> update = new Update<>(db2Test);
+        update.setRemove("sex");
+        int count = update.syncRun();
+        System.out.println("更新行数：" + count);
         System.out.println(update);
     }
 
 
     @Test
     public void update2() {
-
         Update<Db2Test> update = new Update<Db2Test>() {
         };
         update.setKeyValue("1");

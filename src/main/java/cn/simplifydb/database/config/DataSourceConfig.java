@@ -6,6 +6,7 @@ import cn.simplifydb.system.DbLog;
 import cn.simplifydb.util.PropertiesParser;
 import cn.simplifydb.util.ResourceUtil;
 import com.alibaba.druid.pool.DruidDataSourceFactory;
+import com.alibaba.fastjson.serializer.SerializeConfig;
 
 import javax.sql.DataSource;
 import java.io.IOException;
@@ -48,6 +49,11 @@ public final class DataSourceConfig {
         //
         String unescapeHtml = systemPropertiesParser.getStringProperty(ConfigProperties.UNESCAPE_HTML, "false");
         UNESCAPE_HTML = Boolean.valueOf(unescapeHtml);
+        if (UNESCAPE_HTML) {
+            // 注入
+            SerializeConfig serializeConfig = SerializeConfig.globalInstance;
+            serializeConfig.put(String.class, XssJsonStringCodec.instance);
+        }
         //
         String[] sourceTags = systemPropertiesParser.getStringArrayProperty(ConfigProperties.PROP_SOURCE_TAG);
         Objects.requireNonNull(sourceTags, "sourceTag is blank");

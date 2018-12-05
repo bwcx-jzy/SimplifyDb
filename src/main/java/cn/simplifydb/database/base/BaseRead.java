@@ -93,7 +93,16 @@ public abstract class BaseRead<T> extends Base<T> implements SQLSelectBuilder {
      */
     private boolean unescapeHtml = DataSourceConfig.UNESCAPE_HTML;
 
+    /**
+     * 获取当前查询对象是否还原html实体
+     * 如果是返回json类型的泛型 默认不还原html实体
+     *
+     * @return 默认读取全局配置
+     */
     public boolean isUnescapeHtml() {
+        if (this.resultType == Result.JsonArray || this.resultType == Result.JsonObject || this.resultType == Result.PageResultType) {
+            return false;
+        }
         return unescapeHtml;
     }
 
