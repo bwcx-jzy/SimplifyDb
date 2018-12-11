@@ -89,7 +89,7 @@ public class IsExists<T> extends BaseRead<T> {
         try {
             String tag = getTag();
             String sql = builder();
-            DbLog.getInstance().info(getTransferLog() + getRunSql());
+            DbLog.getInstance().info(getTransferLog(5) + getRunSql());
             DataSource dataSource = DatabaseContextHolder.getReadDataSource(tag);
             List<Map<String, Object>> list = JdbcUtils.executeQuery(dataSource, sql, getParameters());
             // 判断是否开启还原

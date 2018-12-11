@@ -238,7 +238,7 @@ public class Insert<T> extends BaseWrite<T> {
         }
         String sql = sqlInsertStatement.toString();
         setRunSql(sql);
-        DbLog.getInstance().info(getTransferLog() + getRunSql());
+        DbLog.getInstance().info(getTransferLog(5) + getRunSql());
         int count;
         if (transactionConnection == null) {
             String tag = getTag();
@@ -353,7 +353,7 @@ public class Insert<T> extends BaseWrite<T> {
                         continue;
                     }
                 }
-                DbLog.getInstance().info(getTransferLog() + getRunSql());
+                DbLog.getInstance().info(getTransferLog(5) + getRunSql());
                 key = JdbcUtil.executeInsert(connection, sql, sqlAndParameter.getParameters());
                 if (key == null) {
                     key = DbReflectUtil.getFieldValue(data, SystemColumn.getDefaultKeyName());

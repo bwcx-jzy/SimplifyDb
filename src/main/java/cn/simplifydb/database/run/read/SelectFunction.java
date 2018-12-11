@@ -49,7 +49,7 @@ public class SelectFunction<T> extends BaseRead<T> {
             DataSource dataSource = DatabaseContextHolder.getReadDataSource(getTag());
             String sql = SqlUtil.function(getName(), getParameters());
             setRunSql(sql);
-            DbLog.getInstance().info(getTransferLog() + sql);
+            DbLog.getInstance().info(getTransferLog(4) + sql);
             List<Map<String, Object>> list = JdbcUtils.executeQuery(dataSource, sql, getParameters());
             if (Util.checkListMapNull(list)) {
                 return null;

@@ -42,7 +42,8 @@ public class Db2Test implements UpdateEvent {
 
     @Override
     public BaseWrite.Event.BeforeCode beforeUpdate(Update<?> update, Object object) {
-        return BaseWrite.Event.BeforeCode.END;
+//        return BaseWrite.Event.BeforeCode.END;
+        return null;
     }
 
     @Override

@@ -133,7 +133,7 @@ public class Remove<T> extends BaseUpdate<T> {
                     return beforeCode.getResultCode();
                 }
             }
-            DbLog.getInstance().info(getTransferLog() + getRunSql());
+            DbLog.getInstance().info(getTransferLog(4) + getRunSql());
             int up;
             if (transactionConnection != null) {
                 up = JdbcUtils.executeUpdate(transactionConnection, sql, getParameters());

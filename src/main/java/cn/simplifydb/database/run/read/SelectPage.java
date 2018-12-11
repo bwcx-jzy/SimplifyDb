@@ -171,7 +171,7 @@ public class SelectPage<T> extends BaseRead<T> {
                     setTotalRecord(count);
                 }
             }
-            DbLog.getInstance().info(getTransferLog() + getRunSql());
+            DbLog.getInstance().info(getTransferLog(4) + getRunSql());
             if (count > 0) {
                 // 查询数据
                 countSql = null;
@@ -204,7 +204,7 @@ public class SelectPage<T> extends BaseRead<T> {
         } catch (Exception e) {
             // TODO: handle exception
             if (countSql != null) {
-                DbLog.getInstance().info(getTransferLog() + countSql);
+                DbLog.getInstance().info(getTransferLog(4) + countSql);
             }
             isThrows(e);
         } finally {

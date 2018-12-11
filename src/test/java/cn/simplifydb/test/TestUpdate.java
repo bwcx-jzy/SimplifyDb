@@ -97,4 +97,20 @@ public class TestUpdate {
         int count = update.syncRun();
         System.out.println("更新行数：" + count);
     }
+
+    @Test
+    public void update7() {
+        Update<Db2Test> update = new Update<Db2Test>() {
+        };
+        update.putUpdate("name", "#{id+1}");
+        update.putUpdate("sex", "1");
+        update.where("1=1");
+        update.run();
+        // 等待异步执行 防止程序关闭，实际代码不需要
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
 }

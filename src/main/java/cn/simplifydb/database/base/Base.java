@@ -401,16 +401,16 @@ public abstract class Base<T> {
         DatabaseContextHolder.recycling();
     }
 
-    protected String getTransferLog() {
+    protected String getTransferLog(int line) {
         if (tempTransferLog != null) {
             return tempTransferLog;
         }
-        return DataSourceConfig.isActive() ? "" : getLine(false);
+        return DataSourceConfig.isActive() ? "" : getLine(line);
     }
 
-    private String getLine(boolean sync) {
-        int len = sync ? 5 : 5;
-        StackTraceElement stackTraceElement = Thread.currentThread().getStackTrace()[len];
+    private String getLine(int line) {
+//        int len = sync ? 5 : 4;
+        StackTraceElement stackTraceElement = Thread.currentThread().getStackTrace()[line];
         return String.format("[%s-%s-%s]", StringUtil.simplifyClassName(stackTraceElement.getClassName()), stackTraceElement.getMethodName(), stackTraceElement.getLineNumber());
     }
 
@@ -418,7 +418,7 @@ public abstract class Base<T> {
         if (DataSourceConfig.isActive()) {
             tempTransferLog = "";
         } else {
-            tempTransferLog = getLine(true);
+            tempTransferLog = getLine(5);
         }
         setTagName(DatabaseContextHolder.getConnectionTagName());
     }

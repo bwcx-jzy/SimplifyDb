@@ -101,7 +101,7 @@ public class Update<T> extends BaseUpdate<T> {
                 }
             }
             String sql = builder();
-            DbLog.getInstance().info(getTransferLog() + getRunSql());
+            DbLog.getInstance().info(getTransferLog(4) + getRunSql());
             int count;
             if (transactionConnection == null) {
                 DataSource dataSource = DatabaseContextHolder.getWriteDataSource(tag);
