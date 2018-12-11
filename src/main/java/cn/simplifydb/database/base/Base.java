@@ -6,6 +6,7 @@ import cn.simplifydb.database.DbWriteService;
 import cn.simplifydb.database.config.DataSourceConfig;
 import cn.simplifydb.database.config.DatabaseContextHolder;
 import cn.simplifydb.database.config.SystemColumn;
+import cn.simplifydb.database.util.Util;
 import cn.simplifydb.system.DbLog;
 import cn.simplifydb.util.DbReflectUtil;
 import com.alibaba.druid.sql.ast.statement.SQLDeleteStatement;
@@ -405,20 +406,14 @@ public abstract class Base<T> {
         if (tempTransferLog != null) {
             return tempTransferLog;
         }
-        return DataSourceConfig.isActive() ? "" : getLine(line);
-    }
-
-    private String getLine(int line) {
-//        int len = sync ? 5 : 4;
-        StackTraceElement stackTraceElement = Thread.currentThread().getStackTrace()[line];
-        return String.format("[%s-%s-%s]", StringUtil.simplifyClassName(stackTraceElement.getClassName()), stackTraceElement.getMethodName(), stackTraceElement.getLineNumber());
+        return DataSourceConfig.isActive() ? "" : Util.getStackTraceLine(line);
     }
 
     void getAsyncLog() {
         if (DataSourceConfig.isActive()) {
             tempTransferLog = "";
         } else {
-            tempTransferLog = getLine(5);
+            tempTransferLog = Util.getStackTraceLine(5);
         }
         setTagName(DatabaseContextHolder.getConnectionTagName());
     }

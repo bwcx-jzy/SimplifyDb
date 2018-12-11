@@ -41,6 +41,7 @@ public class TestTransaction {
 //                insert.setBatch(true);
                 insert.setCallback(key -> System.out.println("成功：" + key));
                 insert.syncRun();
+                operate.commit();
             }
 
             @Override

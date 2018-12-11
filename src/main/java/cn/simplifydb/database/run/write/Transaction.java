@@ -187,6 +187,18 @@ public class Transaction {
         }
 
         /**
+         * 获取事务的insert 操作对象
+         *
+         * @param cls cls
+         * @return insert
+         */
+        public Insert getInsert(Class cls) {
+            Insert insert = getInsert();
+            insert.setTclass(cls);
+            return insert;
+        }
+
+        /**
          * 获取事务的update 操作对象
          *
          * @param cls 要操作的class
@@ -199,10 +211,24 @@ public class Transaction {
         /**
          * 获取事务的remove 操作对象
          *
+         * @param type 操作类型
          * @return remove
          */
         public Remove getRemove(Remove.Type type) {
             return new Remove(transaction.connection, type);
+        }
+
+        /**
+         * 获取事务的remove 操作对象
+         *
+         * @param cls  cls
+         * @param type 操作类型
+         * @return remove
+         */
+        public Remove getRemove(Remove.Type type, Class cls) {
+            Remove remove = getRemove(type);
+            remove.setTclass(cls);
+            return remove;
         }
 
         /**
