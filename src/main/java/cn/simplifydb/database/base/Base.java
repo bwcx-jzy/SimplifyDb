@@ -405,19 +405,20 @@ public abstract class Base<T> {
         if (tempTransferLog != null) {
             return tempTransferLog;
         }
-        return DataSourceConfig.isActive() ? "" : getLine();
+        return DataSourceConfig.isActive() ? "" : getLine(false);
     }
 
-    private String getLine() {
-        StackTraceElement stackTraceElement = Thread.currentThread().getStackTrace()[4];
+    private String getLine(boolean sync) {
+        int len = sync ? 5 : 5;
+        StackTraceElement stackTraceElement = Thread.currentThread().getStackTrace()[len];
         return String.format("[%s-%s-%s]", StringUtil.simplifyClassName(stackTraceElement.getClassName()), stackTraceElement.getMethodName(), stackTraceElement.getLineNumber());
     }
 
-    protected void getAsyncLog() {
+    void getAsyncLog() {
         if (DataSourceConfig.isActive()) {
             tempTransferLog = "";
         } else {
-            tempTransferLog = getLine();
+            tempTransferLog = getLine(true);
         }
         setTagName(DatabaseContextHolder.getConnectionTagName());
     }

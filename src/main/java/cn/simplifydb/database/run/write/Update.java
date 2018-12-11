@@ -55,11 +55,10 @@ public class Update<T> extends BaseUpdate<T> {
     @Override
     public void run() {
         if (transactionConnection != null) {
-            throw new RuntimeException("Transaction must sync");
+            throw new RuntimeException("Update Transaction must sync");
         }
         setAsync();
         setThrowable(new Throwable());
-        getAsyncLog();
         // TODO Auto-generated method stub
         DBExecutorService.execute(this::syncRun);
     }

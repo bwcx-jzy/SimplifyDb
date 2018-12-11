@@ -130,7 +130,6 @@ public class Insert<T> extends BaseWrite<T> {
         }
         setAsync();
         setThrowable(new Throwable());
-        getAsyncLog();
         DBExecutorService.execute(() -> {
             // TODO Auto-generated method stub
             Object id = syncRun();

@@ -173,6 +173,12 @@ public abstract class BaseRead<T> extends Base<T> implements SQLSelectBuilder {
         return this;
     }
 
+    /**
+     * 设置查询希望返回的数据类型
+     *
+     * @param resultType 返回的数据类型
+     * @return this
+     */
     public BaseRead setResultType(Result resultType) {
         this.resultType = resultType;
         return this;
@@ -246,7 +252,6 @@ public abstract class BaseRead<T> extends Base<T> implements SQLSelectBuilder {
      * @param <t> 需要的类型
      * @return object
      */
-    @SuppressWarnings("unchecked")
     public abstract <t> t run();
 
     /**
