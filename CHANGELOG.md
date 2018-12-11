@@ -1,5 +1,11 @@
 # 版本日志
 
+## 2.0.11
+
+* 事务操作对象添加传class方法
+* 修护获取行号问题
+
+
 ## 2.0.10
 
 * 修正事物类命名 [cn.simplifydb.database.TransactionException]
