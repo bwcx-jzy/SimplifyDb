@@ -55,11 +55,10 @@ public class Update<T> extends BaseUpdate<T> {
     @Override
     public void run() {
         if (transactionConnection != null) {
-            throw new RuntimeException("Transaction must sync");
+            throw new RuntimeException("Update Transaction must sync");
         }
         setAsync();
         setThrowable(new Throwable());
-        getAsyncLog();
         // TODO Auto-generated method stub
         DBExecutorService.execute(this::syncRun);
     }
@@ -102,7 +101,7 @@ public class Update<T> extends BaseUpdate<T> {
                 }
             }
             String sql = builder();
-            DbLog.getInstance().info(getTransferLog() + getRunSql());
+            DbLog.getInstance().info(getTransferLog(4) + getRunSql());
             int count;
             if (transactionConnection == null) {
                 DataSource dataSource = DatabaseContextHolder.getWriteDataSource(tag);

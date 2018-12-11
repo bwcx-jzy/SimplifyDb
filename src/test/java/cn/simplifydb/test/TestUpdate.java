@@ -26,18 +26,28 @@ public class TestUpdate {
         db2Test.setId(1);
         db2Test.setName("修改后：" + RandomUtil.getRandomCode(2));
         db2Test.setSex(2);
-
         Update<Db2Test> update = new Update<>(db2Test);
         int count = update.syncRun();
         System.out.println("更新行数：" + count);
+        System.out.println(update);
+    }
 
+    @Test
+    public void updateRemove() {
+        Db2Test db2Test = new Db2Test();
+        db2Test.setId(1);
+        db2Test.setName("修改后：" + RandomUtil.getRandomCode(2));
+        db2Test.setSex(2);
+        Update<Db2Test> update = new Update<>(db2Test);
+        update.setRemove("sex");
+        int count = update.syncRun();
+        System.out.println("更新行数：" + count);
         System.out.println(update);
     }
 
 
     @Test
     public void update2() {
-
         Update<Db2Test> update = new Update<Db2Test>() {
         };
         update.setKeyValue("1");
@@ -86,5 +96,21 @@ public class TestUpdate {
         update.where("1=1");
         int count = update.syncRun();
         System.out.println("更新行数：" + count);
+    }
+
+    @Test
+    public void update7() {
+        Update<Db2Test> update = new Update<Db2Test>() {
+        };
+        update.putUpdate("name", "#{id+1}");
+        update.putUpdate("sex", "1");
+        update.where("1=1");
+        update.run();
+        // 等待异步执行 防止程序关闭，实际代码不需要
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 }

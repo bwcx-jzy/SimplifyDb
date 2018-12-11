@@ -51,7 +51,7 @@ public class Select<T> extends BaseRead<T> {
             String tag = getTag();
             DataSource dataSource = DatabaseContextHolder.getReadDataSource(tag);
             String runSql = builder();
-            DbLog.getInstance().info(getTransferLog() + getRunSql());
+            DbLog.getInstance().info(getTransferLog(4) + getRunSql());
             List<Map<String, Object>> result = JdbcUtils.executeQuery(dataSource, runSql, getParameters());
             // 判断是否开启还原
             if (isUnescapeHtml()) {

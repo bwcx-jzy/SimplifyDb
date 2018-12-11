@@ -1,5 +1,6 @@
 package cn.simplifydb.database.util;
 
+import cn.jiangzeyin.StringUtil;
 import cn.simplifydb.database.base.BaseRead;
 import cn.simplifydb.database.config.DatabaseContextHolder;
 import cn.simplifydb.database.config.SystemColumn;
@@ -124,5 +125,12 @@ public class Util {
             return true;
         }
         return map.size() <= 0;
+    }
+
+
+    public static String getStackTraceLine(int line) {
+//        int len = sync ? 5 : 4;
+        StackTraceElement stackTraceElement = Thread.currentThread().getStackTrace()[line];
+        return String.format("[%s-%s-%s]", StringUtil.simplifyClassName(stackTraceElement.getClassName()), stackTraceElement.getMethodName(), stackTraceElement.getLineNumber());
     }
 }

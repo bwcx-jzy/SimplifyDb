@@ -101,10 +101,9 @@ public class Remove<T> extends BaseUpdate<T> {
     public void run() {
         // TODO Auto-generated method stub
         if (transactionConnection != null) {
-            throw new RuntimeException("Transaction must sync");
+            throw new RuntimeException("Remove Transaction must sync");
         }
         setAsync();
-        getAsyncLog();
         setThrowable(new Throwable());
         DBExecutorService.execute(this::syncRun);
     }
@@ -134,7 +133,7 @@ public class Remove<T> extends BaseUpdate<T> {
                     return beforeCode.getResultCode();
                 }
             }
-            DbLog.getInstance().info(getTransferLog() + getRunSql());
+            DbLog.getInstance().info(getTransferLog(4) + getRunSql());
             int up;
             if (transactionConnection != null) {
                 up = JdbcUtils.executeUpdate(transactionConnection, sql, getParameters());

@@ -13,7 +13,6 @@ import java.sql.Connection;
  *
  * @author jiangzeyin
  */
-@SuppressWarnings("unchecked")
 public abstract class BaseWrite<T> extends Base<T> {
     /**
      * 操作人
@@ -70,6 +69,8 @@ public abstract class BaseWrite<T> extends Base<T> {
 
     protected void setAsync() {
         this.isAsync = true;
+        // 自动获取代码行号
+        getAsyncLog();
     }
 
     protected BaseWrite(T data, Connection transactionConnection) {
@@ -89,6 +90,12 @@ public abstract class BaseWrite<T> extends Base<T> {
         return data;
     }
 
+    /**
+     * 设置要修改的实体
+     *
+     * @param data data
+     * @return this
+     */
     public BaseWrite<T> setData(T data) {
         this.data = data;
         return this;
