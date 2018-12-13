@@ -1,6 +1,5 @@
 package test.util;
 
-import auto.Auto;
 import cn.jiangzeyin.des.SystemKey;
 import test.OrderedProperties;
 
@@ -15,8 +14,8 @@ public class EntityUtil {
 
     public static void write(String keY, String name, Entity... entitys) throws Exception {
         OrderedProperties default_proper = new OrderedProperties();
-        URL url = Auto.class.getResource("/");
-        InputStream inputStream = Auto.class.getResourceAsStream("/default.properties");
+        URL url = EntityUtil.class.getResource("/");
+        InputStream inputStream = EntityUtil.class.getResourceAsStream("/default.properties");
         OrderedProperties all_proper = new OrderedProperties();
         default_proper.load(inputStream);
         SystemKey systemKey = new SystemKey(keY);

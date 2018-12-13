@@ -4,10 +4,10 @@ import cn.jiangzeyin.StringUtil;
 import cn.simplifydb.system.DbLog;
 import com.alibaba.druid.util.StringUtils;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
 import java.util.Objects;
 import java.util.Properties;
+import java.util.Set;
 
 /**
  * 记录最后修改人
@@ -16,10 +16,9 @@ import java.util.Properties;
  * @author jiangzeyin
  */
 public class ModifyUser {
-
-
+    
     public static class Modify {
-        private static List<Class<?>> modify_class = new ArrayList<>();
+        private static HashSet<Class<?>> modify_class = new HashSet<>();
         private static String modifyTime;
         private static String columnUser;
         private static String columnTime;
@@ -37,23 +36,27 @@ public class ModifyUser {
         }
 
         public static boolean isModifyClass(Class tClass) {
-            if (tClass == null) {
-                return false;
-            }
-            for (Class<?> item : modify_class) {
-                if (item.isAssignableFrom(tClass)) {
-                    return true;
-                }
-            }
+            return isAssignableFrom(modify_class, tClass);
+        }
+    }
+
+    private static boolean isAssignableFrom(Set<Class<?>> set, Class cls) {
+        if (set == null) {
             return false;
         }
+        for (Class<?> item : set) {
+            if (item.isAssignableFrom(cls)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
      * 记录数据创建者
      */
     public static class Create {
-        private static List<Class<?>> create_class = new ArrayList<>();
+        private static HashSet<Class<?>> create_class = new HashSet<>();
         private static String columnUser;
 
         public static String getColumnUser() {
@@ -61,15 +64,7 @@ public class ModifyUser {
         }
 
         public static boolean isCreateClass(Class tClass) {
-            if (tClass == null) {
-                return false;
-            }
-            for (Class<?> item : create_class) {
-                if (item.isAssignableFrom(tClass)) {
-                    return true;
-                }
-            }
-            return false;
+            return isAssignableFrom(create_class, tClass);
         }
     }
 
