@@ -141,8 +141,8 @@ public class Remove<T> extends BaseUpdate<T> {
                 DataSource dataSource = DatabaseContextHolder.getWriteDataSource(tag);
                 up = JdbcUtils.executeUpdate(dataSource, sql, getParameters());
             }
-            if (up > 0 && callback != null) {
-                callback.success(up);
+            if (callback != null) {
+                callback.success(up, up);
             }
             return up;
         } catch (Exception e) {

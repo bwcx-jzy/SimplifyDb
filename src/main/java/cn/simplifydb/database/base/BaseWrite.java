@@ -252,9 +252,14 @@ public abstract class BaseWrite<T> extends Base<T> {
         /**
          * success
          * 插入后能成获取主键值  则直接返回对应主键，反之返回实体
+         * <p>
+         * remove 和 insert 并行执行 时  key 和count 值一样
+         * <p>
+         * insert 挨个 执行 count 始终为1
          *
-         * @param key 主键
+         * @param key   主键
+         * @param count 影响行数
          */
-        void success(Object key);
+        void success(Object key, int count);
     }
 }

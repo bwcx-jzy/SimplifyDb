@@ -21,19 +21,6 @@ public final class SystemSessionInfo {
     }
 
     /**
-     * 获取当前操作session 用户名
-     *
-     * @return 用户名
-     * @author jiangzeyin
-     */
-    public static String getUserName() {
-        if (sessionUser == null) {
-            return "";
-        }
-        return sessionUser.getUserName();
-    }
-
-    /**
      * 获取当前操作session 用户id
      *
      * @return id
@@ -46,25 +33,12 @@ public final class SystemSessionInfo {
         return sessionUser.getUserId();
     }
 
-    public static String userIdGetName(int userId) {
-        if (sessionUser == null) {
-            return "";
-        }
-        return sessionUser.userIdGetName(userId);
-    }
-
     /**
      * 获取session 信息接口
      *
      * @author jiangzeyin
      */
     public interface SessionUser {
-        /**
-         * 返回当前操作的用户名
-         *
-         * @return name
-         */
-        String getUserName();
 
         /**
          * 返回当前操作的用户Id
@@ -72,13 +46,5 @@ public final class SystemSessionInfo {
          * @return 必反
          */
         int getUserId();
-
-        /**
-         * 根据用户id 获取用户名
-         *
-         * @param userId id
-         * @return name
-         */
-        String userIdGetName(int userId);
     }
 }
