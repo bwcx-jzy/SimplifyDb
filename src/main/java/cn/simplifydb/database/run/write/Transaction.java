@@ -192,8 +192,8 @@ public class Transaction {
          * @param cls cls
          * @return insert
          */
-        public Insert getInsert(Class cls) {
-            Insert insert = getInsert();
+        public <T> Insert<T> getInsert(Class<T> cls) {
+            Insert<T> insert = getInsert();
             insert.setTclass(cls);
             return insert;
         }
@@ -204,8 +204,8 @@ public class Transaction {
          * @param cls 要操作的class
          * @return update
          */
-        public Update getUpdate(Class cls) {
-            return new Update(transaction.connection, cls);
+        public <T> Update<T> getUpdate(Class<T> cls) {
+            return new Update<T>(transaction.connection, cls);
         }
 
         /**
@@ -225,8 +225,8 @@ public class Transaction {
          * @param type 操作类型
          * @return remove
          */
-        public Remove getRemove(Remove.Type type, Class cls) {
-            Remove remove = getRemove(type);
+        public <T> Remove<T> getRemove(Remove.Type type, Class<T> cls) {
+            Remove<T> remove = getRemove(type);
             remove.setTclass(cls);
             return remove;
         }
