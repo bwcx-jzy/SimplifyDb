@@ -112,13 +112,13 @@ public class Update<T> extends BaseUpdate<T> {
             Object keyValue = getKeyValue();
             if (event != null) {
                 if (keyValue != null) {
-                    event.completeUpdate(getKeyValue());
+                    event.completeUpdate(getKeyValue(), count);
                 } else {
-                    event.completeUpdate(data);
+                    event.completeUpdate(data, count);
                 }
             }
             if (callback != null) {
-                callback.success(keyValue);
+                callback.success(keyValue, count);
             }
             return count;
         } catch (Exception e) {

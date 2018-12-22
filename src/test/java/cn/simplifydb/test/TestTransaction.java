@@ -36,10 +36,10 @@ public class TestTransaction {
         new Transaction(IdTest.class, new Transaction.Callback() {
             @Override
             public void start(Transaction.Operate operate) {
-                Insert insert = operate.getInsert();
+                Insert<IdTest> insert = operate.getInsert(IdTest.class);
                 insert.setList(list);
 //                insert.setBatch(true);
-                insert.setCallback(key -> System.out.println("成功：" + key));
+                insert.setCallback((key, count) -> System.out.println("成功：" + key));
                 insert.syncRun();
                 operate.commit();
             }

@@ -47,7 +47,7 @@ public class Db2Test implements UpdateEvent {
     }
 
     @Override
-    public void completeUpdate(Object keyValue) {
+    public void completeUpdate(Object keyValue, int count) {
 
     }
 

@@ -17,7 +17,6 @@ public interface UpdateEvent {
      * @param object 添加的对象
      * @param update update 操作对象
      * @return 验证结果
-     * @author jiangzeyin
      */
     BaseWrite.Event.BeforeCode beforeUpdate(Update<?> update, Object object);
 
@@ -25,15 +24,14 @@ public interface UpdateEvent {
      * 操作成功
      *
      * @param keyValue id
-     * @author jiangzeyin
+     * @param count    影响的行数
      */
-    void completeUpdate(Object keyValue);
+    void completeUpdate(Object keyValue, int count);
 
     /**
      * 出现异常
      *
      * @param throwable 异常
-     * @author jiangzeyin
      */
     void errorUpdate(Throwable throwable);
 }

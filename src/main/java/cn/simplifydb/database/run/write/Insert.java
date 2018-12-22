@@ -248,7 +248,7 @@ public class Insert<T> extends BaseWrite<T> {
             count = JdbcUtils.executeUpdate(transactionConnection, sql, par);
         }
         if (callback != null) {
-            callback.success(count);
+            callback.success(count, count);
         }
         return count;
     }
@@ -368,7 +368,7 @@ public class Insert<T> extends BaseWrite<T> {
                     if (key == null) {
                         key = data;
                     }
-                    callback.success(key);
+                    callback.success(key, 1);
                 }
                 successCount++;
             }

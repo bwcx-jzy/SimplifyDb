@@ -16,22 +16,9 @@ public class TestUpdateUserFn {
     @Before
     public void init() throws Exception {
         Init.init();
-        SystemSessionInfo.setSessionUser(new SystemSessionInfo.SessionUser() {
-            @Override
-            public String getUserName() {
-                return "随机";
-            }
-
-            @Override
-            public int getUserId() {
-                // 为了模仿效果这里就随机返回，标记是用户操作
-                return RandomUtil.getRandomCode(1) % 2 == 0 ? 1 : 0;
-            }
-
-            @Override
-            public String userIdGetName(int userId) {
-                return null;
-            }
+        SystemSessionInfo.setSessionUser(() -> {
+            // 为了模仿效果这里就随机返回，标记是用户操作
+            return RandomUtil.getRandomCode(1) % 2 == 0 ? 1 : 0;
         });
     }
 
