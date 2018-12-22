@@ -17,19 +17,11 @@ public class TestCreateUserFn {
     public void init() throws Exception {
         Init.init();
         SystemSessionInfo.setSessionUser(new SystemSessionInfo.SessionUser() {
-            @Override
-            public String getUserName() {
-                return "1号人员";
-            }
+
 
             @Override
             public int getUserId() {
                 return 1;
-            }
-
-            @Override
-            public String userIdGetName(int userId) {
-                return "请自行转换";
             }
         });
     }

@@ -44,7 +44,7 @@ public class TestInsert {
         // 异步执行
         Insert insert = new Insert<>(test2);
         //
-        insert.setCallback(key1 -> {
+        insert.setCallback((key1, count) -> {
             System.out.println("异步成功回调：" + key1);
             System.out.println("实体中属性新也有值：" + test2.getId());
         });
@@ -90,7 +90,7 @@ public class TestInsert {
         list.add(test);
         Insert insert = new Insert<>(list);
         insert.setBatch(true);
-        insert.setCallback(key -> System.out.println("成功：" + key));
+        insert.setCallback((key, count) -> System.out.println("成功：" + key));
         insert.run();
         // 等待异步执行 防止程序关闭，实际代码不需要
         try {
