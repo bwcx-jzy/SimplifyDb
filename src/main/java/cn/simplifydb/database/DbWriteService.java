@@ -3,6 +3,8 @@ package cn.simplifydb.database;
 import java.util.Objects;
 
 /**
+ * 数据库操作服务接口
+ *
  * @author jiangzeyin
  * Created by jiangzeyin on 2017/2/3.
  */

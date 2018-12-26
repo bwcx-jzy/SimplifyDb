@@ -83,6 +83,15 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
                 <version>3.0.0</version>
+                <configuration>
+                    <tags>
+                        <tag>
+                            <name>date</name>
+                            <placement>a</placement>
+                            <head>创建时间</head>
+                        </tag>
+                    </tags>
+                </configuration>
             </plugin>
             <!--surefire插件，避免mvn test console乱码-->
             <plugin>
