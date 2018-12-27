@@ -1,7 +1,7 @@
 package cn.simplifydb.system;
 
 /**
- * 日志
+ * 日志管理
  * Created by jiangzeyin on 2017/8/14.
  *
  * @author jiangzeyin

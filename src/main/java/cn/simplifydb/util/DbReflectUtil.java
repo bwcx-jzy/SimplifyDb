@@ -156,11 +156,11 @@ public class DbReflectUtil {
      * @return 结果
      * @author jiangzeyin
      */
-    public static Class<?> getTClass(Class<?> cls) {
+    public static <T> Class<T> getTClass(Class<?> cls) {
         Type type = cls.getGenericSuperclass();
         if (type instanceof ParameterizedType) {
             type = ((ParameterizedType) type).getActualTypeArguments()[0];
-            return (Class<?>) type;
+            return (Class<T>) type;
         }
         return null;
     }

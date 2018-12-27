@@ -71,7 +71,7 @@ public abstract class Base<T> {
     /**
      * 数据库对应class
      */
-    private Class<?> tclass;
+    private Class<T> tclass;
     private long runTime;
     private String runSql;
     private String tempTransferLog;
@@ -202,7 +202,7 @@ public abstract class Base<T> {
      *
      * @return class
      */
-    public Class<?> getTclass() {
+    public Class<T> getTclass() {
         return getTclass(true);
     }
 
@@ -212,14 +212,32 @@ public abstract class Base<T> {
      * @param getRef true 获取泛型
      * @return 返回当前操作的泛型
      */
-    public Class<?> getTclass(boolean getRef) {
+    public Class<T> getTclass(boolean getRef) {
         if (tclass == null && getRef) {
-            tclass = DbReflectUtil.getTClass(getClass());
+            Class<?> cls = this.getClass();
+            tclass = DbReflectUtil.getTClass(cls);
         }
         return tclass;
     }
 
-    public Base<T> setTclass(Class<?> tclass) {
+    /**
+     * 设置操作class
+     *
+     * @param tclass 类
+     * @return this
+     */
+    public Base<T> setTclass(Class<T> tclass) {
+        this.tclass = tclass;
+        return this;
+    }
+
+    /**
+     * 设置操作class
+     *
+     * @param tclass 类
+     * @return this
+     */
+    public Base<T> setClass(Class tclass) {
         this.tclass = tclass;
         return this;
     }
