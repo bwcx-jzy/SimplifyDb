@@ -231,6 +231,17 @@ public abstract class Base<T> {
         return this;
     }
 
+    /**
+     * 设置操作class
+     *
+     * @param tclass 类
+     * @return this
+     */
+    public Base<T> setClass(Class tclass) {
+        this.tclass = tclass;
+        return this;
+    }
+
     public String getTag() {
         if (StringUtil.isEmpty(tag)) {
             return getTag(getTclass());

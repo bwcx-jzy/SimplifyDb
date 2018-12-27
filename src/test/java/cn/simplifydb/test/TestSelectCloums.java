@@ -18,7 +18,7 @@ public class TestSelectCloums {
     @Test
     public void selectEntity() {
         Select testSelect = new Select<>();
-        testSelect.setTclass(cn.simplifydb.entity.test.Test.class);
+        testSelect.setClass(cn.simplifydb.entity.test.Test.class);
 //        testSelect.setSql("select name,id from  test");
         testSelect.setSql("select name from  test");
         testSelect.setResultType(BaseRead.Result.ListOneColumn);
@@ -31,7 +31,7 @@ public class TestSelectCloums {
     @Test
     public void selectEntity2() {
         Select testSelect = new Select<>();
-        testSelect.setTclass(cn.simplifydb.entity.test.Test.class);
+        testSelect.setClass(cn.simplifydb.entity.test.Test.class);
         testSelect.setSql("select id from  test");
 //        testSelect.setColumns("ss");
         testSelect.setResultType(BaseRead.Result.ListOneColumn);

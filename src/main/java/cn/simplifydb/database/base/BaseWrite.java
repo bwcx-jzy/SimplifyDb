@@ -19,7 +19,7 @@ public abstract class BaseWrite<T> extends Base<T> {
      */
     private int optUserId;
     private Callback callback;
-    protected T data;
+    private T data;
     private Throwable throwable;
     private boolean isAsync;
     /**
