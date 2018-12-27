@@ -4,7 +4,7 @@ package cn.simplifydb.database;
  * 事务异常
  *
  * @author jiangzeyin
- * date 2018/6/21
+ * @date 2018/6/21
  */
 public class TransactionException extends RuntimeException {
     /**

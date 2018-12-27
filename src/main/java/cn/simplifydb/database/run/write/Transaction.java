@@ -100,7 +100,10 @@ public class Transaction {
         } catch (Exception e) {
             rollback();
             callback.error(e);
-            throw new TransactionException("Transaction error:" + e.getMessage());
+            TransactionException transactionException = new TransactionException("Transaction error:" + e.getMessage());
+            // 添加异常信息
+            transactionException.addSuppressed(e);
+            throw transactionException;
         }
     }
 
@@ -182,8 +185,8 @@ public class Transaction {
          *
          * @return insert
          */
-        public Insert getInsert() {
-            return new Insert(transaction.connection);
+        public <T> Insert<T> getInsert() {
+            return new Insert<>(transaction.connection);
         }
 
         /**
@@ -214,8 +217,8 @@ public class Transaction {
          * @param type 操作类型
          * @return remove
          */
-        public Remove getRemove(Remove.Type type) {
-            return new Remove(transaction.connection, type);
+        public <T> Remove<T> getRemove(Remove.Type type) {
+            return new Remove<>(transaction.connection, type);
         }
 
         /**

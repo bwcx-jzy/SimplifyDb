@@ -102,10 +102,10 @@ public abstract class BaseWrite<T> extends Base<T> {
     }
 
     @Override
-    public Class<?> getTclass() {
+    public Class<T> getTclass() {
         T t = getData();
         if (t != null) {
-            return t.getClass();
+            return (Class<T>) t.getClass();
         }
         return super.getTclass();
     }
