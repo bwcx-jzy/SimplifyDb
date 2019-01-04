@@ -4,6 +4,7 @@ import cn.jiangzeyin.RandomUtil;
 import cn.simplifydb.Init;
 import cn.simplifydb.database.run.write.Insert;
 import cn.simplifydb.database.run.write.Transaction;
+import cn.simplifydb.database.run.write.Update;
 import cn.simplifydb.entity.test.IdTest;
 import org.junit.Before;
 import org.junit.Test;
@@ -18,6 +19,29 @@ public class TestTransaction {
     @Before
     public void init() throws Exception {
         Init.init();
+    }
+
+    /**
+     * 批量
+     */
+    @Test
+    public void insert2() {
+
+        new Transaction(IdTest.class, new Transaction.Callback() {
+            @Override
+            public void start(Transaction.Operate operate) {
+                Update<IdTest> update = operate.getUpdate(IdTest.class);
+                update.putUpdate("name", "测试");
+//                update.setKeyColumnAndValue("id", 1);
+//                update.syncRun();
+            }
+
+            @Override
+            public void error(Exception e) {
+
+            }
+        });
+
     }
 
     /**
