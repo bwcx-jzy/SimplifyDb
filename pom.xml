@@ -56,11 +56,6 @@
             <artifactId>simple-des</artifactId>
             <version>${simple-des.vesion}</version>
         </dependency>
-        <dependency>
-            <groupId>cn.hutool</groupId>
-            <artifactId>hutool-db</artifactId>
-            <version>4.3.1</version>
-        </dependency>
         <!--test-->
         <dependency>
             <groupId>junit</groupId>
