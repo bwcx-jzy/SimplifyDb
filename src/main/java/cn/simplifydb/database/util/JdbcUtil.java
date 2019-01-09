@@ -1,6 +1,6 @@
 package cn.simplifydb.database.util;
 
-import cn.jiangzeyin.StringUtil;
+import cn.simplifydb.util.Util;
 import com.alibaba.druid.util.JdbcUtils;
 
 import java.sql.*;
@@ -73,29 +73,9 @@ public class JdbcUtil {
         list.forEach(stringObjectMap -> {
             for (Map.Entry<String, Object> entry : stringObjectMap.entrySet()) {
                 if (entry.getValue() instanceof String) {
-                    entry.setValue(unescape(entry.getValue().toString()));
+                    entry.setValue(Util.unescape(entry.getValue().toString()));
                 }
             }
         });
-    }
-
-    /**
-     * 还原html 实体
-     *
-     * @param htmlStr 字符串
-     * @return 还原后的
-     */
-    public static String unescape(String htmlStr) {
-        if (StringUtil.isEmpty(htmlStr)) {
-            return htmlStr;
-        }
-        return htmlStr.replace("&apos;", "'")
-                .replace("&#039;", "'")
-                .replace("&#39;", "'")
-                .replace("&lt;", "<")
-                .replace("&gt;", ">")
-                .replace("&quot;", "\"")
-                .replace("&amp;", "&")
-                .replace("&nbsp;", " ");
     }
 }

@@ -6,7 +6,7 @@ import cn.simplifydb.database.DbWriteService;
 import cn.simplifydb.database.config.DataSourceConfig;
 import cn.simplifydb.database.config.DatabaseContextHolder;
 import cn.simplifydb.database.config.SystemColumn;
-import cn.simplifydb.database.util.Util;
+import cn.simplifydb.util.Util;
 import cn.simplifydb.system.DbLog;
 import cn.simplifydb.util.DbReflectUtil;
 import com.alibaba.druid.sql.ast.statement.SQLDeleteStatement;

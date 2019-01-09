@@ -4,6 +4,7 @@ import cn.simplifydb.database.DbWriteService;
 import cn.simplifydb.database.TransactionException;
 import cn.simplifydb.database.config.DatabaseContextHolder;
 import cn.simplifydb.database.run.TransactionLevel;
+import cn.simplifydb.database.run.read.Select;
 import cn.simplifydb.system.DbLog;
 import com.alibaba.druid.util.JdbcUtils;
 
@@ -38,6 +39,8 @@ public class Transaction {
      */
     private Boolean isSupportTransaction = null;
 
+    //------------------------------  回调模式
+
     public Transaction(String tag, Callback callback, TransactionLevel transactionLevel) {
         Objects.requireNonNull(tag);
         Objects.requireNonNull(callback);
@@ -71,32 +74,85 @@ public class Transaction {
         this(tag, callback, null);
     }
 
+    //------------------------------  回调模式end
+
+    //------------------------------  显式模式
+
+    private Transaction(Class cls) {
+        this(DbWriteService.getInstance().getDatabaseName(cls));
+    }
+
+    private Transaction(String tag) {
+        this.tag = tag;
+        Objects.requireNonNull(tag);
+    }
+
+    /**
+     * 创建事物操作对象
+     *
+     * @param cls class
+     * @return 操作对象
+     * @throws SQLException 异常
+     */
+    public static Operate create(Class cls) throws SQLException {
+        Transaction transaction = new Transaction(cls);
+        transaction.initConnection();
+        return new Operate(transaction);
+    }
+
+    /**
+     * 创建事物操作对象
+     *
+     * @param tag 数据库标识
+     * @return 操作对象
+     * @throws SQLException 异常
+     */
+    public static Operate create(String tag) throws SQLException {
+        Transaction transaction = new Transaction(tag);
+        transaction.initConnection();
+        return new Operate(transaction);
+    }
+
+    /**
+     * 初始化数据库链接
+     *
+     * @throws SQLException 异常
+     */
+    private void initConnection() throws SQLException {
+        connection = DatabaseContextHolder.getWriteConnection(tag);
+        if (connection == null) {
+            throw new TransactionException("Transaction init getConnection error");
+        }
+        // 检查
+        checkTransactionSupported(connection);
+        // 设置事务级别
+        if (null != transactionLevel) {
+            int level = transactionLevel.getLevel();
+            //用户定义的事务级别
+            connection.setTransactionIsolation(level);
+        }
+        // 开始事物
+        connection.setAutoCommit(false);
+    }
+
     /**
      * 初始化
      */
     private void init() {
         try {
-            connection = DatabaseContextHolder.getWriteConnection(tag);
-            if (connection == null) {
-                throw new TransactionException("Transaction init getConnection error");
-            }
-            // 检查
-            checkTransactionSupported(connection);
-            // 设置事务级别
-            if (null != transactionLevel) {
-                int level = transactionLevel.getLevel();
-                //用户定义的事务级别
-                connection.setTransactionIsolation(level);
-            }
-            // 开始事物
-            connection.setAutoCommit(false);
+            initConnection();
         } catch (SQLException e) {
             callback.error(e);
             throw new TransactionException("Transaction init error:" + e.getMessage());
         }
-        Operate operate = new Operate(this);
         try {
-            callback.start(operate);
+            Operate operate = new Operate(this);
+            boolean result = callback.start(operate);
+            if (result) {
+                operate.commit();
+            } else {
+                operate.rollback();
+            }
         } catch (Exception e) {
             rollback();
             callback.error(e);
@@ -158,8 +214,9 @@ public class Transaction {
          * 事物已经准备好啦
          *
          * @param operate 可以操作的事物对象
+         * @return 是否提交事务  true 自动提交事务  false 回滚事务
          */
-        void start(Operate operate);
+        boolean start(Operate operate);
 
         /**
          * 事物异常
@@ -174,6 +231,7 @@ public class Transaction {
      */
     public static class Operate {
         private Transaction transaction;
+        private boolean close;
 
         private Operate(Transaction transaction) {
             Objects.requireNonNull(transaction);
@@ -235,19 +293,40 @@ public class Transaction {
         }
 
         /**
+         * 获取事务的查询对象
+         *
+         * @param cls class
+         * @param <T> 操作泛型
+         * @return select
+         */
+        public <T> Select<T> getSelect(Class<T> cls) {
+            Select<T> select = new Select<>(transaction.connection);
+            select.setTclass(cls);
+            return select;
+        }
+
+        /**
          * 提交事务
          */
         public void commit() {
+            if (close) {
+                // 防止重复提交事务
+                return;
+            }
             transaction.commit();
+            close = true;
         }
 
         /**
          * 回滚事务
          */
         public void rollback() {
-            if (transaction != null) {
-                transaction.rollback();
+            if (close) {
+                // 防止重复提交事务
+                return;
             }
+            transaction.rollback();
+            close = true;
         }
     }
 }
