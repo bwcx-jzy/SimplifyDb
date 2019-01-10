@@ -2,9 +2,10 @@
 
 ## 2.0.14
 
-* 事务操作支持获取Select
-* 添加默认事务实现类
-* 事务支持显示获取
+* 事务操作支持获取Select【cn.simplifydb.database.run.write.Transaction.Operate.getSelect】
+* 添加默认事务实现类【cn.simplifydb.database.run.TransactionCallBack】
+* 事务支持显示获取【cn.simplifydb.database.run.write.Transaction.create(java.lang.Class)】
+* update 支持同时修改多同表不同条件的值 【cn.simplifydb.database.base.BaseUpdate.MultipleUpdate】
 -------------------------------------------------------------------------------------------------------------
 
 

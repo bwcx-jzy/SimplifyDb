@@ -22,6 +22,9 @@ import java.util.*;
  * @author jiangzeyin
  */
 public abstract class BaseUpdate<T> extends BaseWrite<T> implements SQLUpdateAndDeleteBuilder {
+    /**
+     * 记录要修改的列名和值
+     */
     private LinkedHashMap<String, Object> update = new LinkedHashMap<>(20);
     protected SQLUpdateBuilderImpl sqlUpdateBuilder;
     private String ids;
@@ -34,7 +37,11 @@ public abstract class BaseUpdate<T> extends BaseWrite<T> implements SQLUpdateAnd
 
     protected BaseUpdate(T data, Connection transactionConnection) {
         super(data, transactionConnection);
-        sqlUpdateBuilder = new SQLUpdateBuilderImpl(JdbcConstants.MYSQL);
+        this.createUpdateBuilder();
+    }
+
+    private void createUpdateBuilder() {
+        this.sqlUpdateBuilder = new SQLUpdateBuilderImpl(JdbcConstants.MYSQL);
     }
 
     public BaseUpdate<T> setIds(String ids) {
@@ -54,9 +61,16 @@ public abstract class BaseUpdate<T> extends BaseWrite<T> implements SQLUpdateAnd
         return update;
     }
 
+    /**
+     * 添加使用多数据修改
+     *
+     * @param multipleUpdate 要修改的视图
+     * @return this
+     */
     public BaseUpdate<T> addMultipleUpdate(MultipleUpdate multipleUpdate) {
         if (this.multipleUpdates == null) {
             this.multipleUpdates = new ArrayList<>();
+            this.sqlUpdateBuilder = null;
         }
         this.multipleUpdates.add(multipleUpdate);
         return this;
@@ -64,6 +78,9 @@ public abstract class BaseUpdate<T> extends BaseWrite<T> implements SQLUpdateAnd
 
     public void setMultipleUpdates(List<MultipleUpdate> multipleUpdates) {
         this.multipleUpdates = multipleUpdates;
+        if (multipleUpdates == null) {
+            this.createUpdateBuilder();
+        }
     }
 
     @Override
@@ -77,7 +94,13 @@ public abstract class BaseUpdate<T> extends BaseWrite<T> implements SQLUpdateAnd
         return this;
     }
 
-    public BaseUpdate<T> setUpdate(HashMap<String, Object> update) {
+    /**
+     * 设置要修改的map
+     *
+     * @param update map
+     * @return this
+     */
+    public BaseUpdate<T> setUpdate(Map<String, Object> update) {
         if (update != null) {
             Set<Map.Entry<String, Object>> set = update.entrySet();
             for (Map.Entry<String, Object> entry : set) {
@@ -209,6 +232,8 @@ public abstract class BaseUpdate<T> extends BaseWrite<T> implements SQLUpdateAnd
         this.sqlUpdateBuilder = null;
         this.sqlAndParameters = null;
         this.update = null;
+        this.multipleValue = null;
+        this.multipleUpdates = null;
     }
 
     @Override
@@ -258,7 +283,6 @@ public abstract class BaseUpdate<T> extends BaseWrite<T> implements SQLUpdateAnd
             securityCheck(sqlUpdateBuilder, this.keyColumn, this.keyValue);
             sql = sqlUpdateBuilder.toString();
         } else {
-//            LinkedHashMap<String, Object> update = new LinkedHashMap<>(30);
             StringBuffer allSql = new StringBuffer();
             multipleUpdates.forEach(multipleUpdate -> {
                 Map<String, Object> map = multipleUpdate.getUpdateMap();
@@ -268,8 +292,11 @@ public abstract class BaseUpdate<T> extends BaseWrite<T> implements SQLUpdateAnd
                 SQLUpdateBuilderImpl sqlUpdateBuilder = multipleUpdate.getSqlUpdateBuilder();
                 // 修改的列
                 Set<Map.Entry<String, Object>> entries = map.entrySet();
-                LinkedHashMap<String, Object> linkedHashMap = new LinkedHashMap<>();
-                entries.forEach(stringObjectEntry -> addUpdateColumn(sqlUpdateBuilder, stringObjectEntry.getKey(), stringObjectEntry.getValue(), linkedHashMap));
+                LinkedHashMap<String, Object> linkedHashMap = new LinkedHashMap<>(20);
+                entries.forEach(stringObjectEntry -> {
+                    checkUpdate(getTclass(), stringObjectEntry.getKey());
+                    addUpdateColumn(sqlUpdateBuilder, stringObjectEntry.getKey(), stringObjectEntry.getValue(), linkedHashMap);
+                });
                 if (multipleValue == null) {
                     multipleValue = new LinkedList<>();
                 }
@@ -366,11 +393,15 @@ public abstract class BaseUpdate<T> extends BaseWrite<T> implements SQLUpdateAnd
                 ", sqlUpdateBuilder=" + updateSql +
                 ", ids='" + ids + '\'' +
                 ", sqlAndParameters=" + sqlAndParameters +
+                ", multipleUpdates=" + multipleUpdates +
+                ", multipleValue=" + multipleValue +
                 '}';
     }
 
+    /**
+     * 多数据修改视图
+     */
     public static class MultipleUpdate implements Serializable {
-
         private String keyColumn;
         private Object keyValue;
         private Map<String, Object> updateMap;
@@ -388,24 +419,49 @@ public abstract class BaseUpdate<T> extends BaseWrite<T> implements SQLUpdateAnd
             return keyColumn;
         }
 
-        public void setKeyColumn(String keyColumn) {
+        public MultipleUpdate setKeyColumn(String keyColumn) {
             this.keyColumn = keyColumn;
+            return this;
         }
 
         public Object getKeyValue() {
             return keyValue;
         }
 
-        public void setKeyValue(Object keyValue) {
+        public MultipleUpdate setKeyValue(Object keyValue) {
             this.keyValue = keyValue;
+            return this;
+        }
+
+        public MultipleUpdate setKeyColumnAndValue(String column, Object keyValue) {
+            this.keyColumn = column;
+            this.keyValue = keyValue;
+            return this;
         }
 
         public Map<String, Object> getUpdateMap() {
             return updateMap;
         }
 
-        public void setUpdateMap(Map<String, Object> updateMap) {
+        public MultipleUpdate setUpdateMap(Map<String, Object> updateMap) {
             this.updateMap = updateMap;
+            return this;
+        }
+
+        @Override
+        public String toString() {
+            String updateSql;
+            try {
+                updateSql = sqlUpdateBuilder.toString();
+            } catch (Exception e) {
+                updateSql = "";
+            }
+            return "MultipleUpdate{" +
+                    "keyColumn='" + keyColumn + '\'' +
+                    ", keyValue=" + keyValue +
+                    ", updateMap=" + updateMap +
+                    ", sqlUpdateBuilder=" + updateSql +
+                    '}';
         }
     }
 }
