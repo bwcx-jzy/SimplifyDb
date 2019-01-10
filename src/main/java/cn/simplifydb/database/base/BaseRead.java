@@ -12,7 +12,6 @@ import com.alibaba.druid.sql.builder.impl.SQLSelectBuilderImpl;
 import com.alibaba.druid.sql.parser.Token;
 import com.alibaba.druid.util.JdbcConstants;
 
-import java.util.ConcurrentModificationException;
 import java.util.List;
 
 /**
@@ -155,11 +154,7 @@ public abstract class BaseRead<T> extends Base<T> implements SQLSelectBuilder {
      */
     @Override
     public BaseRead setKeyColumnAndValue(String keyColumn, Object keyValue) {
-        if (this.keyColumn != null) {
-            throw new ConcurrentModificationException(keyColumn);
-        }
-        this.keyValue = keyValue;
-        this.keyColumn = keyColumn;
+        saveKeyColumnAndValue(keyColumn, keyValue);
         return this;
     }
 

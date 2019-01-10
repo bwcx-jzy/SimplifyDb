@@ -90,7 +90,9 @@ public class Remove<T> extends BaseUpdate<T> {
             }
         }
         if (type == Type.delete) {
-            sqlDeleteBuilder = new SQLDeleteBuilderImpl(JdbcConstants.MYSQL);
+            this.sqlDeleteBuilder = new SQLDeleteBuilderImpl(JdbcConstants.MYSQL);
+        } else {
+            this.sqlDeleteBuilder = null;
         }
     }
 
@@ -172,7 +174,7 @@ public class Remove<T> extends BaseUpdate<T> {
             sqlDeleteBuilder.from(tableName);
         }
         // 检查
-        securityCheck(sqlDeleteBuilder);
+        securityCheck(this.sqlDeleteBuilder, this.getKeyColumn(), this.getKeyValue());
         String sql = sqlDeleteBuilder.toString();
         setRunSql(sql);
         return sql;

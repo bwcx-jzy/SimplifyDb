@@ -78,10 +78,6 @@ public class Transaction {
 
     //------------------------------  显式模式
 
-    private Transaction(Class cls) {
-        this(DbWriteService.getInstance().getDatabaseName(cls));
-    }
-
     private Transaction(String tag) {
         this.tag = tag;
         Objects.requireNonNull(tag);
@@ -95,9 +91,8 @@ public class Transaction {
      * @throws SQLException 异常
      */
     public static Operate create(Class cls) throws SQLException {
-        Transaction transaction = new Transaction(cls);
-        transaction.initConnection();
-        return new Operate(transaction);
+        String tag = DbWriteService.getInstance().getDatabaseName(cls);
+        return create(tag);
     }
 
     /**
@@ -310,7 +305,7 @@ public class Transaction {
          */
         public void commit() {
             if (close) {
-                // 防止重复提交事务
+                // 防止重复提交事务,兼容低版本
                 return;
             }
             transaction.commit();
@@ -322,7 +317,7 @@ public class Transaction {
          */
         public void rollback() {
             if (close) {
-                // 防止重复提交事务
+                // 防止重复提交事务,兼容低版本
                 return;
             }
             transaction.rollback();

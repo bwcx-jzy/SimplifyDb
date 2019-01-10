@@ -11,6 +11,7 @@ import com.alibaba.druid.sql.builder.impl.SQLDeleteBuilderImpl;
 import com.alibaba.druid.sql.builder.impl.SQLUpdateBuilderImpl;
 import com.alibaba.druid.util.JdbcConstants;
 
+import java.io.Serializable;
 import java.sql.Connection;
 import java.util.*;
 
@@ -21,10 +22,15 @@ import java.util.*;
  * @author jiangzeyin
  */
 public abstract class BaseUpdate<T> extends BaseWrite<T> implements SQLUpdateAndDeleteBuilder {
-    private Map<String, Object> update = new LinkedHashMap<>(20);
+    private LinkedHashMap<String, Object> update = new LinkedHashMap<>(20);
     protected SQLUpdateBuilderImpl sqlUpdateBuilder;
     private String ids;
     private SqlAndParameters sqlAndParameters;
+    /**
+     * 多数据库修改
+     */
+    private List<MultipleUpdate> multipleUpdates;
+    private LinkedList<Object> multipleValue;
 
     protected BaseUpdate(T data, Connection transactionConnection) {
         super(data, transactionConnection);
@@ -48,6 +54,18 @@ public abstract class BaseUpdate<T> extends BaseWrite<T> implements SQLUpdateAnd
         return update;
     }
 
+    public BaseUpdate<T> addMultipleUpdate(MultipleUpdate multipleUpdate) {
+        if (this.multipleUpdates == null) {
+            this.multipleUpdates = new ArrayList<>();
+        }
+        this.multipleUpdates.add(multipleUpdate);
+        return this;
+    }
+
+    public void setMultipleUpdates(List<MultipleUpdate> multipleUpdates) {
+        this.multipleUpdates = multipleUpdates;
+    }
+
     @Override
     public BaseUpdate<T> setKeyValue(Object keyValue) {
         return setKeyColumnAndValue(SystemColumn.getDefaultKeyName(), keyValue);
@@ -55,11 +73,7 @@ public abstract class BaseUpdate<T> extends BaseWrite<T> implements SQLUpdateAnd
 
     @Override
     public BaseUpdate<T> setKeyColumnAndValue(String column, Object keyValue) {
-        if (this.keyColumn != null) {
-            throw new ConcurrentModificationException(keyColumn);
-        }
-        this.keyValue = keyValue;
-        this.keyColumn = column;
+        saveKeyColumnAndValue(column, keyValue);
         return this;
     }
 
@@ -81,6 +95,18 @@ public abstract class BaseUpdate<T> extends BaseWrite<T> implements SQLUpdateAnd
      * @author jiangzeyin
      */
     public BaseUpdate<T> putUpdate(String column, Object value) {
+        addUpdateColumn(sqlUpdateBuilder, column, value, this.update);
+        return this;
+    }
+
+    /**
+     * 添加修改的列
+     *
+     * @param sqlUpdateBuilder 修改对象
+     * @param column           列
+     * @param value            值
+     */
+    private void addUpdateColumn(SQLUpdateBuilderImpl sqlUpdateBuilder, String column, Object value, LinkedHashMap<String, Object> update) {
         checkUpdate(getTclass(), column);
         String fnVal = getFunctionVal(value);
         if (fnVal != null) {
@@ -89,7 +115,6 @@ public abstract class BaseUpdate<T> extends BaseWrite<T> implements SQLUpdateAnd
             sqlUpdateBuilder.set(column + "=?");
         }
         update.put(column, value);
-        return this;
     }
 
     /**
@@ -112,6 +137,10 @@ public abstract class BaseUpdate<T> extends BaseWrite<T> implements SQLUpdateAnd
 
     @Override
     public List<Object> getParameters() throws Exception {
+        if (multipleValue != null) {
+            // 多数据修改值
+            return multipleValue;
+        }
         List<Object> newList = new LinkedList<>();
         SqlAndParameters sqlAndParameters = getSqlAndParameters();
         if (sqlAndParameters != null) {
@@ -137,7 +166,7 @@ public abstract class BaseUpdate<T> extends BaseWrite<T> implements SQLUpdateAnd
     /**
      * sql 记录操作人和时间
      */
-    protected void loadModifyUser() {
+    protected void loadModifyUser(SQLUpdateBuilderImpl sqlUpdateBuilder) {
         int optUserId = getOptUserId();
         if (optUserId < 1) {
             return;
@@ -149,7 +178,12 @@ public abstract class BaseUpdate<T> extends BaseWrite<T> implements SQLUpdateAnd
         }
     }
 
-    protected void loadModify() {
+    /**
+     * sql 记录最后修改时间
+     *
+     * @param sqlUpdateBuilder update
+     */
+    protected void loadModify(SQLUpdateBuilderImpl sqlUpdateBuilder) {
         Class cls = getTclass();
         EntityConfig entityConfig = (EntityConfig) cls.getAnnotation(EntityConfig.class);
         boolean isLogUpdate = true;
@@ -171,14 +205,14 @@ public abstract class BaseUpdate<T> extends BaseWrite<T> implements SQLUpdateAnd
     @Override
     protected void recycling() {
         super.recycling();
-        ids = null;
-        sqlUpdateBuilder = null;
-        sqlAndParameters = null;
-        update = null;
+        this.ids = null;
+        this.sqlUpdateBuilder = null;
+        this.sqlAndParameters = null;
+        this.update = null;
     }
 
     @Override
-    protected void securityCheck(Object object) {
+    protected void securityCheck(Object object, String keyColumn, Object keyValue) {
         if (ids != null) {
             if (object instanceof SQLUpdateBuilderImpl) {
                 SQLUpdateBuilderImpl sqlUpdateBuilder = (SQLUpdateBuilderImpl) object;
@@ -188,45 +222,83 @@ public abstract class BaseUpdate<T> extends BaseWrite<T> implements SQLUpdateAnd
                 sqlDeleteBuilder.whereAnd(SystemColumn.getDefaultKeyName() + " in(" + ids + ")");
             }
         }
-        super.securityCheck(object);
+        super.securityCheck(object, keyColumn, keyValue);
     }
 
     @Override
     public String builder() throws Exception {
-        SqlAndParameters sqlAndParameters = getSqlAndParameters();
-        if (sqlAndParameters != null) {
-            List<String> columns = sqlAndParameters.getColumns();
-            if (columns != null) {
-                HashMap<String, String> map = sqlAndParameters.getSystemMap();
-                for (String item : columns) {
-                    Object val = null;
-                    if (map != null) {
-                        val = map.get(item);
-                    }
-                    if (val == null) {
-                        sqlUpdateBuilder.set(item + "=?");
-                    } else {
-                        sqlUpdateBuilder.setValue(item, val);
+        String sql;
+        if (multipleUpdates == null || multipleUpdates.size() <= 0) {
+            SqlAndParameters sqlAndParameters = getSqlAndParameters();
+            if (sqlAndParameters != null) {
+                List<String> columns = sqlAndParameters.getColumns();
+                if (columns != null) {
+                    HashMap<String, String> map = sqlAndParameters.getSystemMap();
+                    for (String item : columns) {
+                        Object val = null;
+                        if (map != null) {
+                            val = map.get(item);
+                        }
+                        if (val == null) {
+                            sqlUpdateBuilder.set(item + "=?");
+                        } else {
+                            sqlUpdateBuilder.setValue(item, val);
+                        }
                     }
                 }
+                Object objId = DbReflectUtil.getFieldValue(data, SystemColumn.getDefaultKeyName());
+                if (objId != null) {
+                    sqlUpdateBuilder.whereAnd(SystemColumn.getDefaultKeyName() + "='" + objId.toString() + "'");
+                }
             }
-            Object objId = DbReflectUtil.getFieldValue(data, SystemColumn.getDefaultKeyName());
-            if (objId != null) {
-                sqlUpdateBuilder.whereAnd(SystemColumn.getDefaultKeyName() + "='" + objId.toString() + "'");
-            }
+            loadModify(this.sqlUpdateBuilder);
+            loadModifyUser(this.sqlUpdateBuilder);
+            addTable(sqlUpdateBuilder);
+            //
+            securityCheck(sqlUpdateBuilder, this.keyColumn, this.keyValue);
+            sql = sqlUpdateBuilder.toString();
+        } else {
+//            LinkedHashMap<String, Object> update = new LinkedHashMap<>(30);
+            StringBuffer allSql = new StringBuffer();
+            multipleUpdates.forEach(multipleUpdate -> {
+                Map<String, Object> map = multipleUpdate.getUpdateMap();
+                if (map == null || map.size() <= 0) {
+                    return;
+                }
+                SQLUpdateBuilderImpl sqlUpdateBuilder = multipleUpdate.getSqlUpdateBuilder();
+                // 修改的列
+                Set<Map.Entry<String, Object>> entries = map.entrySet();
+                LinkedHashMap<String, Object> linkedHashMap = new LinkedHashMap<>();
+                entries.forEach(stringObjectEntry -> addUpdateColumn(sqlUpdateBuilder, stringObjectEntry.getKey(), stringObjectEntry.getValue(), linkedHashMap));
+                if (multipleValue == null) {
+                    multipleValue = new LinkedList<>();
+                }
+                multipleValue.addAll(linkedHashMap.values());
+                //
+                loadModify(sqlUpdateBuilder);
+                loadModifyUser(sqlUpdateBuilder);
+                addTable(sqlUpdateBuilder);
+                securityCheck(sqlUpdateBuilder, multipleUpdate.getKeyColumn(), multipleUpdate.getKeyValue());
+                //
+                allSql.append(sqlUpdateBuilder.toString()).append(";");
+            });
+            sql = allSql.toString();
         }
-        loadModify();
-        loadModifyUser();
+        setRunSql(sql);
+        return sql;
+    }
+
+    /**
+     * 添加表名
+     *
+     * @param sqlUpdateBuilder update 对象
+     */
+    private void addTable(SQLUpdateBuilderImpl sqlUpdateBuilder) {
         SQLUpdateStatement sqlUpdateStatement = sqlUpdateBuilder.getSQLUpdateStatement();
         if (sqlUpdateStatement == null || sqlUpdateStatement.getFrom() == null) {
             String tableName = SqlUtil.getTableName(this, getTclass());
             sqlUpdateBuilder.from(tableName);
         }
-        //
-        securityCheck(sqlUpdateBuilder);
-        String sql = sqlUpdateBuilder.toString();
-        setRunSql(sql);
-        return sql;
     }
 
     @Override
@@ -295,5 +367,45 @@ public abstract class BaseUpdate<T> extends BaseWrite<T> implements SQLUpdateAnd
                 ", ids='" + ids + '\'' +
                 ", sqlAndParameters=" + sqlAndParameters +
                 '}';
+    }
+
+    public static class MultipleUpdate implements Serializable {
+
+        private String keyColumn;
+        private Object keyValue;
+        private Map<String, Object> updateMap;
+        private SQLUpdateBuilderImpl sqlUpdateBuilder;
+
+        public MultipleUpdate() {
+            this.sqlUpdateBuilder = new SQLUpdateBuilderImpl(JdbcConstants.MYSQL);
+        }
+
+        public SQLUpdateBuilderImpl getSqlUpdateBuilder() {
+            return sqlUpdateBuilder;
+        }
+
+        public String getKeyColumn() {
+            return keyColumn;
+        }
+
+        public void setKeyColumn(String keyColumn) {
+            this.keyColumn = keyColumn;
+        }
+
+        public Object getKeyValue() {
+            return keyValue;
+        }
+
+        public void setKeyValue(Object keyValue) {
+            this.keyValue = keyValue;
+        }
+
+        public Map<String, Object> getUpdateMap() {
+            return updateMap;
+        }
+
+        public void setUpdateMap(Map<String, Object> updateMap) {
+            this.updateMap = updateMap;
+        }
     }
 }

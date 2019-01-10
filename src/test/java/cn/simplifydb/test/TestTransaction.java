@@ -76,10 +76,10 @@ public class TestTransaction {
             public boolean start(Transaction.Operate operate) {
                 Insert<IdTest> insert = operate.getInsert(IdTest.class);
                 insert.setList(list);
-//                insert.setBatch(true);
+                insert.setBatch(true);
                 insert.setCallback((key, count) -> System.out.println("成功：" + key));
                 insert.syncRun();
-//                operate.commit();
+                operate.commit();
                 return true;
             }
         });
