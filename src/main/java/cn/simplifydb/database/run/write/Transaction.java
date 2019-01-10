@@ -140,8 +140,8 @@ public class Transaction {
             callback.error(e);
             throw new TransactionException("Transaction init error:" + e.getMessage());
         }
+        Operate operate = new Operate(this);
         try {
-            Operate operate = new Operate(this);
             boolean result = callback.start(operate);
             if (result) {
                 operate.commit();
@@ -149,7 +149,7 @@ public class Transaction {
                 operate.rollback();
             }
         } catch (Exception e) {
-            rollback();
+            operate.rollback();
             callback.error(e);
             TransactionException transactionException = new TransactionException("Transaction error:" + e.getMessage());
             // 添加异常信息

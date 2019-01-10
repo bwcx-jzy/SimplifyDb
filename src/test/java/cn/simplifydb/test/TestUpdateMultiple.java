@@ -1,5 +1,6 @@
 package cn.simplifydb.test;
 
+import cn.jiangzeyin.RandomUtil;
 import cn.simplifydb.Init;
 import cn.simplifydb.database.base.BaseUpdate;
 import cn.simplifydb.database.run.write.Update;
@@ -34,7 +35,7 @@ public class TestUpdateMultiple {
         multipleUpdate.setKeyColumn("id");
         multipleUpdate.setKeyValue(1);
         Map<String, Object> map = new HashMap<>();
-        map.put("name", "test");
+        map.put("name", "test:" + RandomUtil.getRandomString(2));
         multipleUpdate.setUpdateMap(map);
 
         update.addMultipleUpdate(multipleUpdate);
@@ -42,11 +43,11 @@ public class TestUpdateMultiple {
         multipleUpdate = new BaseUpdate.MultipleUpdate();
         multipleUpdate.setKeyColumn("id");
         multipleUpdate.setKeyValue(2);
-//        Map<String, Object> map = new HashMap<>();
-//        map.put("name", "test");
+        map = new HashMap<>();
+        map.put("name", "test:" + RandomUtil.getRandomString(2));
         multipleUpdate.setUpdateMap(map);
 
         update.addMultipleUpdate(multipleUpdate);
-        update.syncRun();
+        System.out.println(update.syncRun());
     }
 }
