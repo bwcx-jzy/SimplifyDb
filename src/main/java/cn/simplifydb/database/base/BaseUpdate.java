@@ -160,16 +160,18 @@ public abstract class BaseUpdate<T> extends BaseWrite<T> implements SQLUpdateAnd
 
     @Override
     public List<Object> getParameters() throws Exception {
-        if (multipleValue != null) {
-            // 多数据修改值
-            return multipleValue;
-        }
         List<Object> newList = new LinkedList<>();
         SqlAndParameters sqlAndParameters = getSqlAndParameters();
         if (sqlAndParameters != null) {
             newList.addAll(0, sqlAndParameters.getParameters());
         }
-        Collection<Object> collection = update.values();
+        Collection<Object> collection;
+        if (multipleValue != null) {
+            // 多数据修改值
+            collection = multipleValue;
+        } else {
+            collection = update.values();
+        }
         for (Object object : collection) {
             String strValue = getFunctionVal(object);
             if (strValue == null) {
