@@ -5,7 +5,7 @@ import cn.simplifydb.database.base.BaseRead;
 import cn.simplifydb.database.config.DatabaseContextHolder;
 import cn.simplifydb.database.util.JdbcUtil;
 import cn.simplifydb.database.util.SqlUtil;
-import cn.simplifydb.database.util.Util;
+import cn.simplifydb.util.Util;
 import cn.simplifydb.system.DbLog;
 import com.alibaba.druid.util.JdbcUtils;
 

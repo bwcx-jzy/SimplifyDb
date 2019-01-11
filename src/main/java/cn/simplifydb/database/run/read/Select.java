@@ -4,13 +4,15 @@ import cn.simplifydb.database.base.BaseRead;
 import cn.simplifydb.database.config.DatabaseContextHolder;
 import cn.simplifydb.database.config.SystemColumn;
 import cn.simplifydb.database.util.JdbcUtil;
-import cn.simplifydb.database.util.Util;
+import cn.simplifydb.database.util.SqlUtil;
+import cn.simplifydb.util.Util;
 import cn.simplifydb.system.DbLog;
 import com.alibaba.druid.util.JdbcUtils;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 
 import javax.sql.DataSource;
+import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -22,6 +24,21 @@ import java.util.Map;
  */
 @SuppressWarnings("unchecked")
 public class Select<T> extends BaseRead<T> {
+
+    /**
+     * 事务的链接信息
+     */
+    private Connection transactionConnection;
+
+    /**
+     * 指定链接操作
+     *
+     * @param transactionConnection connection
+     */
+    public Select(Connection transactionConnection) {
+        this.transactionConnection = transactionConnection;
+        setThrows(true);
+    }
 
     public Select() {
     }
@@ -49,10 +66,15 @@ public class Select<T> extends BaseRead<T> {
                 limit(1);
             }
             String tag = getTag();
-            DataSource dataSource = DatabaseContextHolder.getReadDataSource(tag);
             String runSql = builder();
             DbLog.getInstance().info(getTransferLog(4) + getRunSql());
-            List<Map<String, Object>> result = JdbcUtils.executeQuery(dataSource, runSql, getParameters());
+            List<Map<String, Object>> result;
+            if (transactionConnection == null) {
+                DataSource dataSource = DatabaseContextHolder.getReadDataSource(tag);
+                result = JdbcUtils.executeQuery(dataSource, runSql, getParameters());
+            } else {
+                result = JdbcUtils.executeQuery(transactionConnection, runSql, getParameters());
+            }
             // 判断是否开启还原
             if (isUnescapeHtml()) {
                 JdbcUtil.htmlUnescape(result);
@@ -68,7 +90,7 @@ public class Select<T> extends BaseRead<T> {
                     return (t) new JSONObject(map);
                 }
                 case Entity:
-                    return (t) Util.convertList(this, result);
+                    return (t) SqlUtil.convertList(this, result);
                 case ListMap:
                     return (t) result;
                 case String:

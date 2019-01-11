@@ -31,7 +31,7 @@ public class Update<T> extends BaseUpdate<T> {
      *
      * @param connection 连接信息
      */
-    Update(Connection connection, Class cls) {
+    Update(Connection connection, Class<T> cls) {
         super(null, connection);
         setThrows(true);
         setTclass(cls);

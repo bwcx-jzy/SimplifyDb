@@ -1,6 +1,6 @@
 package cn.simplifydb.database.config;
 
-import cn.simplifydb.database.util.JdbcUtil;
+import cn.simplifydb.util.Util;
 import com.alibaba.fastjson.serializer.JSONSerializer;
 import com.alibaba.fastjson.serializer.StringCodec;
 
@@ -25,7 +25,7 @@ public class XssJsonStringCodec extends StringCodec {
         if (object == null) {
             super.write(serializer, object, fieldName, fieldType, features);
         } else {
-            super.write(serializer, JdbcUtil.unescape((String) object), fieldName, fieldType, features);
+            super.write(serializer, Util.unescape((String) object), fieldName, fieldType, features);
         }
     }
 }

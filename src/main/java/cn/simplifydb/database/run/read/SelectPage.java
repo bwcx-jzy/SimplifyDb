@@ -3,7 +3,8 @@ package cn.simplifydb.database.run.read;
 import cn.simplifydb.database.base.BaseRead;
 import cn.simplifydb.database.config.DatabaseContextHolder;
 import cn.simplifydb.database.util.JdbcUtil;
-import cn.simplifydb.database.util.Util;
+import cn.simplifydb.database.util.SqlUtil;
+import cn.simplifydb.util.Util;
 import cn.simplifydb.system.DbLog;
 import com.alibaba.druid.sql.PagerUtils;
 import com.alibaba.druid.util.JdbcConstants;
@@ -198,7 +199,7 @@ public class SelectPage<T> extends BaseRead<T> {
                     data.put("totalRecord", totalRecord);
                     return (t) data;
                 }
-                List<?> resultList = Util.convertList(this, list);
+                List<?> resultList = SqlUtil.convertList(this, list);
                 return (t) resultList;
             }
         } catch (Exception e) {

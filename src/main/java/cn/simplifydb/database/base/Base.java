@@ -6,9 +6,9 @@ import cn.simplifydb.database.DbWriteService;
 import cn.simplifydb.database.config.DataSourceConfig;
 import cn.simplifydb.database.config.DatabaseContextHolder;
 import cn.simplifydb.database.config.SystemColumn;
-import cn.simplifydb.database.util.Util;
 import cn.simplifydb.system.DbLog;
 import cn.simplifydb.util.DbReflectUtil;
+import cn.simplifydb.util.Util;
 import com.alibaba.druid.sql.ast.statement.SQLDeleteStatement;
 import com.alibaba.druid.sql.ast.statement.SQLUpdateStatement;
 import com.alibaba.druid.sql.builder.impl.SQLDeleteBuilderImpl;
@@ -122,6 +122,14 @@ public abstract class Base<T> {
      * @return this
      */
     public abstract Base<T> setKeyColumnAndValue(String column, Object keyValue);
+
+    void saveKeyColumnAndValue(String column, Object keyValue) {
+        if (this.keyColumn != null) {
+            throw new ConcurrentModificationException(keyColumn);
+        }
+        this.keyValue = keyValue;
+        this.keyColumn = column;
+    }
 
     public List<Object> getParameters() throws Exception {
         return parameters;
@@ -363,7 +371,7 @@ public abstract class Base<T> {
      *
      * @param object object
      */
-    protected void securityCheck(Object object) {
+    protected void securityCheck(Object object, String keyColumn, Object keyValue) {
         if (object instanceof SQLUpdateBuilderImpl) {
             SQLUpdateBuilderImpl sqlUpdateBuilder = (SQLUpdateBuilderImpl) object;
             // key and value
