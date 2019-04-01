@@ -3,6 +3,7 @@ package cn.simplifydb.test;
 import cn.simplifydb.Init;
 import cn.simplifydb.database.base.BaseRead;
 import cn.simplifydb.database.run.read.Select;
+import com.alibaba.druid.sql.SQLUtils;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -37,5 +38,23 @@ public class TestSelectCloums {
         testSelect.setResultType(BaseRead.Result.ListOneColumn);
         Object object = testSelect.run();
         System.out.println(object);
+    }
+
+
+    @Test
+    public void selectEntity3() {
+        Select testSelect = new Select<>();
+        testSelect.setClass(cn.simplifydb.entity.test.Test.class);
+        testSelect.setColumns("DISTINCT name");
+        testSelect.setResultType(BaseRead.Result.ListOneColumn);
+        Object object = testSelect.run();
+        System.out.println(object);
+    }
+
+    @Test
+    public void test_0() throws Exception {
+        String sql = "select id, distinct name from a";
+        SQLUtils.parseSingleMysqlStatement(sql);
+
     }
 }
